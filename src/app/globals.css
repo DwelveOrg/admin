@@ -1,0 +1,263 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ============================================================================
+   Dwelve operator console — "the docket"
+
+   This is not a dashboard and it is not the product. It is a records office:
+   a queue of cases, each with an ident, a filing time, a claimant, and a
+   disposition. Every decision below follows from that.
+
+   WHY LIGHT-FIRST, when every operator console reflexively goes near-black:
+   the evidence on this screen is screenshots of a light product (the app canvas
+   is #FAFAFB). A dark chrome makes every screenshot glare like a lightbox; a
+   calm paper ground lets the evidence read. Dark is supported for night triage
+   and is a genuine second character, not an inversion.
+
+   WHY THE PALETTE IS SHARED WITH THE PRODUCT: violet and the four semantics are
+   lifted unchanged from the product's token file. Same company, and green has to
+   keep meaning the same thing in both places. The console distinguishes itself
+   through surface and typography, not by inventing a second brand.
+   ========================================================================= */
+
+:root {
+  --radius: 0.5rem;
+
+  /* --- Surfaces: cool paper, one step *below* the product ----------------
+     The product's canvas is #FAFAFB. The console's is #F2F2F6 — darker, so the
+     console reads as the room the product is examined in rather than as another
+     screen of it. --file is pure white: the case sits on the desk. */
+  --paper: #f2f2f6;
+  --file: #ffffff;
+  --ink: #16161c;
+  --ink-soft: #5c5c66;
+  --ink-faint: #8a8a94;
+  --rule: #dcdce3;
+  --rule-soft: #e8e8ee;
+  --wash: #ebebf1;
+
+  /* --- Action: the product's violet, unchanged --------------------------- */
+  --violet: #5f40d5;
+  --violet-hover: #4f32be;
+  --violet-ink: #ffffff;
+  --violet-wash: #edeeff;
+  --ring: #7b5ff0;
+
+  /* --- Dispositions -----------------------------------------------------
+     Amber for work not started, cyan for work in hand, green for a fix, and
+     grey for a dismissal. Dismissed is the only colourless one on purpose: a
+     dismissal is a conclusion, not an achievement, and giving it a colour would
+     let it read as one at a glance down the rail. */
+  --open: #b45309;
+  --open-wash: #f7ecdf;
+  --review: #00728f;
+  --review-wash: #dceff4;
+  --resolved: #25793a;
+  --resolved-wash: #dfefe3;
+  --dismissed: #61616a;
+  --dismissed-wash: #e9e9ee;
+
+  --danger: #be2e22;
+  --danger-wash: #f9e5e3;
+
+  --shadow-file: 0 1px 2px rgb(22 22 28 / 0.05), 0 1px 1px rgb(22 22 28 / 0.04);
+  --shadow-lift: 0 4px 16px rgb(22 22 28 / 0.08), 0 1px 2px rgb(22 22 28 / 0.04);
+
+  /* --- The three voices --------------------------------------------------
+     Declared here as ordinary custom properties rather than only inside
+     `@theme`, because `@theme inline` deliberately does NOT emit `--font-*` on
+     :root — it substitutes the value into Tailwind's own utilities and nothing
+     else. Hand-written CSS asking for `var(--font-serif)` therefore resolves to
+     nothing and falls back to the UA sans, silently losing exactly the
+     distinction the three faces exist to draw.
+
+     `--font-console-*` are set on <body> by next/font. Substitution is lazy, so
+     these resolve against the element actually using them, which inherits them. */
+  --stack-sans: var(--font-console-sans), ui-sans-serif, system-ui, sans-serif;
+  --stack-mono: var(--font-console-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  --stack-serif: var(--font-console-serif), ui-serif, Georgia, serif;
+}
+
+.dark {
+  /* Not an inversion. The dark character is a warm-neutral archive at night:
+     surfaces step UP toward the case, and the washes are mixed from their own
+     hue rather than being flat greys, so a disposition still reads as a colour
+     and not as another shade of the chrome. */
+  --paper: #131318;
+  --file: #1c1c22;
+  --ink: #eeeef2;
+  --ink-soft: #a4a4b0;
+  --ink-faint: #77777f;
+  --rule: #2e2e37;
+  --rule-soft: #26262e;
+  --wash: #24242c;
+
+  --violet: #8163ff;
+  --violet-hover: #9179ff;
+  --violet-ink: #14102e;
+  --violet-wash: #251f45;
+  --ring: #a996ff;
+
+  --open: #e8a33f;
+  --open-wash: #35291a;
+  --review: #4cc0da;
+  --review-wash: #172d33;
+  --resolved: #58c274;
+  --resolved-wash: #172c1e;
+  --dismissed: #9a9aa5;
+  --dismissed-wash: #26262e;
+
+  --danger: #f08076;
+  --danger-wash: #33201e;
+
+  --shadow-file: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-lift: 0 6px 22px rgb(0 0 0 / 0.45);
+}
+
+@theme inline {
+  /* Three faces because three genuinely different kinds of text share this
+     screen, and telling them apart is a reading aid rather than decoration:
+       sans    the console speaking
+       mono    the machine reporting
+       serif   a person complaining  */
+  --font-sans: var(--stack-sans);
+  --font-mono: var(--stack-mono);
+  --font-serif: var(--stack-serif);
+
+  --color-paper: var(--paper);
+  --color-file: var(--file);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-rule: var(--rule);
+  --color-rule-soft: var(--rule-soft);
+  --color-wash: var(--wash);
+
+  --color-violet: var(--violet);
+  --color-violet-hover: var(--violet-hover);
+  --color-violet-ink: var(--violet-ink);
+  --color-violet-wash: var(--violet-wash);
+  --color-ring: var(--ring);
+
+  --color-open: var(--open);
+  --color-open-wash: var(--open-wash);
+  --color-review: var(--review);
+  --color-review-wash: var(--review-wash);
+  --color-resolved: var(--resolved);
+  --color-resolved-wash: var(--resolved-wash);
+  --color-dismissed: var(--dismissed);
+  --color-dismissed-wash: var(--dismissed-wash);
+
+  --color-danger: var(--danger);
+  --color-danger-wash: var(--danger-wash);
+
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 6px);
+
+  /* The two sizes below Tailwind's scale that a dense docket actually needs. */
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1rem;
+  --text-13: 0.8125rem;
+  --text-13--line-height: 1.25rem;
+  --text-15: 0.9375rem;
+  --text-15--line-height: 1.5rem;
+
+  --shadow-file: var(--shadow-file);
+  --shadow-lift: var(--shadow-lift);
+}
+
+@layer base {
+  * {
+    border-color: var(--rule);
+  }
+
+  html {
+    color-scheme: light;
+  }
+
+  .dark html,
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--stack-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Figures line up in columns. A docket is read down, not across, and counts
+     that jitter by a pixel per digit are counts you have to re-read. */
+  body {
+    font-variant-numeric: tabular-nums;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--violet) 22%, transparent);
+  }
+}
+
+@layer components {
+  /* The eyebrow above every block of evidence. Small, wide-tracked, and mono,
+     because it labels machine output and should look like a field name. */
+  .field-label {
+    font-family: var(--stack-mono);
+    font-size: 0.625rem;
+    line-height: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  /* The case ident. Tight, dark, unmistakably an identifier. */
+  .ident {
+    font-family: var(--stack-mono);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    font-variant-ligatures: none;
+  }
+
+  /* The reporter's own words. The one serif on the screen and the reason the
+     three-face system exists — testimony must not look like chrome. */
+  .testimony {
+    font-family: var(--stack-serif);
+    font-size: 1.1875rem;
+    line-height: 1.65;
+    letter-spacing: -0.003em;
+    color: var(--ink);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  /* Machine text that may be very long and must never widen the layout. */
+  .machine {
+    font-family: var(--stack-mono);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
