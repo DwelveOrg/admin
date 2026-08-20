@@ -32,8 +32,8 @@ export default async function LoginPage({
           <p className="field-label mb-2">Dwelve</p>
           <h1 className="text-2xl font-semibold tracking-[-0.02em] text-ink">Operations</h1>
           <p className="mt-2 text-13 leading-relaxed text-ink-soft">
-            Problem report triage. Platform admins only — a school admin account
-            will not open this.
+            Platform health, account controls, school operations, and report triage.
+            Platform admins only.
           </p>
         </div>
 

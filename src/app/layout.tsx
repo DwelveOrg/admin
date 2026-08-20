@@ -36,7 +36,7 @@ const serif = Newsreader({
 
 export const metadata: Metadata = {
   title: "Dwelve Operations",
-  description: "Problem report triage for Dwelve platform admins.",
+  description: "Platform administration and problem report triage for Dwelve operators.",
   // Belt and braces with the X-Robots-Tag header in next.config.ts.
   robots: { index: false, follow: false },
 };

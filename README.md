@@ -1,8 +1,8 @@
 # Dwelve Operations
 
-The operator console. Problem reports users file from inside Dwelve arrive here,
-and a platform admin reads them, decides what happens, and — on closing one —
-tells the person who filed it.
+The operator console. Platform admins monitor adoption and activity, manage
+student account access, deactivate schools, and triage problem reports users
+file from inside Dwelve. Closing a report tells the person who filed it.
 
 Separate application, separate repository, separate domain, separate session.
 Not a route inside the product frontend, on purpose: a report carries another
@@ -22,6 +22,7 @@ the backend:
 cd ../backend_nestJS
 npm run admin:grant -- you@dwelve.com
 npm run admin:grant -- --list          # confirm
+npm run admin:password -- you@dwelve.com # generate/reset the login password
 npm run admin:grant -- old@dwelve.com --revoke
 ```
 
@@ -73,6 +74,9 @@ made server-side, from Server Components and server actions.
 ## The shape of it
 
 ```
+/                       platform growth, activity, membership and report charts
+/students               cross-school student search and global access control
+/schools                cross-school search and coordinated school deactivation
 /login                  the only door
 /reports                the docket — filters, counts, case list
 /reports/<uuid>         one case, with the docket beside it

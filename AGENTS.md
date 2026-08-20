@@ -9,8 +9,9 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 <!-- END:nextjs-agent-rules -->
 # Dwelve Operations
 
-The operator console for Dwelve platform admins. Problem reports users file from
-inside the product are read, dispositioned, and answered here.
+The operator console for Dwelve platform admins. It combines cross-platform
+health and lifecycle controls with the problem reports users file from inside
+the product.
 
 Read `README.md` first. It covers who can open this app, how the role is granted,
 and what the app talks to.

@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
+import { LogOut } from "lucide-react";
 
+import { ConsoleNav } from "@/components/console/ConsoleNav";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { getOperator } from "@/lib/auth/session";
 import { logoutAction } from "@/lib/auth/actions";
@@ -7,12 +9,8 @@ import { logoutAction } from "@/lib/auth/actions";
 export const dynamic = "force-dynamic";
 
 /**
- * The operator shell: a single bar, and everything else is the work.
- *
- * There is no sidebar because there is nowhere else to go. A navigation rail
- * with one destination is furniture pretending to be structure — the docket's
- * own status rail is the only navigation this app has, and it belongs to the
- * queue rather than to the chrome.
+ * The operator shell stays horizontal so the dense report docket and the wider
+ * platform tables both keep the full viewport width.
  */
 export default async function ConsoleLayout({ children }: { children: React.ReactNode }) {
   const operator = await getOperator();
@@ -24,11 +22,13 @@ export default async function ConsoleLayout({ children }: { children: React.Reac
 
   return (
     <div className="flex h-dvh min-h-0 flex-col bg-paper text-ink">
-      <header className="flex h-14 shrink-0 items-center gap-4 border-b border-rule bg-file px-4 md:px-6">
+      <header className="flex h-14 shrink-0 items-center gap-2 border-b border-rule bg-file px-3 md:gap-5 md:px-6">
         <div className="flex min-w-0 items-baseline gap-2.5">
           <span className="text-sm font-semibold tracking-[-0.01em] text-ink">Dwelve</span>
-          <span className="field-label">Operations</span>
+          <span className="field-label hidden sm:inline">Operations</span>
         </div>
+
+        <ConsoleNav />
 
         <div className="ml-auto flex items-center gap-1.5">
           <span
@@ -41,9 +41,11 @@ export default async function ConsoleLayout({ children }: { children: React.Reac
           <form action={logoutAction}>
             <button
               type="submit"
-              className="cursor-pointer rounded-md px-2.5 py-1.5 text-13 font-medium text-ink-soft transition-colors hover:bg-wash hover:text-ink"
+              aria-label="Sign out"
+              className="inline-flex size-8 cursor-pointer items-center justify-center rounded-md text-ink-soft transition-colors hover:bg-wash hover:text-ink lg:w-auto lg:px-2.5"
             >
-              Sign out
+              <LogOut className="size-3.5 lg:hidden" aria-hidden />
+              <span className="hidden text-13 font-medium lg:inline">Sign out</span>
             </button>
           </form>
         </div>
