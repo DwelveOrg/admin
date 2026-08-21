@@ -47,7 +47,7 @@ export function LoginForm() {
       {state.error ? (
         <p
           role="alert"
-          className="rounded-md border border-rule bg-danger-wash px-3 py-2.5 text-13 text-danger"
+          className="rounded-md border border-danger/40 bg-danger-wash px-3 py-2 text-13 leading-relaxed text-danger"
         >
           {state.error}
         </p>

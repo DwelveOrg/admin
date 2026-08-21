@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Inbox } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import type { ReportList } from "@/lib/reports/schemas";
@@ -10,7 +10,8 @@ import { SearchField } from "./SearchField";
 import { StatusRail } from "./StatusRail";
 
 /**
- * The docket sheet: filters at the top, cases below, a pager at the foot.
+ * The board itself: the columns and their counts at the top, the tiles below,
+ * a pager at the foot.
  *
  * It is rendered by both routes rather than lifted into a layout, because the
  * filters live in the query string and Next does not give a layout the search
@@ -38,11 +39,11 @@ export function Docket({
     <aside
       aria-label="Report docket"
       className={cn(
-        "flex min-h-0 w-full shrink-0 flex-col border-rule bg-file lg:w-[336px] lg:border-r",
+        "flex min-h-0 w-full shrink-0 flex-col border-rule bg-tile lg:w-[344px] lg:border-r",
         className,
       )}
     >
-      <div className="space-y-3 border-b border-rule p-3">
+      <div className="space-y-2.5 border-b border-rule bg-board p-3">
         <SearchField params={params} />
         <StatusRail params={params} counts={meta.counts} total={totalOf(meta.counts)} />
         <KindFilter params={params} />
@@ -76,11 +77,21 @@ function totalOf(counts: Partial<Record<string, number>>) {
   return Object.values(counts).reduce<number>((sum, value) => sum + (value ?? 0), 0);
 }
 
+/**
+ * An empty column teaches the board rather than announcing a void: filtered to
+ * nothing offers the way back, and genuinely empty says where tiles come from.
+ */
 function EmptyDocket({ filtered, params }: { filtered: boolean; params: DocketParams }) {
   return (
-    <div className="px-4 py-10 text-center">
-      <p className="text-13 text-ink-soft">
-        {filtered ? "No reports match these filters." : "No reports yet."}
+    <div className="px-5 py-12 text-center">
+      <span
+        aria-hidden
+        className="mx-auto flex size-9 items-center justify-center rounded-md border border-rule bg-board text-ink-faint"
+      >
+        <Inbox className="size-4" />
+      </span>
+      <p className="mt-3 text-13 font-semibold text-ink">
+        {filtered ? "Nothing matches these filters" : "The board is clear"}
       </p>
       {filtered ? (
         <Link
@@ -90,14 +101,13 @@ function EmptyDocket({ filtered, params }: { filtered: boolean; params: DocketPa
             search: undefined,
             reportId: null,
           })}
-          className="mt-2 inline-block text-13 font-medium text-violet hover:underline"
+          className="mt-1.5 inline-block text-13 font-medium text-violet hover:underline"
         >
           Clear filters
         </Link>
       ) : (
-        <p className="mt-1.5 text-2xs leading-relaxed text-ink-faint">
-          Reports arrive here the moment someone files one from inside the
-          product.
+        <p className="mx-auto mt-1.5 max-w-[30ch] text-note leading-relaxed text-ink-faint">
+          A tile appears the moment someone files a report from inside the product.
         </p>
       )}
     </div>
@@ -109,7 +119,7 @@ function Pager({ params, meta }: { params: DocketParams; meta: ReportList["meta"
   const next = Math.min(meta.page + 1, meta.totalPages);
 
   return (
-    <div className="flex shrink-0 items-center justify-between gap-2 border-t border-rule px-3 py-2">
+    <div className="flex shrink-0 items-center justify-between gap-2 border-t border-rule bg-board px-3 py-2">
       <PagerLink
         href={docketHref(params, { page: previous, reportId: null })}
         disabled={meta.page <= 1}
@@ -118,7 +128,7 @@ function Pager({ params, meta }: { params: DocketParams; meta: ReportList["meta"
         <ChevronLeft className="size-3.5" aria-hidden />
       </PagerLink>
 
-      <span className="text-2xs tabular-nums text-ink-faint">
+      <span className="text-note tabular-nums text-ink-faint">
         {meta.page} of {meta.totalPages} · {meta.total} total
       </span>
 
@@ -151,7 +161,7 @@ function PagerLink({
     return (
       <span
         aria-disabled="true"
-        className="inline-flex size-7 items-center justify-center rounded-md text-ink-faint opacity-40"
+        className="inline-flex size-7 items-center justify-center rounded-sm text-ink-faint opacity-40"
       >
         {children}
       </span>
@@ -162,7 +172,7 @@ function PagerLink({
     <Link
       href={href}
       aria-label={label}
-      className="inline-flex size-7 items-center justify-center rounded-md text-ink-soft transition-colors hover:bg-wash hover:text-ink"
+      className="inline-flex size-7 items-center justify-center rounded-sm border border-rule bg-tile text-ink-soft transition-colors duration-150 hover:bg-wash hover:text-ink"
     >
       {children}
     </Link>

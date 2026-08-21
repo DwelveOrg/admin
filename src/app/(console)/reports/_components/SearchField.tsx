@@ -69,8 +69,9 @@ export function SearchField({ params }: { params: DocketParams }) {
         placeholder="Search reports"
         aria-label="Search reports by message, page, or reporter"
         className={cn(
-          "h-8 w-full rounded-md border border-rule bg-file pl-8 pr-8 text-13 text-ink",
-          "placeholder:text-ink-faint focus:border-violet focus:outline-none",
+          "h-9 w-full rounded-md border border-rule bg-tile pl-8 pr-8 text-13 text-ink",
+          "placeholder:text-ink-faint transition-[border-color,box-shadow] duration-150",
+          "hover:border-ink-faint focus:border-violet focus:outline-none focus:ring-2 focus:ring-ring/35",
           // Safari draws its own clear affordance, which would sit under ours.
           "[&::-webkit-search-cancel-button]:appearance-none",
         )}
@@ -83,9 +84,9 @@ export function SearchField({ params }: { params: DocketParams }) {
             setDraft("");
             inputRef.current?.focus();
           }}
-          className="absolute right-1.5 top-1/2 inline-flex size-5 -translate-y-1/2 cursor-pointer items-center justify-center rounded text-ink-faint transition-colors hover:bg-wash hover:text-ink"
+          className="absolute right-1.5 top-1/2 inline-flex size-6 -translate-y-1/2 cursor-pointer items-center justify-center rounded-sm text-ink-faint transition-colors duration-150 hover:bg-wash hover:text-ink"
         >
-          <X className="size-3" aria-hidden />
+          <X className="size-3.5" aria-hidden />
         </button>
       ) : null}
     </div>

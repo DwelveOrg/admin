@@ -17,10 +17,9 @@ export function Evidence({ report }: { report: Report }) {
   const screenshot = resolveMediaUrl(report.screenshotUrl);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {screenshot ? (
-        <figure className="space-y-2">
-          <figcaption className="field-label">Screenshot</figcaption>
+        <figure>
           {/*
             A plain <a> to the full-size image, and a plain <img> inside it.
             next/image would need the intrinsic dimensions of an arbitrary user
@@ -31,7 +30,7 @@ export function Evidence({ report }: { report: Report }) {
             href={screenshot}
             target="_blank"
             rel="noreferrer"
-            className="block overflow-hidden rounded-lg border border-rule bg-wash transition-colors hover:border-violet"
+            className="block overflow-hidden rounded-md border border-rule bg-wash shadow-lift-1 transition-colors duration-150 hover:border-violet"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -41,11 +40,13 @@ export function Evidence({ report }: { report: Report }) {
               loading="lazy"
             />
           </a>
-          <p className="text-2xs text-ink-faint">Opens full size in a new tab.</p>
+          <figcaption className="mt-1.5 text-note text-ink-faint">
+            Screenshot as filed. Opens full size in a new tab.
+          </figcaption>
         </figure>
       ) : null}
 
-      <dl className="divide-y divide-rule-soft rounded-lg border border-rule">
+      <dl className="divide-y divide-rule-soft overflow-hidden rounded-md border border-rule bg-tile">
         <Row label="Claimant">
           {report.reporter ? (
             <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
@@ -53,7 +54,7 @@ export function Evidence({ report }: { report: Report }) {
               <span className="machine">{report.reporter.email}</span>
               <CopyButton value={report.reporter.email} label="reporter email" />
               {report.schoolRole ? (
-                <span className="rounded bg-wash px-1.5 py-0.5 font-sans text-2xs font-medium uppercase tracking-wide text-ink-soft">
+                <span className="board-label rounded-sm bg-wash px-1.5 py-0.5">
                   {report.schoolRole}
                 </span>
               ) : null}
@@ -71,9 +72,7 @@ export function Evidence({ report }: { report: Report }) {
           ) : (
             // Not a gap in the data: /reports requires no school context, on
             // purpose, so that "I cannot pick a school" is reportable.
-            <span className="font-sans text-13 text-ink-faint">
-              None selected when filed
-            </span>
+            <span className="font-sans text-13 text-ink-faint">None selected when filed</span>
           )}
         </Row>
 
@@ -112,8 +111,8 @@ export function Evidence({ report }: { report: Report }) {
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="grid gap-1 px-3 py-2.5 sm:grid-cols-[104px_minmax(0,1fr)] sm:gap-3">
-      <dt className="field-label sm:pt-0.5">{label}</dt>
+    <div className="grid gap-1 px-3 py-2.5 sm:grid-cols-[110px_minmax(0,1fr)] sm:gap-3">
+      <dt className="board-label sm:pt-0.5">{label}</dt>
       <dd className="min-w-0">{children}</dd>
     </div>
   );

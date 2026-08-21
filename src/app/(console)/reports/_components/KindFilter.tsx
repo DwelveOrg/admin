@@ -8,9 +8,9 @@ import { docketHref, type DocketParams } from "../_lib/query";
  * Bug / Feedback / Question.
  *
  * Secondary to disposition and shaped that way: a row of small chips rather than
- * a second full rail, because "what kind of thing is this" is a narrowing an
- * operator reaches for occasionally, while "what still needs doing" is the
- * question they open the console with.
+ * a second set of columns, because "what kind of thing is this" is a narrowing
+ * an operator reaches for occasionally, while "what still needs doing" is the
+ * question they open the board with.
  */
 export function KindFilter({ params }: { params: DocketParams }) {
   return (
@@ -26,10 +26,10 @@ export function KindFilter({ params }: { params: DocketParams }) {
             href={docketHref(params, { kind: active ? undefined : kind, reportId: null })}
             aria-pressed={active}
             className={cn(
-              "rounded-full border px-2.5 py-1 text-2xs font-medium transition-colors",
+              "rounded-md border px-2 py-1 text-note font-medium transition-colors duration-150",
               active
                 ? "border-violet bg-violet-wash text-violet"
-                : "border-rule text-ink-faint hover:bg-wash hover:text-ink",
+                : "border-rule bg-tile text-ink-soft hover:bg-wash hover:text-ink",
             )}
           >
             {KIND_LABEL[kind]}
