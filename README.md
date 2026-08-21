@@ -118,4 +118,7 @@ Same company; green has to keep meaning the same thing in both places.
 
 Vercel project with this directory as the root. Set `DWELVE_API_BASE_URL` and a
 fresh `SESSION_SECRET` in Production. The app sends `X-Robots-Tag: noindex,
-nofollow` and `X-Frame-Options: DENY` on every route.
+nofollow` and `X-Frame-Options: DENY` on every route. The proxy also applies a
+per-request nonce-based Content Security Policy and marks every response
+`private, no-store`; operator case data must never enter a shared browser/CDN
+cache. Backend calls carry request IDs and time out after 15 seconds by default.

@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { headers } from "next/headers";
 import { IBM_Plex_Mono, Instrument_Sans, Newsreader } from "next/font/google";
 
 import "./globals.css";
@@ -48,7 +49,9 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
+
   return (
     // The font variables go on <html>, not <body>.
     //
@@ -71,6 +74,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           library. `dwelve-ops-theme` is deliberately not the product's key.
         */}
         <script
+          nonce={nonce}
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var s=localStorage.getItem("dwelve-ops-theme");var d=s?s==="dark":window.matchMedia("(prefers-color-scheme: dark)").matches;document.documentElement.classList.toggle("dark",d);}catch(e){}})();`,
           }}

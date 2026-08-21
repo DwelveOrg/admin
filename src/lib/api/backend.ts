@@ -130,6 +130,23 @@ function isJsonBody(body: unknown) {
   );
 }
 
+function createTimeoutSignal(signal: AbortSignal | null | undefined, timeoutMs: number) {
+  if (timeoutMs <= 0) return signal ?? undefined;
+
+  const timeoutSignal = AbortSignal.timeout(timeoutMs);
+
+  if (!signal) return timeoutSignal;
+
+  const controller = new AbortController();
+  const abort = () => controller.abort();
+  const options: AddEventListenerOptions = { once: true, signal: controller.signal };
+
+  signal.addEventListener("abort", abort, options);
+  timeoutSignal.addEventListener("abort", abort, options);
+
+  return controller.signal;
+}
+
 export async function backendJson<TSchema extends z.ZodTypeAny>(
   path: string,
   init: BackendRequestInit<TSchema>,
@@ -154,6 +171,10 @@ export async function backendJson(
     requestHeaders.set("Accept", "application/json");
   }
 
+  if (!requestHeaders.has("X-Request-Id")) {
+    requestHeaders.set("X-Request-Id", crypto.randomUUID());
+  }
+
   const serializeJson = isJsonBody(body);
 
   // No explicit Content-Type for a FormData body: fetch has to set it so the
@@ -171,7 +192,7 @@ export async function backendJson(
         : serializeJson
           ? JSON.stringify(body)
           : (body as BodyInit),
-    signal: AbortSignal.timeout(timeoutMs ?? DEFAULT_TIMEOUT_MS),
+    signal: createTimeoutSignal(rest.signal, timeoutMs ?? DEFAULT_TIMEOUT_MS),
     cache: "no-store",
   });
 
