@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { TriangleAlert } from "lucide-react";
 
 import { Button, buttonClasses } from "@/components/ui/Button";
 
@@ -25,9 +26,17 @@ export default function ConsoleError({
 
   return (
     <main className="flex min-h-dvh items-center justify-center px-4 text-center">
-      <div className="max-w-[400px]">
-        <p className="field-label mb-2">Error</p>
-        <h1 className="text-lg font-semibold text-ink">The console could not load that</h1>
+      <div className="max-w-[44ch]">
+        <span
+          aria-hidden
+          className="mx-auto flex size-10 items-center justify-center rounded-md border border-rule bg-tile text-danger shadow-lift-1"
+        >
+          <TriangleAlert className="size-4" />
+        </span>
+
+        <h1 className="mt-3 text-lg font-bold tracking-[-0.015em] text-ink">
+          The board could not load that
+        </h1>
         <p className="mt-1.5 text-13 leading-relaxed text-ink-soft">
           Usually the Dwelve API is unreachable, or this account no longer holds
           platform admin. Retrying answers the first; signing out and back in
@@ -35,7 +44,7 @@ export default function ConsoleError({
         </p>
 
         {error.digest ? (
-          <p className="machine mt-3 text-2xs">digest {error.digest}</p>
+          <p className="machine mt-3 text-note">digest {error.digest}</p>
         ) : null}
 
         <div className="mt-5 flex items-center justify-center gap-2">

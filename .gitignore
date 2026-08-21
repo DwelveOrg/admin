@@ -32,3 +32,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Impeccable review captures are build artifacts; the design system beside them is not.
+.impeccable/review/
+.impeccable/mocks/
+.impeccable/questions/

@@ -5,7 +5,7 @@ import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 
 import { Button } from "@/components/ui/Button";
-import { DISPOSITION_TONE } from "@/components/ui/Disposition";
+import { DISPOSITION_TONE, DispositionMark } from "@/components/ui/Disposition";
 import { Textarea } from "@/components/ui/Field";
 import { saveDecisionAction, type DecisionState } from "@/lib/reports/actions";
 import {
@@ -19,7 +19,7 @@ import {
 import { cn } from "@/lib/utils";
 
 /**
- * Where a case is decided.
+ * Where a case is decided — the act of moving the tile to another column.
  *
  * The disposition and the note are one submission, not two, because they are one
  * decision: "resolved, and here is what we did" is the whole answer, and letting
@@ -43,6 +43,7 @@ export function DecisionForm({ report }: { report: Report }) {
   const closing = TERMINAL_STATUSES.includes(status);
   const alreadyClosed = TERMINAL_STATUSES.includes(report.status);
   const dirty = status !== report.status || note !== (report.resolutionNote ?? "");
+  const remaining = RESOLUTION_NOTE_MAX - note.length;
 
   return (
     <form action={formAction} className="space-y-4">
@@ -50,7 +51,7 @@ export function DecisionForm({ report }: { report: Report }) {
       <input type="hidden" name="status" value={status} />
 
       <fieldset>
-        <legend className="field-label mb-2">Disposition</legend>
+        <legend className="board-label mb-2">Disposition</legend>
         <div className="flex flex-wrap gap-1.5">
           {REPORT_STATUSES.map((option) => {
             const selected = status === option;
@@ -62,16 +63,14 @@ export function DecisionForm({ report }: { report: Report }) {
                 aria-pressed={selected}
                 onClick={() => setStatus(option)}
                 className={cn(
-                  "inline-flex cursor-pointer items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-13 font-medium transition-colors",
+                  "inline-flex cursor-pointer items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-13 font-medium",
+                  "transition-colors duration-150 active:translate-y-px",
                   selected
-                    ? "border-transparent " + DISPOSITION_TONE[option].chip
-                    : "border-rule text-ink-soft hover:bg-wash hover:text-ink",
+                    ? cn("border-transparent", DISPOSITION_TONE[option].chip)
+                    : "border-rule bg-tile text-ink-soft hover:bg-wash hover:text-ink",
                 )}
               >
-                <span
-                  className={cn("size-1.5 rounded-full", DISPOSITION_TONE[option].dot)}
-                  aria-hidden
-                />
+                <DispositionMark status={option} />
                 {STATUS_LABEL[option]}
               </button>
             );
@@ -80,9 +79,19 @@ export function DecisionForm({ report }: { report: Report }) {
       </fieldset>
 
       <div className="space-y-1.5">
-        <label htmlFor="resolutionNote" className="field-label block">
-          What we did
-        </label>
+        <div className="flex items-baseline justify-between gap-2">
+          <label htmlFor="resolutionNote" className="board-label block">
+            What we did
+          </label>
+          <span
+            className={cn(
+              "text-note tabular-nums",
+              remaining < 40 ? "text-danger" : "text-ink-faint",
+            )}
+          >
+            {remaining} left
+          </span>
+        </div>
         <Textarea
           id="resolutionNote"
           name="resolutionNote"
@@ -94,8 +103,8 @@ export function DecisionForm({ report }: { report: Report }) {
         />
 
         {closing ? (
-          <p className="flex items-start gap-1.5 text-2xs leading-relaxed text-ink-soft">
-            <Info className="mt-px size-3 shrink-0 text-violet" aria-hidden />
+          <p className="flex items-start gap-1.5 text-note leading-relaxed text-ink-soft">
+            <Info className="mt-0.5 size-3.5 shrink-0 text-violet" aria-hidden />
             <span>
               {alreadyClosed ? (
                 <>
@@ -117,7 +126,7 @@ export function DecisionForm({ report }: { report: Report }) {
             </span>
           </p>
         ) : (
-          <p className="text-2xs leading-relaxed text-ink-faint">
+          <p className="text-note leading-relaxed text-ink-faint">
             Nobody is notified until the case is resolved or dismissed.
           </p>
         )}
@@ -126,7 +135,7 @@ export function DecisionForm({ report }: { report: Report }) {
       {state.error ? (
         <p
           role="alert"
-          className="rounded-md border border-rule bg-danger-wash px-3 py-2 text-13 text-danger"
+          className="rounded-md border border-danger/40 bg-danger-wash px-3 py-2 text-13 text-danger"
         >
           {state.error}
         </p>
@@ -135,7 +144,8 @@ export function DecisionForm({ report }: { report: Report }) {
       <div className="flex items-center gap-3">
         <SaveButton dirty={dirty} />
         {state.savedAt && !dirty ? (
-          <span role="status" className="text-13 text-resolved">
+          <span role="status" className="flex items-center gap-1.5 text-13 text-resolved">
+            <DispositionMark status="RESOLVED" />
             Saved
           </span>
         ) : null}
