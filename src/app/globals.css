@@ -3,66 +3,99 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ============================================================================
-   Dwelve operator console — "the docket"
+   Dwelve operator console — "the handover board"
 
-   This is not a dashboard and it is not the product. It is a records office:
-   a queue of cases, each with an ident, a filing time, a claimant, and a
-   disposition. Every decision below follows from that.
+   The model is the enamel board on a hospital ward wall at shift change: ruled
+   into columns, one magnetic tile per case, acuity colour doing the triage
+   before a single word is read. Someone walks in, looks at it from across the
+   room, and knows how much is waiting and who needs a person now. That is this
+   console's first question too, so the board answers it the same way.
 
-   WHY LIGHT-FIRST, when every operator console reflexively goes near-black:
-   the evidence on this screen is screenshots of a light product (the app canvas
-   is #FAFAFB). A dark chrome makes every screenshot glare like a lightbox; a
-   calm paper ground lets the evidence read. Dark is supported for night triage
-   and is a genuine second character, not an inversion.
+   WHY LIGHT-FIRST: the evidence on this screen is screenshots of a light
+   product. A dark chrome makes every one of them glare like a lightbox. The
+   board is read in a bright room during a working day. Dark is a genuine second
+   character for evening triage, not an inversion — at night the enamel goes to
+   slate and the acuity colours brighten, the way a real board does under
+   different light.
 
-   WHY THE PALETTE IS SHARED WITH THE PRODUCT: violet and the four semantics are
-   lifted unchanged from the product's token file. Same company, and green has to
-   keep meaning the same thing in both places. The console distinguishes itself
-   through surface and typography, not by inventing a second brand.
+   WHY THE STEEL RAIL: the board has a frame. The dark band across the top is
+   that frame, and it is doing work — it is the only place the shift is named
+   (who is on, what range is showing), and it keeps the board itself free of
+   chrome so the tiles own the field.
+
+   THE COLOUR RULE: acuity colour is the only colour. Violet is the operator's
+   pen — actions and current selection, nothing else. The four dispositions are
+   the product's own semantics and are never decoration. Every other pixel is
+   enamel, graphite, and rule. If a colour appears on this screen, it means
+   something, and it appears in a legend somewhere.
+
+   NO STATE IS CARRIED BY COLOUR ALONE. Each disposition owns a drawn mark as
+   well as a hue, so the four survive greyscale, projection and colour-blindness.
+   See `src/components/ui/Disposition.tsx`.
    ========================================================================= */
 
 :root {
-  --radius: 0.5rem;
+  /* A magnetic tile's corner. Small and physical — these are objects on a
+     board, not floating cards, and a 12px radius would make them stickers. */
+  --radius: 3px;
 
-  /* --- Surfaces: cool paper, one step *below* the product ----------------
-     The product's canvas is #FAFAFB. The console's is #F2F2F6 — darker, so the
-     console reads as the room the product is examined in rather than as another
-     screen of it. --file is pure white: the case sits on the desk. */
-  --paper: #f2f2f6;
-  --file: #ffffff;
-  --ink: #16161c;
-  --ink-soft: #5c5c66;
-  --ink-faint: #8a8a94;
-  --rule: #dcdce3;
-  --rule-soft: #e8e8ee;
-  --wash: #ebebf1;
+  /* --- Surfaces: wall, enamel, tile -------------------------------------
+     Three steps, and the order matters. --room is the wall the board hangs on.
+     --board is the vitreous enamel field, cool and very slightly green, which
+     is what stops it reading as paper. --tile is a magnetic tile resting on
+     that field: the case, the plate, the row you can pick up. */
+  --room: #e4e8e7;
+  --board: #f4f6f5;
+  --tile: #ffffff;
 
-  /* --- Action: the product's violet, unchanged --------------------------- */
-  --violet: #5f40d5;
-  --violet-hover: #4f32be;
+  /* The steel frame. A real band, not a tinted header. */
+  --rail: #1d2321;
+  --rail-ink: #ffffff;
+  --rail-soft: #a9b3b1;
+  --rail-rule: #333b39;
+
+  /* --- Marks: graphite, and the grease pencil ---------------------------- */
+  --ink: #1a1d1f;
+  --ink-soft: #4c5457;
+  --ink-faint: #646c6f;
+
+  --rule: #c6ccca;
+  --rule-soft: #dde2e0;
+  --wash: #e7eae9;
+
+  /* --- The operator's pen ------------------------------------------------
+     Violet is the product's own action colour and stays that, unchanged in
+     meaning: primary actions, the current selection, and nothing decorative. */
+  --violet: #4c25e5;
+  --violet-hover: #3d18ce;
   --violet-ink: #ffffff;
-  --violet-wash: #edeeff;
-  --ring: #7b5ff0;
+  --violet-wash: #eae6fe;
+  --ring: #6e4bff;
 
-  /* --- Dispositions -----------------------------------------------------
-     Amber for work not started, cyan for work in hand, green for a fix, and
-     grey for a dismissal. Dismissed is the only colourless one on purpose: a
-     dismissal is a conclusion, not an achievement, and giving it a colour would
-     let it read as one at a glance down the rail. */
-  --open: #b45309;
-  --open-wash: #f7ecdf;
-  --review: #00728f;
-  --review-wash: #dceff4;
-  --resolved: #25793a;
-  --resolved-wash: #dfefe3;
-  --dismissed: #61616a;
-  --dismissed-wash: #e9e9ee;
+  /* --- Acuity ------------------------------------------------------------
+     The product's four dispositions, re-pitched as board tile colours. Amber
+     for work not started, teal for work in hand, green for a fix, slate for a
+     dismissal. Dismissed stays colourless on purpose: a dismissal is a
+     conclusion, not an achievement, and a colour would let it read as one down
+     the column. Every value clears 4.5:1 on both the tile and the enamel. */
+  --open: #b04713;
+  --open-wash: #f7e9df;
+  --review: #0b6d79;
+  --review-wash: #ddeff2;
+  --resolved: #2c7a45;
+  --resolved-wash: #e5f2e9;
+  --dismissed: #5e6a6b;
+  --dismissed-wash: #e7eae9;
 
-  --danger: #be2e22;
-  --danger-wash: #f9e5e3;
+  --danger: #b3271e;
+  --danger-wash: #f9e4e2;
 
-  --shadow-file: 0 1px 2px rgb(22 22 28 / 0.05), 0 1px 1px rgb(22 22 28 / 0.04);
-  --shadow-lift: 0 4px 16px rgb(22 22 28 / 0.08), 0 1px 2px rgb(22 22 28 / 0.04);
+  /* --- Lift ---------------------------------------------------------------
+     A tile sits ON the board and casts a real shadow — an offset and a soft
+     blur, because that is what a physical object does. --lift-2 is a tile
+     picked up: a popover, a menu, the readout that follows a crosshair. */
+  --lift-1: 0 1px 1px rgb(26 29 31 / 0.06), 0 2px 5px -2px rgb(26 29 31 / 0.10);
+  --lift-2: 0 2px 4px rgb(26 29 31 / 0.07), 0 10px 24px -8px rgb(26 29 31 / 0.20);
 
   /* --- The three voices --------------------------------------------------
      Declared here as ordinary custom properties rather than only inside
@@ -72,61 +105,80 @@
      nothing and falls back to the UA sans, silently losing exactly the
      distinction the three faces exist to draw.
 
-     `--font-console-*` are set on <body> by next/font. Substitution is lazy, so
+     `--font-board-*` are set on <html> by next/font. Substitution is lazy, so
      these resolve against the element actually using them, which inherits them. */
-  --stack-sans: var(--font-console-sans), ui-sans-serif, system-ui, sans-serif;
-  --stack-mono: var(--font-console-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
-  --stack-serif: var(--font-console-serif), ui-serif, Georgia, serif;
+  --stack-sans: var(--font-board-sans), ui-sans-serif, system-ui, sans-serif;
+  --stack-mono: var(--font-board-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  --stack-serif: var(--font-board-serif), ui-serif, Georgia, serif;
 }
 
 .dark {
-  /* Not an inversion. The dark character is a warm-neutral archive at night:
-     surfaces step UP toward the case, and the washes are mixed from their own
-     hue rather than being flat greys, so a disposition still reads as a colour
-     and not as another shade of the chrome. */
-  --paper: #131318;
-  --file: #1c1c22;
-  --ink: #eeeef2;
-  --ink-soft: #a4a4b0;
-  --ink-faint: #77777f;
-  --rule: #2e2e37;
-  --rule-soft: #26262e;
-  --wash: #24242c;
+  /* The ward at night. Not an inversion: the enamel goes to slate, surfaces
+     still step UP toward the tile, and every acuity colour brightens rather
+     than desaturating — a disposition must still read as a colour and not as
+     another shade of the frame. */
+  --room: #0e1211;
+  --board: #171c1b;
+  --tile: #1e2423;
 
-  --violet: #8163ff;
-  --violet-hover: #9179ff;
-  --violet-ink: #14102e;
-  --violet-wash: #251f45;
-  --ring: #a996ff;
+  --rail: #0b0e0e;
+  --rail-ink: #f2f5f4;
+  --rail-soft: #8a9593;
+  --rail-rule: #262d2c;
 
-  --open: #e8a33f;
-  --open-wash: #35291a;
-  --review: #4cc0da;
-  --review-wash: #172d33;
-  --resolved: #58c274;
-  --resolved-wash: #172c1e;
-  --dismissed: #9a9aa5;
-  --dismissed-wash: #26262e;
+  --ink: #e8edeb;
+  --ink-soft: #a3aeab;
+  --ink-faint: #8a9593;
 
-  --danger: #f08076;
-  --danger-wash: #33201e;
+  --rule: #333b39;
+  --rule-soft: #282f2e;
+  --wash: #252c2b;
 
-  --shadow-file: 0 1px 2px rgb(0 0 0 / 0.4);
-  --shadow-lift: 0 6px 22px rgb(0 0 0 / 0.45);
+  --violet: #9b84ff;
+  --violet-hover: #b0a0ff;
+  --violet-ink: #140f33;
+  --violet-wash: #241d46;
+  --ring: #b0a0ff;
+
+  --open: #f0904a;
+  --open-wash: #33220f;
+  --review: #4fbecd;
+  --review-wash: #0e2c31;
+  --resolved: #63c282;
+  --resolved-wash: #132a1c;
+  --dismissed: #9aa5a3;
+  --dismissed-wash: #252c2b;
+
+  --danger: #f2857b;
+  --danger-wash: #331c19;
+
+  --lift-1: 0 1px 1px rgb(0 0 0 / 0.5), 0 2px 6px -2px rgb(0 0 0 / 0.45);
+  --lift-2: 0 2px 4px rgb(0 0 0 / 0.5), 0 12px 28px -8px rgb(0 0 0 / 0.6);
 }
 
 @theme inline {
   /* Three faces because three genuinely different kinds of text share this
      screen, and telling them apart is a reading aid rather than decoration:
-       sans    the console speaking
+       sans    the board's own lettering — the console speaking
        mono    the machine reporting
-       serif   a person complaining  */
+       serif   the note clipped to the board — a person's own words
+
+     The sans is one family carrying two widths. Archivo's `wdth` axis gives the
+     condensed setting a real board uses for column heads and rules, without a
+     second typeface to keep in sync. */
   --font-sans: var(--stack-sans);
   --font-mono: var(--stack-mono);
   --font-serif: var(--stack-serif);
 
-  --color-paper: var(--paper);
-  --color-file: var(--file);
+  --color-room: var(--room);
+  --color-board: var(--board);
+  --color-tile: var(--tile);
+
+  --color-rail: var(--rail);
+  --color-rail-ink: var(--rail-ink);
+  --color-rail-soft: var(--rail-soft);
+  --color-rail-rule: var(--rail-rule);
+
   --color-ink: var(--ink);
   --color-ink-soft: var(--ink-soft);
   --color-ink-faint: var(--ink-faint);
@@ -152,21 +204,32 @@
   --color-danger: var(--danger);
   --color-danger-wash: var(--danger-wash);
 
-  --radius-sm: calc(var(--radius) - 2px);
+  --radius-sm: 2px;
   --radius-md: var(--radius);
-  --radius-lg: calc(var(--radius) + 2px);
-  --radius-xl: calc(var(--radius) + 6px);
+  --radius-lg: 4px;
+  --radius-xl: 6px;
 
-  /* The two sizes below Tailwind's scale that a dense docket actually needs. */
-  --text-2xs: 0.6875rem;
-  --text-2xs--line-height: 1rem;
+  /* A fixed rem scale with a ~1.2 ratio, not fluid: an operator reads this at a
+     consistent DPI all day, and a heading that shrinks inside a narrow pane
+     looks worse rather than better.
+
+     12px is the floor. Nothing functional on this screen is set smaller — a
+     count you have to lean in for is a count you re-read. */
+  --text-note: 0.75rem;
+  --text-note--line-height: 1.125rem;
   --text-13: 0.8125rem;
   --text-13--line-height: 1.25rem;
   --text-15: 0.9375rem;
   --text-15--line-height: 1.5rem;
 
-  --shadow-file: var(--shadow-file);
-  --shadow-lift: var(--shadow-lift);
+  /* Read from across the room. */
+  --text-figure: 1.875rem;
+  --text-figure--line-height: 1;
+  --text-count: 2.5rem;
+  --text-count--line-height: 1;
+
+  --shadow-lift-1: var(--lift-1);
+  --shadow-lift-2: var(--lift-2);
 }
 
 @layer base {
@@ -178,67 +241,117 @@
     color-scheme: light;
   }
 
-  .dark html,
   html.dark {
     color-scheme: dark;
   }
 
   body {
-    background: var(--paper);
+    background: var(--board);
     color: var(--ink);
     font-family: var(--stack-sans);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-  }
-
-  /* Figures line up in columns. A docket is read down, not across, and counts
-     that jitter by a pixel per digit are counts you have to re-read. */
-  body {
+    /* Figures line up in columns. A board is read down, not across, and counts
+       that jitter by a pixel per digit are counts you have to re-read. */
     font-variant-numeric: tabular-nums;
   }
+
+  /* --- Browser surfaces -------------------------------------------------
+     The parts nobody draws still belong to the design. Left alone they ship a
+     UA blue caret, a UA blue selection and a Windows-grey scrollbar into an
+     enamel board. */
 
   :focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 2px;
-    border-radius: 3px;
+    border-radius: 2px;
+  }
+
+  /* Recharts makes its plot focusable so the arrow keys work. Clicking or
+     dragging on it then earns the UA's own blue ring, which is the one focus
+     treatment on the board nobody chose. Keyboard focus still gets the violet
+     ring above. */
+  :focus:not(:focus-visible) {
+    outline: none;
   }
 
   ::selection {
-    background: color-mix(in srgb, var(--violet) 22%, transparent);
+    background: color-mix(in srgb, var(--violet) 24%, transparent);
+    color: var(--ink);
+  }
+
+  html {
+    caret-color: var(--violet);
+    accent-color: var(--violet);
+    scrollbar-color: var(--rule) transparent;
+    scrollbar-width: thin;
+  }
+
+  ::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--rule);
+    border: 3px solid transparent;
+    border-radius: 99px;
+    background-clip: content-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--ink-faint);
+    background-clip: content-box;
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  a {
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: from-font;
   }
 }
 
 @layer components {
-  /* The eyebrow above every block of evidence. Small, wide-tracked, and mono,
-     because it labels machine output and should look like a field name. */
-  .field-label {
-    font-family: var(--stack-mono);
-    font-size: 0.625rem;
-    line-height: 1rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
+  /* The board's own lettering: a column head, a table head, a field name.
+     Condensed, because that is how a ruled board fits a word into a column,
+     and it is the `wdth` axis doing it rather than a second family.
+
+     This labels a column or a field. It is never a kicker above a heading —
+     a heading carries its own weight. */
+  .board-label {
+    font-family: var(--stack-sans);
+    font-stretch: 84%;
+    font-size: 0.75rem;
+    line-height: 1.125rem;
+    font-weight: 600;
+    letter-spacing: 0.055em;
     text-transform: uppercase;
     color: var(--ink-faint);
+  }
+
+  /* A count read from across the room. */
+  .board-count {
+    font-family: var(--stack-sans);
+    font-stretch: 92%;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
   }
 
   /* The case ident. Tight, dark, unmistakably an identifier. */
   .ident {
     font-family: var(--stack-mono);
     font-weight: 600;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
     font-variant-ligatures: none;
-  }
-
-  /* The reporter's own words. The one serif on the screen and the reason the
-     three-face system exists — testimony must not look like chrome. */
-  .testimony {
-    font-family: var(--stack-serif);
-    font-size: 1.1875rem;
-    line-height: 1.65;
-    letter-spacing: -0.003em;
-    color: var(--ink);
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
   }
 
   /* Machine text that may be very long and must never widen the layout. */
@@ -248,6 +361,29 @@
     line-height: 1.5;
     color: var(--ink-soft);
     overflow-wrap: anywhere;
+  }
+
+  /* The reporter's own words — the note clipped to the board, and the one
+     serif on the screen. This is the reason the three-face system exists:
+     testimony must not look like chrome. */
+  .testimony {
+    font-family: var(--stack-serif);
+    font-size: 1.1875rem;
+    line-height: 1.6;
+    letter-spacing: 0.002em;
+    color: var(--ink);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    /* Prose measure. Machine data and tables run denser; a sentence does not. */
+    max-width: 68ch;
+  }
+
+  /* A magnetic tile resting on the enamel. */
+  .tile {
+    background: var(--tile);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    box-shadow: var(--lift-1);
   }
 }
 

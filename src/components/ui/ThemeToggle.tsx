@@ -5,16 +5,16 @@ import { Moon, Sun } from "lucide-react";
 const STORAGE_KEY = "dwelve-ops-theme";
 
 /**
- * Light for daytime triage, dark for the evening.
+ * Daylight for the working day, night lighting for evening triage.
  *
  * Deliberately stateless. The inline script in the root layout resolves the
  * theme before first paint, and the two icons swap on the `dark` class in CSS —
  * so React holding a copy of "is it dark" would only be a second answer able to
- * disagree with the DOM's, and reading it back after mount would flash the wrong
- * icon on every load.
+ * disagree with the DOM's, and reading it back after mount would flash the
+ * wrong icon on every load.
  *
  * The icon shows the *destination*, not the current state: a moon while you are
- * in light means clicking gives you dark. "Sun = you are in light mode" and
+ * in daylight means clicking gives you night. "Sun = you are in light mode" and
  * "sun = click for light mode" are both common and neither is guessable, so the
  * one that describes what the button does wins.
  */
@@ -36,7 +36,7 @@ export function ThemeToggle() {
       onClick={toggle}
       aria-label="Switch theme"
       title="Switch theme"
-      className="inline-flex size-8 cursor-pointer items-center justify-center rounded-md text-ink-faint transition-colors hover:bg-wash hover:text-ink"
+      className="inline-flex size-8 cursor-pointer items-center justify-center rounded-sm text-rail-soft transition-colors hover:bg-white/10 hover:text-rail-ink focus-visible:outline-offset-1"
     >
       <Moon className="size-4 dark:hidden" aria-hidden />
       <Sun className="hidden size-4 dark:block" aria-hidden />

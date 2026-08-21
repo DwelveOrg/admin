@@ -1,6 +1,17 @@
 import { Search } from "lucide-react";
 import Link from "next/link";
 
+import { buttonClasses } from "@/components/ui/Button";
+import { Input, Select } from "@/components/ui/Field";
+
+/**
+ * Search and status for the two platform tables.
+ *
+ * A real form that submits to the route, so the result is a linkable URL an
+ * operator can paste to a colleague. Same control vocabulary as everywhere else
+ * on the board — the search box here and the one on the docket are the same
+ * object at the same height.
+ */
 export function ResourceFilters({
   pathname,
   search,
@@ -21,22 +32,25 @@ export function ResourceFilters({
       <label className="relative min-w-0 flex-1">
         <span className="sr-only">{searchPlaceholder}</span>
         <Search
-          className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-faint"
+          className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-ink-faint"
           aria-hidden
         />
-        <input
+        <Input
           type="search"
           name="search"
           defaultValue={search}
           placeholder={searchPlaceholder}
-          className="h-9.5 w-full rounded-md border border-rule bg-file pl-9 pr-3 text-sm text-ink placeholder:text-ink-faint focus:border-violet focus:outline-none"
+          className="pl-8"
         />
       </label>
-      <select
+
+      <Select
         name="status"
         defaultValue={status ?? ""}
         aria-label="Filter by status"
-        className="h-9.5 rounded-md border border-rule bg-file px-3 text-sm text-ink focus:border-violet focus:outline-none"
+        // The shared control is w-full; inside this flex row that makes the
+        // select eat the whole width and squeeze the search box to nothing.
+        className="sm:w-auto sm:min-w-44"
       >
         <option value="">Every status</option>
         {statuses.map((option) => (
@@ -44,18 +58,14 @@ export function ResourceFilters({
             {option.label}
           </option>
         ))}
-      </select>
-      <button
-        type="submit"
-        className="h-9.5 cursor-pointer rounded-md bg-violet px-4 text-sm font-medium text-violet-ink hover:bg-violet-hover"
-      >
+      </Select>
+
+      <button type="submit" className={buttonClasses({ variant: "solid" })}>
         Search
       </button>
+
       {filtered ? (
-        <Link
-          href={pathname}
-          className="inline-flex h-9.5 items-center justify-center rounded-md px-3 text-sm text-ink-soft hover:bg-wash"
-        >
+        <Link href={pathname} className={buttonClasses({ variant: "ghost" })}>
           Clear
         </Link>
       ) : null}

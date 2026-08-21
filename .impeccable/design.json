@@ -1,0 +1,51 @@
+{
+  "northStar": "A ward handover board: enamel field under a steel rail, one magnetic tile per case, acuity colour doing the triage before a word is read. Read it from across the room.",
+  "seed": "d7847e01",
+  "colorRamps": {
+    "surface": ["#e4e8e7", "#f4f6f5", "#ffffff"],
+    "ink": ["#1a1d1f", "#4c5457", "#646c6f"],
+    "rule": ["#c6ccca", "#dde2e0"]
+  },
+  "dark": {
+    "room": "#0e1211", "board": "#171c1b", "tile": "#1e2423",
+    "rail": "#0b0e0e", "rail-ink": "#f2f5f4", "rail-soft": "#8a9593", "rail-rule": "#262d2c",
+    "ink": "#e8edeb", "ink-soft": "#a3aeab", "ink-faint": "#8a9593",
+    "rule": "#333b39", "rule-soft": "#282f2e", "wash": "#252c2b",
+    "violet": "#9b84ff", "violet-hover": "#b0a0ff", "violet-ink": "#140f33",
+    "violet-wash": "#241d46", "ring": "#b0a0ff",
+    "open": "#f0904a", "open-wash": "#33220f",
+    "review": "#4fbecd", "review-wash": "#0e2c31",
+    "resolved": "#63c282", "resolved-wash": "#132a1c",
+    "dismissed": "#9aa5a3", "dismissed-wash": "#252c2b",
+    "danger": "#f2857b", "danger-wash": "#331c19"
+  },
+  "elevation": {
+    "lift-1": "0 1px 1px rgb(26 29 31 / 0.06), 0 2px 5px -2px rgb(26 29 31 / 0.10)",
+    "lift-2": "0 2px 4px rgb(26 29 31 / 0.07), 0 10px 24px -8px rgb(26 29 31 / 0.20)",
+    "lift-1-dark": "0 1px 1px rgb(0 0 0 / 0.5), 0 2px 6px -2px rgb(0 0 0 / 0.45)",
+    "lift-2-dark": "0 2px 4px rgb(0 0 0 / 0.5), 0 12px 28px -8px rgb(0 0 0 / 0.6)"
+  },
+  "motion": {
+    "duration": "150ms",
+    "rule": "State only, never decoration. One authored moment: a control goes down when pressed (active:translate-y-px, shadow removed). Charts do not animate on mount — a count that arrives by animation is a count you wait for.",
+    "reducedMotion": "honoured globally in globals.css"
+  },
+  "focus": {
+    "ring": "2px solid var(--ring), 2px offset",
+    "rule": ":focus:not(:focus-visible) { outline: none } — Recharts makes its plot focusable for arrow-key traversal, and clicking it would otherwise earn the UA's blue ring."
+  },
+  "typeAxes": {
+    "sans": "Archivo variable, wght 100-900 + wdth 62-125; column heads at wdth 84%",
+    "note": "axes: ['wdth'] must stay in layout.tsx or every column head silently renders at normal width"
+  },
+  "charts": {
+    "library": "recharts 3.10.1 for the two time-series plates",
+    "handDrawn": "distribution rings — Recharts 3 removed activeIndex from Pie",
+    "palette": "read from the document via useBoardPalette; var() does not resolve in SVG presentation attributes",
+    "interactions": ["crosshair readout", "legend mute", "drag-to-window", "arrow-key traversal", "Esc reset", "ring hover-lift", "ring deep-link"]
+  },
+  "notCanonized": [
+    "The disabled solid button sits at 45% opacity and its label falls below 4.5:1. That is the standard disabled affordance and is deliberate, but it is not a contrast rule future surfaces should copy.",
+    "The resolution-note placeholder is set at ink-faint (5.36:1). It clears the contrast floor but reads close to a real value; the accessible choice was kept over the softer one."
+  ]
+}

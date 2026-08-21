@@ -40,8 +40,9 @@ export function CopyButton({
           .catch(() => setCopied(false));
       }}
       className={cn(
-        "inline-flex size-6 shrink-0 cursor-pointer items-center justify-center rounded",
-        "text-ink-faint transition-colors hover:bg-wash hover:text-ink",
+        "inline-flex size-6 shrink-0 cursor-pointer items-center justify-center rounded-sm",
+        "text-ink-faint transition-colors duration-150 hover:bg-wash hover:text-ink",
+        "active:translate-y-px",
         className,
       )}
     >

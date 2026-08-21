@@ -100,19 +100,34 @@ already-closed case does not fire a second time.
 
 ## Design
 
+The model is a ward handover board: an enamel field under a steel rail, one
+magnetic tile per case, acuity colour doing the triage before a word is read.
+An operator should be able to read how much is waiting from across the room.
+
 Light-first, which is unusual for an operator tool and follows from the content:
 the evidence on screen is screenshots of a light product, and a near-black chrome
-makes every one of them glare. Dark is supported for evening triage.
+makes every one of them glare. Dark is supported for evening triage and is a
+genuine second character rather than an inversion.
 
 Three typefaces, one per kind of text, because three kinds share a case file and
 telling them apart is a reading aid rather than decoration:
 
-- **Instrument Sans** — the console speaking
-- **IBM Plex Mono** — the machine reporting (idents, UUIDs, user agents, viewports)
-- **Newsreader** — the reporter's own words, and nothing else
+- **Archivo** — the board speaking. One family carrying two widths: its `wdth`
+  axis supplies the condensed setting used for column heads and field names.
+- **Azeret Mono** — the machine reporting (idents, UUIDs, user agents, viewports)
+- **Petrona** — the reporter's own words, and nothing else
 
-Violet and the four disposition colours are the product's own tokens, unchanged.
-Same company; green has to keep meaning the same thing in both places.
+Violet and the four disposition colours keep the product's own meanings. Same
+company; green has to keep meaning the same thing in both places. Nothing on the
+board carries its state in colour alone — each disposition owns a drawn mark as
+well as a hue, so the columns read in greyscale and to a colour-blind operator.
+
+The dashboard's two trend plates are interactive: a crosshair readout naming
+every series at the day under the pointer, series you can mute from the legend,
+drag across the plate to read a shorter window, arrow keys to step day by day,
+Esc to reset. The distribution rings link into the matching part of the docket.
+
+`AGENTS.md` carries the full system and the traps that fail silently.
 
 ## Deploying
 
