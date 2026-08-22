@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { MousePointerClick } from "lucide-react";
 
+import {
+  PageHeader,
+  PageShell,
+} from "@/components/console/page-furniture";
 import { listReportsRequest } from "@/lib/reports/api";
 import { withConsoleAccess } from "@/lib/reports/guard";
 import { Docket } from "./_components/Docket";
@@ -29,27 +33,35 @@ export default async function DocketPage({
   const waiting = list.reports.length > 0;
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
-      <Docket params={params} list={list} />
+    <PageShell>
+      <PageHeader
+        title="Docket"
+        count={`${list.meta.total.toLocaleString()} matching`}
+        description="Problem reports filed from inside Dwelve. Closing one writes a notification to the person who filed it, carrying your note."
+      />
 
-      <div className="hidden min-h-0 flex-1 items-center justify-center overflow-y-auto p-8 lg:flex">
-        <div className="max-w-[32ch] text-center">
-          <span
-            aria-hidden
-            className="mx-auto flex size-10 items-center justify-center rounded-md border border-rule bg-tile text-ink-faint shadow-lift-1"
-          >
-            <MousePointerClick className="size-4" />
-          </span>
-          <p className="mt-3 text-13 font-semibold text-ink">
-            {waiting ? "Take a tile off the board" : "Nothing waiting"}
-          </p>
-          <p className="mt-1.5 text-13 leading-relaxed text-ink-soft">
-            {waiting
-              ? "Its message, screenshot and browser context open here."
-              : "Reports appear the moment someone files one from inside the product."}
-          </p>
+      <div className="mt-6 flex flex-col gap-3 lg:flex-row lg:items-start">
+        <Docket params={params} list={list} />
+
+        <div className="glass hidden flex-1 items-center justify-center self-stretch p-10 lg:flex lg:min-h-[28rem]">
+          <div className="max-w-[34ch] text-center">
+            <span
+              aria-hidden
+              className="mx-auto flex size-11 items-center justify-center rounded-md border border-edge bg-panel-sunk text-t3"
+            >
+              <MousePointerClick className="size-4.5" />
+            </span>
+            <p className="mt-4 text-15 font-semibold text-t1">
+              {waiting ? "Open a case" : "Nothing waiting"}
+            </p>
+            <p className="mt-2 text-13 leading-relaxed text-t2">
+              {waiting
+                ? "Its message, screenshot and browser context open here."
+                : "Reports appear the moment someone files one from inside the product."}
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+    </PageShell>
   );
 }

@@ -51,7 +51,7 @@ export function DecisionForm({ report }: { report: Report }) {
       <input type="hidden" name="status" value={status} />
 
       <fieldset>
-        <legend className="board-label mb-2">Disposition</legend>
+        <legend className="label mb-2">Disposition</legend>
         <div className="flex flex-wrap gap-1.5">
           {REPORT_STATUSES.map((option) => {
             const selected = status === option;
@@ -64,10 +64,10 @@ export function DecisionForm({ report }: { report: Report }) {
                 onClick={() => setStatus(option)}
                 className={cn(
                   "inline-flex cursor-pointer items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-13 font-medium",
-                  "transition-colors duration-150 active:translate-y-px",
+                  "transition-colors duration-160 active:translate-y-px",
                   selected
                     ? cn("border-transparent", DISPOSITION_TONE[option].chip)
-                    : "border-rule bg-tile text-ink-soft hover:bg-wash hover:text-ink",
+                    : "border-edge bg-panel-solid text-t2 hover:bg-panel-sunk hover:text-t1",
                 )}
               >
                 <DispositionMark status={option} />
@@ -80,13 +80,13 @@ export function DecisionForm({ report }: { report: Report }) {
 
       <div className="space-y-1.5">
         <div className="flex items-baseline justify-between gap-2">
-          <label htmlFor="resolutionNote" className="board-label block">
+          <label htmlFor="resolutionNote" className="label block">
             What we did
           </label>
           <span
             className={cn(
               "text-note tabular-nums",
-              remaining < 40 ? "text-danger" : "text-ink-faint",
+              remaining < 40 ? "text-danger" : "text-t3",
             )}
           >
             {remaining} left
@@ -103,8 +103,8 @@ export function DecisionForm({ report }: { report: Report }) {
         />
 
         {closing ? (
-          <p className="flex items-start gap-1.5 text-note leading-relaxed text-ink-soft">
-            <Info className="mt-0.5 size-3.5 shrink-0 text-violet" aria-hidden />
+          <p className="flex items-start gap-1.5 text-note leading-relaxed text-t2">
+            <Info className="mt-0.5 size-3.5 shrink-0 text-pen" aria-hidden />
             <span>
               {alreadyClosed ? (
                 <>
@@ -126,7 +126,7 @@ export function DecisionForm({ report }: { report: Report }) {
             </span>
           </p>
         ) : (
-          <p className="text-note leading-relaxed text-ink-faint">
+          <p className="text-note leading-relaxed text-t3">
             Nobody is notified until the case is resolved or dismissed.
           </p>
         )}
@@ -158,7 +158,7 @@ function SaveButton({ dirty }: { dirty: boolean }) {
   const { pending } = useFormStatus();
 
   return (
-    <Button type="submit" variant="solid" disabled={pending || !dirty}>
+    <Button type="submit" variant="primary" disabled={pending || !dirty}>
       {pending ? "Saving…" : "Save decision"}
     </Button>
   );

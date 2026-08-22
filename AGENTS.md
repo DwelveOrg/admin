@@ -35,59 +35,65 @@ invert this into an allowlist of protected paths.
 notification carrying the note, in the same backend transaction. Any UI that
 collects that note must say so where it is typed — see `DecisionForm`.
 
+**A password cannot be shown, and the UI must say so.** `User.passwordHash` is a
+bcrypt hash; the plaintext was never stored, so there is no endpoint that could
+produce it. `CredentialPanel` states this on the screen rather than hiding the
+absence — an operator who goes looking for a reveal button and finds none will
+conclude they lack access, which is the wrong conclusion. What the console
+offers instead is issuing a new credential, returned exactly once and persisted
+nowhere.
+
 ## Design
 
-The model is a **ward handover board**: the enamel board on a hospital wall at
-shift change, ruled into columns, one magnetic tile per case, acuity colour
-doing the triage before a word is read. Someone walks in, reads it from the
-door, and knows how much is waiting and who needs a person now. That is this
-console's first question, so the board answers it the same way.
+The model is **the room at night**: a deep field with a slow aurora behind it,
+glass instrument panels floating above it, emissive data. `DESIGN.md` is the
+full contract — what follows is the part that fails silently if you get it wrong.
 
 The direction contract lives in `src/app/layout.tsx` and is emitted as a real
 HTML comment at the top of `<body>` — a JSX comment would be compiled away and a
 contract the build erases is one nobody can audit.
 
-**Surfaces step wall → enamel → tile.** `--room` is the wall, `--board` is the
-vitreous enamel field, `--tile` is a magnetic tile resting on it. The dark band
-across the top is the board's steel frame and it earns the darkness by naming
-the shift; everything below it stays enamel so the tiles own the field.
+**The aurora is the queue.** `Aurora.tsx` computes `--pulse` from the live
+open-report count and the field warms and quickens with it. This is a *reading*,
+not ambience: if you change what feeds it, you are changing what the room says.
+It is never the only channel — every count it encodes is also stated in text.
 
-**Light-first**, because the evidence on screen is screenshots of a light
-product and a dark chrome makes every one of them glare. Dark is a genuine
-second character for evening triage, not an inversion.
+**Dark-first, and light is a real second character.** The inverse of the product
+frontend on purpose. The one thing that never goes dark is the evidence plate:
+`.plate-daylight` pins a screenshot of a light product to a light ground in both
+characters, because matting one on dark makes it a lightbox.
 
-**Colour means something or it is not there.** Violet is the operator's pen —
-primary actions and current selection, nothing decorative. The four disposition
-colours are the product's own semantics, unchanged in meaning. Every other pixel
-is enamel, graphite and rule.
+**Depth is light, not shadow.** A panel is glass — translucent ground, lit top
+edge, hairline elsewhere. Raising something makes it brighter, never darkens
+underneath. Glass may hold a `PanelWell` (a recess); it may not hold a second
+`Panel`.
+
+**Colour means something or it is not there.** The pen is the operator's action
+colour and the current selection, nothing decorative. The four disposition
+colours are the product's own semantics, unchanged in meaning.
 
 **No state is carried by colour alone.** Each disposition owns a drawn mark as
 well as a hue (`DispositionMark`): a solid block not started, a half block in
-hand, a check for a fix, a strike for a dismissal. The board reads correctly in
-greyscale and to an operator who cannot separate amber from green.
+hand, a check for a fix, a strike for a dismissal.
 
-**Depth is a real object on a board.** `--lift-1` is a tile resting on the
-enamel, `--lift-2` is one picked up. Hard 1px rules and a 3px corner, never the
-soft rounded card.
+**Every text token clears 4.5:1** on the lightest ground it lands on, in both
+characters — `t3` included, which is quiet but still carries column heads and
+metadata. Solve for it; the value that looks like a correct third step lands
+around 3.6:1. There is a checker in the design notes of `DESIGN.md`.
 
-Three faces, one per kind of text, and the split is structural rather than
-decorative:
+Four faces, one per kind of text, and the split is structural:
 
 | Face | Class | Carries |
 |---|---|---|
-| Archivo | (default) | the board speaking; `wdth` 84% for column heads |
-| Azeret Mono | `.ident` `.machine` | the machine reporting |
-| Petrona | `.testimony` | the reporter's own words, and nothing else |
-
-Archivo is one family doing two jobs — the `wdth` axis supplies the condensed
-setting a ruled board uses for column heads, so `.board-label` needs no second
-sans. That axis is only available because `layout.tsx` requests
-`axes: ["wdth"]`; drop it and every column head silently renders at normal width.
+| Bricolage Grotesque | `.display` `.figure` | the console announcing — titles and counts only |
+| Instrument Sans | (default) | the console speaking |
+| JetBrains Mono | `.ident` `.machine` | the machine reporting |
+| Newsreader | `.testimony` | the reporter's own words, and nothing else |
 
 The font variables live on `<html>`, not `<body>`. `--stack-*` in `globals.css`
 are declared on `:root` and built from them; a custom property containing
 `var()` resolves on the element that declares it, so moving the faces to
-`<body>` makes every stack invalid at `:root` and silently drops all three back
+`<body>` makes every stack invalid at `:root` and silently drops all four back
 to the UA sans.
 
 Do not write `var(--font-sans|mono|serif)` in hand-authored CSS. `@theme inline`
@@ -99,29 +105,37 @@ the smallest step. There are no eyebrows above headings — a heading carries it
 own weight.
 
 **`cn()` is not plain `twMerge`.** `src/lib/utils.ts` extends tailwind-merge with
-this board's font-size names. Without that it cannot tell `text-13` from
-`text-violet-ink`, files them in one conflict group and drops whichever came
-first — which is how the primary button's label once shipped near-black on
-violet at 1.9:1.
+this console's font-size names. Without that it cannot tell `text-13` from
+`text-pen-ink`, files them in one conflict group and drops whichever came first
+— which is how the primary button's label once shipped near-black on violet at
+1.9:1. Every `--text-*` you add to `globals.css` must be added there too.
 
 **The inline theme script needs the CSP nonce.** `src/proxy.ts` sets
 `script-src 'self' 'nonce-…' 'strict-dynamic'` with no `unsafe-inline`, so the
 pre-paint theme script in `layout.tsx` reads `x-nonce` from headers. Without it
-the script is refused and the dark character is lost entirely, not just the
-flash it exists to prevent.
+the script is refused and the dark character is lost entirely — and in this
+design the ground is a full-viewport lit field, so that flash is the whole
+screen rather than a corner of it.
+
+**Reduced motion is honoured in three places, not one.** CSS handles the aurora
+drift and transitions; `useCountUp` and `useSpotlight` in
+`components/ui/interaction.tsx` are JavaScript and a media query cannot reach
+them. The aurora keeps its *colour* when motion is reduced — that is the
+reading — and only the drift stops.
 
 ### Charts
 
-Recharts drives the two time-series plates on `/`. The distribution rings are
+Recharts drives the two time-series panels on `/`. The distribution rings are
 hand-drawn SVG: Recharts 3 removed `activeIndex` from `Pie`, so a controlled
 hover-lift plus click-through to a filtered route would fight the component.
 
 Two traps, both of which fail silently:
 
 - **`var()` does not resolve in SVG presentation attributes.** `fill="var(--x)"`
-  paints nothing. `useBoardPalette` in `chart-kit.tsx` reads the tokens off the
+  paints nothing. `useChartPalette` in `chart-kit.tsx` reads the tokens off the
   document and re-reads them when the theme class flips; the hand-drawn ring
-  sets colour through `style`, never the attribute.
+  sets colour through `style`, never the attribute. Its fallback map must stay in
+  step with `.dark` in `globals.css`.
 - **Recharts 3 types `activeTooltipIndex` as `number | string | null`.** Testing
   only for `number` yields nothing on every hover and reads as a dead feature.
 

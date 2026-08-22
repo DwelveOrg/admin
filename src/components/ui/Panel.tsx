@@ -1,0 +1,93 @@
+import { cn } from "@/lib/utils";
+
+/**
+ * A sheet of glass over the field.
+ *
+ * This is the console's only container. It replaces the old board's rule that
+ * containers never nest: glass over glass is a real material and reads
+ * correctly, so a panel may hold a sunk well (`PanelWell`) — what it may not do
+ * is hold a second full panel, which would double the blur cost and flatten
+ * both.
+ *
+ * `head` is a strip with a hairline under it, used when a panel needs to say
+ * what it is and what its units are before it shows a reading.
+ */
+export function Panel({
+  title,
+  description,
+  aside,
+  head,
+  footer,
+  children,
+  className,
+  bodyClassName,
+  as: Tag = "section",
+}: {
+  title?: string;
+  description?: string;
+  aside?: React.ReactNode;
+  head?: React.ReactNode;
+  footer?: React.ReactNode;
+  children: React.ReactNode;
+  className?: string;
+  bodyClassName?: string;
+  as?: "section" | "div" | "article";
+}) {
+  const hasHead = Boolean(title || head);
+
+  return (
+    <Tag className={cn("glass flex min-w-0 flex-col overflow-hidden", className)}>
+      {hasHead ? (
+        <div className="flex flex-col gap-3 border-b border-edge px-5 py-4 sm:flex-row sm:items-start sm:justify-between sm:gap-5">
+          {title ? (
+            <div className="min-w-0">
+              <h2 className="text-15 font-semibold tracking-[-0.015em] text-t1">{title}</h2>
+              {description ? (
+                <p className="mt-1 max-w-[62ch] text-13 leading-relaxed text-t2">
+                  {description}
+                </p>
+              ) : null}
+            </div>
+          ) : (
+            head
+          )}
+          {aside ? <div className="shrink-0">{aside}</div> : null}
+        </div>
+      ) : null}
+
+      <div className={cn("min-w-0 flex-1", bodyClassName ?? "p-5")}>{children}</div>
+
+      {footer ? (
+        <div className="border-t border-edge px-5 py-3">{footer}</div>
+      ) : null}
+    </Tag>
+  );
+}
+
+/**
+ * A recess in a panel — the inverse of raising something.
+ *
+ * Where a panel catches light on its top edge, a well loses it: the ground goes
+ * darker than its surroundings in both characters. Used for machine data, a
+ * quoted value, an inset list. This is the one nesting that is allowed inside a
+ * panel, because a recess is a different material gesture from another sheet of
+ * glass rather than the same one repeated.
+ */
+export function PanelWell({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "rounded-md border border-edge bg-panel-sunk px-3.5 py-3",
+        className,
+      )}
+    >
+      {children}
+    </div>
+  );
+}

@@ -3,238 +3,303 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ============================================================================
-   Dwelve operator console — "the handover board"
+   Dwelve Operations — "the room at night"
 
-   The model is the enamel board on a hospital ward wall at shift change: ruled
-   into columns, one magnetic tile per case, acuity colour doing the triage
-   before a single word is read. Someone walks in, looks at it from across the
-   room, and knows how much is waiting and who needs a person now. That is this
-   console's first question too, so the board answers it the same way.
+   An operations room, not a document. The ground is a deep blue-black field
+   with a slow aurora behind it; the interface is a set of glass instrument
+   panels floating a few millimetres above that field, and the data on them is
+   emissive — it looks lit from behind rather than printed.
 
-   WHY LIGHT-FIRST: the evidence on this screen is screenshots of a light
-   product. A dark chrome makes every one of them glare like a lightbox. The
-   board is read in a bright room during a working day. Dark is a genuine second
-   character for evening triage, not an inversion — at night the enamel goes to
-   slate and the acuity colours brighten, the way a real board does under
-   different light.
+   WHY DARK-FIRST: this is the inverse of the product frontend on purpose. The
+   frontend is a light, warm, document-shaped surface a student reads for an
+   hour. This is an instrument an operator watches. Two different jobs, two
+   different rooms — and an operator moving between the two apps should never
+   have to check which window they are in. Light is a real second character for
+   daytime work, not an inversion, and the one thing that never goes dark is the
+   evidence plate: a screenshot of a light product is pinned to a light ground
+   so it is never a lightbox in a dark frame.
 
-   WHY THE STEEL RAIL: the board has a frame. The dark band across the top is
-   that frame, and it is doing work — it is the only place the shift is named
-   (who is on, what range is showing), and it keeps the board itself free of
-   chrome so the tiles own the field.
+   THE SIGNATURE — THE AURORA IS THE QUEUE. The field behind the glass is not
+   decoration and it is not random. `--pulse` is set from the real open-report
+   count (see `Aurora.tsx`): at rest the field sits cool, green-cyan and almost
+   still; as work stacks up it warms toward amber and the drift tightens. That
+   is the console's first question — how much is waiting — answered before a
+   single word is read, which is the one thing the old enamel board got right
+   and the only idea from it worth carrying forward.
 
-   THE COLOUR RULE: acuity colour is the only colour. Violet is the operator's
-   pen — actions and current selection, nothing else. The four dispositions are
-   the product's own semantics and are never decoration. Every other pixel is
-   enamel, graphite, and rule. If a colour appears on this screen, it means
-   something, and it appears in a legend somewhere.
+   DEPTH IS LIGHT, NOT SHADOW. A panel is not a card with a drop shadow. It is
+   a sheet of glass: a translucent ground, a lit top edge where the light
+   catches it, and a hairline everywhere else. Raising something makes it
+   brighter and its edge sharper, never darker underneath.
+
+   COLOUR STILL MEANS SOMETHING. Violet is the operator's pen — actions and
+   selection, nothing decorative. The four disposition colours carry the
+   product's own semantics unchanged. Everything else is glass and text.
 
    NO STATE IS CARRIED BY COLOUR ALONE. Each disposition owns a drawn mark as
-   well as a hue, so the four survive greyscale, projection and colour-blindness.
-   See `src/components/ui/Disposition.tsx`.
+   well as a hue, so the four survive greyscale and colour-blindness. See
+   `src/components/ui/Disposition.tsx`.
    ========================================================================= */
 
 :root {
-  /* A magnetic tile's corner. Small and physical — these are objects on a
-     board, not floating cards, and a 12px radius would make them stickers. */
-  --radius: 3px;
+  /* --- Radii ------------------------------------------------------------
+     Glass panels, not paper cards. Big enough to read as a modern instrument
+     surface, tight enough that a dense table row still looks engineered. */
+  --r-xs: 6px;
+  --r-sm: 9px;
+  --r-md: 13px;
+  --r-lg: 18px;
+  --r-xl: 24px;
 
-  /* --- Surfaces: wall, enamel, tile -------------------------------------
-     Three steps, and the order matters. --room is the wall the board hangs on.
-     --board is the vitreous enamel field, cool and very slightly green, which
-     is what stops it reading as paper. --tile is a magnetic tile resting on
-     that field: the case, the plate, the row you can pick up. */
-  --room: #e4e8e7;
-  --board: #f4f6f5;
-  --tile: #ffffff;
+  /* --- The room, by day -------------------------------------------------
+     Light is a genuine second character. The field stays a cool off-white with
+     the same aurora behind it at lower intensity; glass becomes frosted white
+     rather than a lit membrane, so panels sit ON the field instead of glowing
+     out of it. */
+  --void: #f4f6fb;
+  --void-deep: #e8ebf3;
 
-  /* The steel frame. A real band, not a tinted header. */
-  --rail: #1d2321;
-  --rail-ink: #ffffff;
-  --rail-soft: #a9b3b1;
-  --rail-rule: #333b39;
+  --panel: rgb(255 255 255 / 0.74);
+  --panel-raised: rgb(255 255 255 / 0.92);
+  --panel-solid: #ffffff;
+  --panel-sunk: rgb(14 18 32 / 0.035);
 
-  /* --- Marks: graphite, and the grease pencil ---------------------------- */
-  --ink: #1a1d1f;
-  --ink-soft: #4c5457;
-  --ink-faint: #646c6f;
+  --edge: rgb(14 18 32 / 0.10);
+  --edge-lit: rgb(14 18 32 / 0.16);
+  --edge-top: rgb(255 255 255 / 0.9);
 
-  --rule: #c6ccca;
-  --rule-soft: #dde2e0;
-  --wash: #e7eae9;
+  /* Text ramp. `--t3` is the quietest step and it is still functional text —
+     column heads, metadata, pager counts — so it clears 4.5:1 against the
+     lightest ground it ever lands on rather than against the page. It was
+     picked by solving for that, not by eye: the value that "looked right" as a
+     third step came out at 3.6:1. */
+  --t1: #0b0e16;
+  --t2: #4b5468;
+  --t3: #697187;
 
-  /* --- The operator's pen ------------------------------------------------
-     Violet is the product's own action colour and stays that, unchanged in
-     meaning: primary actions, the current selection, and nothing decorative. */
-  --violet: #4c25e5;
-  --violet-hover: #3d18ce;
-  --violet-ink: #ffffff;
-  --violet-wash: #eae6fe;
-  --ring: #6e4bff;
+  /* The operator's pen. The product's action colour, unchanged in meaning. */
+  --pen: #5b34e8;
+  --pen-hover: #4a26cf;
+  --pen-ink: #ffffff;
+  --pen-wash: rgb(91 52 232 / 0.10);
+  --pen-glow: rgb(91 52 232 / 0.22);
+  --ring: #6d4aff;
 
   /* --- Acuity ------------------------------------------------------------
-     The product's four dispositions, re-pitched as board tile colours. Amber
-     for work not started, teal for work in hand, green for a fix, slate for a
-     dismissal. Dismissed stays colourless on purpose: a dismissal is a
-     conclusion, not an achievement, and a colour would let it read as one down
-     the column. Every value clears 4.5:1 on both the tile and the enamel. */
-  --open: #b04713;
-  --open-wash: #f7e9df;
-  --review: #0b6d79;
-  --review-wash: #ddeff2;
-  --resolved: #2c7a45;
-  --resolved-wash: #e5f2e9;
-  --dismissed: #5e6a6b;
-  --dismissed-wash: #e7eae9;
+     The product's four dispositions. Amber for work not started, cyan for work
+     in hand, green for a fix, slate for a dismissal — dismissed stays
+     deliberately colourless, because a dismissal is a conclusion and not an
+     achievement. Every value clears 4.5:1 on panel and on field. */
+  --open: #b04a09;
+  --open-lit: #ea8c3e;
+  --open-wash: rgb(176 74 9 / 0.10);
+  --review: #0d6f80;
+  --review-lit: #22a6bd;
+  --review-wash: rgb(13 111 128 / 0.10);
+  --resolved: #05704a;
+  --resolved-lit: #10a06b;
+  --resolved-wash: rgb(5 112 74 / 0.10);
+  --dismissed: #58617a;
+  --dismissed-lit: #7d879d;
+  --dismissed-wash: rgb(88 97 122 / 0.10);
 
-  --danger: #b3271e;
-  --danger-wash: #f9e4e2;
+  --danger: #b3231f;
+  --danger-lit: #e2564f;
+  --danger-wash: rgb(179 35 31 / 0.10);
 
-  /* --- Lift ---------------------------------------------------------------
-     A tile sits ON the board and casts a real shadow — an offset and a soft
-     blur, because that is what a physical object does. --lift-2 is a tile
-     picked up: a popover, a menu, the readout that follows a crosshair. */
-  --lift-1: 0 1px 1px rgb(26 29 31 / 0.06), 0 2px 5px -2px rgb(26 29 31 / 0.10);
-  --lift-2: 0 2px 4px rgb(26 29 31 / 0.07), 0 10px 24px -8px rgb(26 29 31 / 0.20);
+  /* --- Aurora ------------------------------------------------------------
+     Four stops the field mixes between. `--pulse` (0 → 1) is written by the
+     server from the live open-report count and is what moves the field from
+     calm to loaded; `--drift` is the animation period, which tightens with it. */
+  --aurora-calm: #0f9e86;
+  --aurora-cool: #2563d8;
+  --aurora-pen: #5b34e8;
+  --aurora-load: #d97317;
+  --aurora-alpha: 0.16;
+  --aurora-blur: 90px;
+  --pulse: 0;
+  --drift: 64s;
 
-  /* --- The three voices --------------------------------------------------
-     Declared here as ordinary custom properties rather than only inside
-     `@theme`, because `@theme inline` deliberately does NOT emit `--font-*` on
-     :root — it substitutes the value into Tailwind's own utilities and nothing
-     else. Hand-written CSS asking for `var(--font-serif)` therefore resolves to
-     nothing and falls back to the UA sans, silently losing exactly the
-     distinction the three faces exist to draw.
+  /* --- Lift --------------------------------------------------------------
+     Light, not shadow. A raised surface catches more light on its top edge and
+     throws a soft ambient pool, rather than casting a hard drop shadow. */
+  --lift-1:
+    0 1px 0 0 var(--edge-top) inset,
+    0 1px 2px rgb(10 14 26 / 0.04),
+    0 8px 24px -12px rgb(10 14 26 / 0.18);
+  --lift-2:
+    0 1px 0 0 var(--edge-top) inset,
+    0 2px 6px rgb(10 14 26 / 0.06),
+    0 24px 56px -20px rgb(10 14 26 / 0.28);
+  --lift-pen: 0 0 0 1px var(--pen-glow), 0 8px 28px -10px var(--pen-glow);
 
-     `--font-board-*` are set on <html> by next/font. Substitution is lazy, so
-     these resolve against the element actually using them, which inherits them. */
-  --stack-sans: var(--font-board-sans), ui-sans-serif, system-ui, sans-serif;
-  --stack-mono: var(--font-board-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
-  --stack-serif: var(--font-board-serif), ui-serif, Georgia, serif;
+  /* --- The four voices ---------------------------------------------------
+     Declared here as ordinary custom properties as well as inside `@theme`,
+     because `@theme inline` deliberately does NOT emit `--font-*` on :root — it
+     substitutes into Tailwind's own utilities and nothing else. Hand-written
+     CSS asking for `var(--font-serif)` resolves to nothing and falls back to
+     the UA sans, silently losing exactly the distinction the faces exist to
+     draw.
+
+     `--font-ops-*` are set on <html> by next/font. Substitution is lazy, so
+     these resolve against the element actually using them, which inherits. */
+  --stack-display: var(--font-ops-display), "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+  --stack-sans: var(--font-ops-sans), ui-sans-serif, system-ui, sans-serif;
+  --stack-mono: var(--font-ops-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  --stack-serif: var(--font-ops-serif), ui-serif, Georgia, serif;
 }
 
 .dark {
-  /* The ward at night. Not an inversion: the enamel goes to slate, surfaces
-     still step UP toward the tile, and every acuity colour brightens rather
-     than desaturating — a disposition must still read as a colour and not as
-     another shade of the frame. */
-  --room: #0e1211;
-  --board: #171c1b;
-  --tile: #1e2423;
+  /* The room with the lights down. Not an inversion: the field goes to a deep
+     blue-black, glass becomes a lit membrane rather than frosted white, and
+     every acuity colour brightens rather than desaturating — a disposition
+     must still read as a colour and not as another shade of the panel. */
+  --void: #06070d;
+  --void-deep: #030408;
 
-  --rail: #0b0e0e;
-  --rail-ink: #f2f5f4;
-  --rail-soft: #8a9593;
-  --rail-rule: #262d2c;
+  --panel: rgb(255 255 255 / 0.032);
+  --panel-raised: rgb(255 255 255 / 0.062);
+  --panel-solid: #12141d;
+  --panel-sunk: rgb(0 0 0 / 0.28);
 
-  --ink: #e8edeb;
-  --ink-soft: #a3aeab;
-  --ink-faint: #8a9593;
+  --edge: rgb(255 255 255 / 0.085);
+  --edge-lit: rgb(255 255 255 / 0.18);
+  --edge-top: rgb(255 255 255 / 0.07);
 
-  --rule: #333b39;
-  --rule-soft: #282f2e;
-  --wash: #252c2b;
+  --t1: #eef1f8;
+  --t2: #9aa4bb;
+  --t3: #778096;
 
-  --violet: #9b84ff;
-  --violet-hover: #b0a0ff;
-  --violet-ink: #140f33;
-  --violet-wash: #241d46;
-  --ring: #b0a0ff;
+  --pen: #8b6cff;
+  --pen-hover: #a08cff;
+  --pen-ink: #0b0716;
+  --pen-wash: rgb(139 108 255 / 0.16);
+  --pen-glow: rgb(139 108 255 / 0.34);
+  --ring: #a08cff;
 
-  --open: #f0904a;
-  --open-wash: #33220f;
-  --review: #4fbecd;
-  --review-wash: #0e2c31;
-  --resolved: #63c282;
-  --resolved-wash: #132a1c;
-  --dismissed: #9aa5a3;
-  --dismissed-wash: #252c2b;
+  --open: #ffab5c;
+  --open-lit: #ffc78e;
+  --open-wash: rgb(255 171 92 / 0.14);
+  --review: #5ad4e6;
+  --review-lit: #93e6f2;
+  --review-wash: rgb(90 212 230 / 0.14);
+  --resolved: #5fdc9d;
+  --resolved-lit: #9aebc4;
+  --resolved-wash: rgb(95 220 157 / 0.14);
+  --dismissed: #97a2b9;
+  --dismissed-lit: #b8c0d1;
+  --dismissed-wash: rgb(151 162 185 / 0.14);
 
-  --danger: #f2857b;
-  --danger-wash: #331c19;
+  --danger: #ff8177;
+  --danger-lit: #ffaba4;
+  --danger-wash: rgb(255 129 119 / 0.14);
 
-  --lift-1: 0 1px 1px rgb(0 0 0 / 0.5), 0 2px 6px -2px rgb(0 0 0 / 0.45);
-  --lift-2: 0 2px 4px rgb(0 0 0 / 0.5), 0 12px 28px -8px rgb(0 0 0 / 0.6);
+  --aurora-calm: #12d3a4;
+  --aurora-cool: #3b82f6;
+  --aurora-pen: #7c5cff;
+  --aurora-load: #ff9838;
+  --aurora-alpha: 0.30;
+
+  --lift-1:
+    0 1px 0 0 var(--edge-top) inset,
+    0 2px 8px rgb(0 0 0 / 0.4),
+    0 16px 40px -20px rgb(0 0 0 / 0.7);
+  --lift-2:
+    0 1px 0 0 var(--edge-top) inset,
+    0 4px 14px rgb(0 0 0 / 0.5),
+    0 32px 72px -24px rgb(0 0 0 / 0.85);
 }
 
 @theme inline {
-  /* Three faces because three genuinely different kinds of text share this
-     screen, and telling them apart is a reading aid rather than decoration:
-       sans    the board's own lettering — the console speaking
-       mono    the machine reporting
-       serif   the note clipped to the board — a person's own words
+  /* Four faces, one per genuinely different kind of text.
 
-     The sans is one family carrying two widths. Archivo's `wdth` axis gives the
-     condensed setting a real board uses for column heads and rules, without a
-     second typeface to keep in sync. */
+       display  the console announcing — page titles and the luminous counts
+       sans     the console speaking — every other interface surface
+       mono     the machine reporting — idents, UUIDs, credentials, user agents
+       serif    a person's own words, and nothing else
+
+     The display face is used with restraint: a handful of elements per page.
+     The serif is route-scoped to the case file, which is the only place a
+     reporter's own words appear. */
+  --font-display: var(--stack-display);
   --font-sans: var(--stack-sans);
   --font-mono: var(--stack-mono);
   --font-serif: var(--stack-serif);
 
-  --color-room: var(--room);
-  --color-board: var(--board);
-  --color-tile: var(--tile);
+  --color-void: var(--void);
+  --color-void-deep: var(--void-deep);
+  --color-panel: var(--panel);
+  --color-panel-raised: var(--panel-raised);
+  --color-panel-solid: var(--panel-solid);
+  --color-panel-sunk: var(--panel-sunk);
 
-  --color-rail: var(--rail);
-  --color-rail-ink: var(--rail-ink);
-  --color-rail-soft: var(--rail-soft);
-  --color-rail-rule: var(--rail-rule);
+  --color-edge: var(--edge);
+  --color-edge-lit: var(--edge-lit);
 
-  --color-ink: var(--ink);
-  --color-ink-soft: var(--ink-soft);
-  --color-ink-faint: var(--ink-faint);
-  --color-rule: var(--rule);
-  --color-rule-soft: var(--rule-soft);
-  --color-wash: var(--wash);
+  --color-t1: var(--t1);
+  --color-t2: var(--t2);
+  --color-t3: var(--t3);
 
-  --color-violet: var(--violet);
-  --color-violet-hover: var(--violet-hover);
-  --color-violet-ink: var(--violet-ink);
-  --color-violet-wash: var(--violet-wash);
+  --color-pen: var(--pen);
+  --color-pen-hover: var(--pen-hover);
+  --color-pen-ink: var(--pen-ink);
+  --color-pen-wash: var(--pen-wash);
   --color-ring: var(--ring);
 
   --color-open: var(--open);
+  --color-open-lit: var(--open-lit);
   --color-open-wash: var(--open-wash);
   --color-review: var(--review);
+  --color-review-lit: var(--review-lit);
   --color-review-wash: var(--review-wash);
   --color-resolved: var(--resolved);
+  --color-resolved-lit: var(--resolved-lit);
   --color-resolved-wash: var(--resolved-wash);
   --color-dismissed: var(--dismissed);
+  --color-dismissed-lit: var(--dismissed-lit);
   --color-dismissed-wash: var(--dismissed-wash);
 
   --color-danger: var(--danger);
+  --color-danger-lit: var(--danger-lit);
   --color-danger-wash: var(--danger-wash);
 
-  --radius-sm: 2px;
-  --radius-md: var(--radius);
-  --radius-lg: 4px;
-  --radius-xl: 6px;
+  --radius-xs: var(--r-xs);
+  --radius-sm: var(--r-sm);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
+  --radius-xl: var(--r-xl);
 
-  /* A fixed rem scale with a ~1.2 ratio, not fluid: an operator reads this at a
-     consistent DPI all day, and a heading that shrinks inside a narrow pane
-     looks worse rather than better.
+  /* A fixed rem scale, never fluid: an operator reads this at a steady DPI all
+     day, and a heading that shrinks inside a narrow pane reads as broken rather
+     than responsive.
 
-     12px is the floor. Nothing functional on this screen is set smaller — a
-     count you have to lean in for is a count you re-read. */
+     12px is the floor. Nothing functional is set smaller — a count you lean in
+     for is a count you re-read. */
   --text-note: 0.75rem;
   --text-note--line-height: 1.125rem;
   --text-13: 0.8125rem;
   --text-13--line-height: 1.25rem;
   --text-15: 0.9375rem;
-  --text-15--line-height: 1.5rem;
+  --text-15--line-height: 1.45rem;
+  --text-17: 1.0625rem;
+  --text-17--line-height: 1.5rem;
 
   /* Read from across the room. */
-  --text-figure: 1.875rem;
+  --text-figure: 1.75rem;
   --text-figure--line-height: 1;
-  --text-count: 2.5rem;
-  --text-count--line-height: 1;
+  --text-count: 2.75rem;
+  --text-count--line-height: 0.95;
+  --text-display: 3.5rem;
+  --text-display--line-height: 0.94;
 
   --shadow-lift-1: var(--lift-1);
   --shadow-lift-2: var(--lift-2);
+  --shadow-lift-pen: var(--lift-pen);
 }
 
 @layer base {
   * {
-    border-color: var(--rule);
+    border-color: var(--edge);
   }
 
   html {
@@ -246,44 +311,43 @@
   }
 
   body {
-    background: var(--board);
-    color: var(--ink);
+    background: var(--void);
+    color: var(--t1);
     font-family: var(--stack-sans);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-    /* Figures line up in columns. A board is read down, not across, and counts
-       that jitter by a pixel per digit are counts you have to re-read. */
+    /* Figures line up in columns. A count that jitters by a pixel per digit is
+       a count you have to re-read. */
     font-variant-numeric: tabular-nums;
   }
 
   /* --- Browser surfaces -------------------------------------------------
      The parts nobody draws still belong to the design. Left alone they ship a
-     UA blue caret, a UA blue selection and a Windows-grey scrollbar into an
-     enamel board. */
+     UA blue caret, a UA blue selection and a Windows-grey scrollbar into a
+     dark instrument room. */
 
   :focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 2px;
-    border-radius: 2px;
+    border-radius: var(--r-xs);
   }
 
-  /* Recharts makes its plot focusable so the arrow keys work. Clicking or
-     dragging on it then earns the UA's own blue ring, which is the one focus
-     treatment on the board nobody chose. Keyboard focus still gets the violet
-     ring above. */
+  /* Recharts makes its plot focusable so the arrow keys work. Clicking it then
+     earns the UA's own ring, which is the one focus treatment here nobody
+     chose. Keyboard focus still gets the violet ring above. */
   :focus:not(:focus-visible) {
     outline: none;
   }
 
   ::selection {
-    background: color-mix(in srgb, var(--violet) 24%, transparent);
-    color: var(--ink);
+    background: color-mix(in srgb, var(--pen) 32%, transparent);
+    color: var(--t1);
   }
 
   html {
-    caret-color: var(--violet);
-    accent-color: var(--violet);
-    scrollbar-color: var(--rule) transparent;
+    caret-color: var(--pen);
+    accent-color: var(--pen);
+    scrollbar-color: var(--edge-lit) transparent;
     scrollbar-width: thin;
   }
 
@@ -297,14 +361,14 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: var(--rule);
+    background: var(--edge-lit);
     border: 3px solid transparent;
     border-radius: 99px;
     background-clip: content-box;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--ink-faint);
+    background: var(--t3);
     background-clip: content-box;
   }
 
@@ -319,38 +383,183 @@
 }
 
 @layer components {
-  /* The board's own lettering: a column head, a table head, a field name.
-     Condensed, because that is how a ruled board fits a word into a column,
-     and it is the `wdth` axis doing it rather than a second family.
+  /* ---------------------------------------------------------------------
+     The aurora field
 
-     This labels a column or a field. It is never a kicker above a heading —
-     a heading carries its own weight. */
-  .board-label {
+     Fixed behind everything, painted once. Three gradient stops mix between
+     "calm" and "loaded" through `--pulse`, which `Aurora.tsx` sets from the
+     real open-report count — so the room's colour temperature is a reading,
+     not a mood.
+
+     Implemented as radial-gradients on two transformed layers rather than
+     blurred DOM nodes: `filter: blur()` on a full-viewport element repaints on
+     every frame of the drift and costs more than the effect is worth.
+     --------------------------------------------------------------------- */
+  .aurora {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    background: var(--void);
+    pointer-events: none;
+    /* Isolates the field's compositing from the scrolling content above it.
+       Deliberately not `strict`: that adds size containment, which this element
+       does not need (its size comes from the insets) and which is a footgun for
+       whoever edits this next. */
+    contain: layout paint style;
+  }
+
+  .aurora::before,
+  .aurora::after {
+    content: "";
+    position: absolute;
+    /* Oversized so the drift never exposes an edge. */
+    inset: -35%;
+    background-repeat: no-repeat;
+    will-change: transform;
+  }
+
+  .aurora::before {
+    background-image:
+      radial-gradient(
+        38% 46% at 18% 26%,
+        color-mix(in oklab, var(--aurora-calm), var(--aurora-load) calc(var(--pulse) * 100%))
+          calc(var(--aurora-alpha) * 100%),
+        transparent 70%
+      ),
+      radial-gradient(
+        42% 38% at 82% 18%,
+        color-mix(in oklab, var(--aurora-cool), var(--aurora-load) calc(var(--pulse) * 70%))
+          calc(var(--aurora-alpha) * 78%),
+        transparent 72%
+      );
+    animation: aurora-drift-a var(--drift) ease-in-out infinite alternate;
+  }
+
+  .aurora::after {
+    background-image:
+      radial-gradient(
+        46% 40% at 68% 82%,
+        color-mix(in oklab, var(--aurora-pen), var(--aurora-load) calc(var(--pulse) * 60%))
+          calc(var(--aurora-alpha) * 88%),
+        transparent 74%
+      ),
+      radial-gradient(
+        34% 34% at 24% 88%,
+        color-mix(in oklab, var(--aurora-calm), var(--aurora-pen) 40%)
+          calc(var(--aurora-alpha) * 60%),
+        transparent 70%
+      );
+    animation: aurora-drift-b calc(var(--drift) * 1.35) ease-in-out infinite alternate;
+  }
+
+  /* The grain. Without it the gradients band visibly on an 8-bit panel, which
+     is the single thing that makes a field like this look cheap. */
+  .aurora-grain {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.4;
+    mix-blend-mode: overlay;
+    background-size: 170px 170px;
+    /* Fractal noise as a data URI rather than a raster: it is ~300 bytes, it
+       scales, and it needs no image request under a CSP that would have to
+       allow one. */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 170 170'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.38'/%3E%3C/svg%3E");
+  }
+
+  @keyframes aurora-drift-a {
+    from {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    to {
+      transform: translate3d(4%, 3%, 0) scale(1.12);
+    }
+  }
+
+  @keyframes aurora-drift-b {
+    from {
+      transform: translate3d(0, 0, 0) scale(1.08);
+    }
+    to {
+      transform: translate3d(-5%, -4%, 0) scale(1);
+    }
+  }
+
+  /* ---------------------------------------------------------------------
+     Glass
+
+     A panel is a sheet of glass over the field: translucent ground, a lit top
+     edge where the light catches, a hairline everywhere else. `.glass-raised`
+     is the same sheet lifted — brighter, not darker underneath.
+     --------------------------------------------------------------------- */
+  .glass {
+    background: var(--panel);
+    border: 1px solid var(--edge);
+    border-radius: var(--r-lg);
+    box-shadow: var(--lift-1);
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+  }
+
+  .glass-raised {
+    background: var(--panel-raised);
+    border: 1px solid var(--edge-lit);
+    border-radius: var(--r-lg);
+    box-shadow: var(--lift-2);
+    backdrop-filter: blur(28px) saturate(160%);
+    -webkit-backdrop-filter: blur(28px) saturate(160%);
+  }
+
+  /* The evidence plate. The one surface that never goes dark: a screenshot of
+     a light product pinned to a dark ground is a lightbox, and an operator
+     reading twenty of them an evening feels every one. */
+  .plate-daylight {
+    background: #ffffff;
+    border: 1px solid var(--edge);
+    border-radius: var(--r-md);
+    color: #0b0e16;
+  }
+
+  /* ---------------------------------------------------------------------
+     Voices
+     --------------------------------------------------------------------- */
+
+  /* The console announcing: a page title, a headline count. Used sparingly —
+     a handful of elements per page, never for chrome. */
+  .display {
+    font-family: var(--stack-display);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+
+  /* A count read from across the room, lit from behind rather than printed. */
+  .figure {
+    font-family: var(--stack-display);
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    font-variant-numeric: tabular-nums;
+    color: var(--t1);
+  }
+
+  /* Column heads, field names, chip text. Not an eyebrow — it labels a thing
+     beside or under it, never a heading. */
+  .label {
     font-family: var(--stack-sans);
-    font-stretch: 84%;
     font-size: 0.75rem;
     line-height: 1.125rem;
-    font-weight: 600;
-    letter-spacing: 0.055em;
+    font-weight: 500;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--ink-faint);
+    color: var(--t3);
   }
 
-  /* A count read from across the room. */
-  .board-count {
-    font-family: var(--stack-sans);
-    font-stretch: 92%;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    font-variant-numeric: tabular-nums;
-    color: var(--ink);
-  }
-
-  /* The case ident. Tight, dark, unmistakably an identifier. */
+  /* The case ident. Unmistakably an identifier. */
   .ident {
     font-family: var(--stack-mono);
-    font-weight: 600;
-    letter-spacing: 0.01em;
+    font-weight: 500;
+    letter-spacing: -0.01em;
     font-variant-ligatures: none;
   }
 
@@ -358,35 +567,70 @@
   .machine {
     font-family: var(--stack-mono);
     font-size: 0.75rem;
-    line-height: 1.5;
-    color: var(--ink-soft);
+    line-height: 1.55;
+    color: var(--t2);
     overflow-wrap: anywhere;
   }
 
-  /* The reporter's own words — the note clipped to the board, and the one
-     serif on the screen. This is the reason the three-face system exists:
-     testimony must not look like chrome. */
+  /* The reporter's own words — the one serif on the screen, and the reason the
+     voices are separated at all: testimony must not look like chrome. */
   .testimony {
     font-family: var(--stack-serif);
     font-size: 1.1875rem;
-    line-height: 1.6;
-    letter-spacing: 0.002em;
-    color: var(--ink);
+    line-height: 1.65;
+    color: var(--t1);
     white-space: pre-wrap;
     overflow-wrap: anywhere;
     /* Prose measure. Machine data and tables run denser; a sentence does not. */
     max-width: 68ch;
   }
 
-  /* A magnetic tile resting on the enamel. */
-  .tile {
-    background: var(--tile);
-    border: 1px solid var(--rule);
-    border-radius: var(--radius);
-    box-shadow: var(--lift-1);
+  /* ---------------------------------------------------------------------
+     Interaction
+     --------------------------------------------------------------------- */
+
+  /* The spotlight. A panel that can be acted on catches the light where the
+     pointer is — `--mx`/`--my` are written by `useSpotlight`. It is a hover
+     affordance only: nothing is communicated by it that is not also said in
+     text, and it is inert for touch and keyboard users by construction. */
+  .spotlight {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .spotlight::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 260ms ease;
+    background: radial-gradient(
+      18rem 18rem at var(--mx, 50%) var(--my, 50%),
+      var(--pen-glow),
+      transparent 70%
+    );
+  }
+
+  .spotlight:hover::before {
+    opacity: 1;
+  }
+
+  /* A row in a dense list. Rules do not divide these — a change of ground
+     does, which is what keeps a long table from reading as a spreadsheet. */
+  .row-hover {
+    transition: background-color 160ms ease;
+  }
+
+  .row-hover:hover {
+    background: var(--panel-sunk);
   }
 }
 
+/* An operator who has asked for less motion gets a still field — the aurora's
+   colour still carries the queue reading, which is the part that matters; only
+   the drift stops. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

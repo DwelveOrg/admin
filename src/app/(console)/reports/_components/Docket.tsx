@@ -39,17 +39,21 @@ export function Docket({
     <aside
       aria-label="Report docket"
       className={cn(
-        "flex min-h-0 w-full shrink-0 flex-col border-rule bg-tile lg:w-[344px] lg:border-r",
+        "glass flex w-full shrink-0 flex-col overflow-hidden",
+        // The page scrolls; this column stays put and scrolls its own list.
+        // 5.5rem clears the floating rail, and the max-height is what gives the
+        // inner list something to scroll against.
+        "lg:sticky lg:top-[5.5rem] lg:max-h-[calc(100dvh-7rem)] lg:w-[22rem]",
         className,
       )}
     >
-      <div className="space-y-2.5 border-b border-rule bg-board p-3">
+      <div className="space-y-2.5 border-b border-edge p-3">
         <SearchField params={params} />
         <StatusRail params={params} counts={meta.counts} total={totalOf(meta.counts)} />
         <KindFilter params={params} />
       </div>
 
-      <div className="min-h-0 flex-1 divide-y divide-rule-soft overflow-y-auto">
+      <div className="min-h-0 flex-1 divide-y divide-edge overflow-y-auto">
         {reports.length === 0 ? (
           <EmptyDocket filtered={filtered} params={params} />
         ) : (
@@ -86,11 +90,11 @@ function EmptyDocket({ filtered, params }: { filtered: boolean; params: DocketPa
     <div className="px-5 py-12 text-center">
       <span
         aria-hidden
-        className="mx-auto flex size-9 items-center justify-center rounded-md border border-rule bg-board text-ink-faint"
+        className="mx-auto flex size-9 items-center justify-center rounded-md border border-edge bg-panel-sunk text-t3"
       >
         <Inbox className="size-4" />
       </span>
-      <p className="mt-3 text-13 font-semibold text-ink">
+      <p className="mt-3 text-13 font-semibold text-t1">
         {filtered ? "Nothing matches these filters" : "The board is clear"}
       </p>
       {filtered ? (
@@ -101,12 +105,12 @@ function EmptyDocket({ filtered, params }: { filtered: boolean; params: DocketPa
             search: undefined,
             reportId: null,
           })}
-          className="mt-1.5 inline-block text-13 font-medium text-violet hover:underline"
+          className="mt-1.5 inline-block text-13 font-medium text-pen hover:underline"
         >
           Clear filters
         </Link>
       ) : (
-        <p className="mx-auto mt-1.5 max-w-[30ch] text-note leading-relaxed text-ink-faint">
+        <p className="mx-auto mt-1.5 max-w-[30ch] text-note leading-relaxed text-t3">
           A tile appears the moment someone files a report from inside the product.
         </p>
       )}
@@ -119,7 +123,7 @@ function Pager({ params, meta }: { params: DocketParams; meta: ReportList["meta"
   const next = Math.min(meta.page + 1, meta.totalPages);
 
   return (
-    <div className="flex shrink-0 items-center justify-between gap-2 border-t border-rule bg-board px-3 py-2">
+    <div className="flex shrink-0 items-center justify-between gap-2 border-t border-edge px-3 py-2">
       <PagerLink
         href={docketHref(params, { page: previous, reportId: null })}
         disabled={meta.page <= 1}
@@ -128,7 +132,7 @@ function Pager({ params, meta }: { params: DocketParams; meta: ReportList["meta"
         <ChevronLeft className="size-3.5" aria-hidden />
       </PagerLink>
 
-      <span className="text-note tabular-nums text-ink-faint">
+      <span className="text-note tabular-nums text-t3">
         {meta.page} of {meta.totalPages} · {meta.total} total
       </span>
 
@@ -161,7 +165,7 @@ function PagerLink({
     return (
       <span
         aria-disabled="true"
-        className="inline-flex size-7 items-center justify-center rounded-sm text-ink-faint opacity-40"
+        className="inline-flex size-7 items-center justify-center rounded-sm text-t3 opacity-40"
       >
         {children}
       </span>
@@ -172,7 +176,7 @@ function PagerLink({
     <Link
       href={href}
       aria-label={label}
-      className="inline-flex size-7 items-center justify-center rounded-sm border border-rule bg-tile text-ink-soft transition-colors duration-150 hover:bg-wash hover:text-ink"
+      className="inline-flex size-7 items-center justify-center rounded-sm border border-edge bg-panel-solid text-t2 transition-colors duration-160 hover:bg-panel-sunk hover:text-t1"
     >
       {children}
     </Link>

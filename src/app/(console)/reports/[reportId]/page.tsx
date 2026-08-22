@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { PageShell } from "@/components/console/page-furniture";
 import { BackendApiError } from "@/lib/api/backend";
 import { caseIdent } from "@/lib/case-ident";
 import { getReportRequest, listReportsRequest } from "@/lib/reports/api";
@@ -43,20 +44,22 @@ export default async function CasePage({ params, searchParams }: PageProps) {
   if (!report) notFound();
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
-      {/* Hidden on mobile: at this width the case file is the page, and the
-          docket is one tap away through the header's back link. */}
-      <Docket
-        params={docketParams}
-        list={list}
-        activeReportId={reportId}
-        className="hidden lg:flex"
-      />
+    <PageShell>
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-start">
+        {/* Hidden on mobile: at that width the case file is the page, and the
+            docket is one tap away through the case file's own back link. */}
+        <Docket
+          params={docketParams}
+          list={list}
+          activeReportId={reportId}
+          className="hidden lg:flex"
+        />
 
-      <main className="min-h-0 flex-1 overflow-y-auto">
-        <CaseFile report={report} params={docketParams} />
-      </main>
-    </div>
+        <div className="glass min-w-0 flex-1">
+          <CaseFile report={report} params={docketParams} />
+        </div>
+      </div>
+    </PageShell>
   );
 }
 

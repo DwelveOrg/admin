@@ -1,341 +1,438 @@
 ---
 name: Dwelve Operations
-description: A ward handover board for platform operators — enamel field, steel rail, one magnetic tile per case.
+description: The room at night — a lit aurora field, glass instrument panels, and a queue you read from the wall colour before you read a word.
 colors:
-  room: "#e4e8e7"
-  board: "#f4f6f5"
-  tile: "#ffffff"
-  rail: "#1d2321"
-  rail-ink: "#ffffff"
-  rail-soft: "#a9b3b1"
-  rail-rule: "#333b39"
-  ink: "#1a1d1f"
-  ink-soft: "#4c5457"
-  ink-faint: "#646c6f"
-  rule: "#c6ccca"
-  rule-soft: "#dde2e0"
-  wash: "#e7eae9"
-  violet: "#4c25e5"
-  violet-hover: "#3d18ce"
-  violet-ink: "#ffffff"
-  violet-wash: "#eae6fe"
-  ring: "#6e4bff"
-  open: "#b04713"
-  open-wash: "#f7e9df"
-  review: "#0b6d79"
-  review-wash: "#ddeff2"
-  resolved: "#2c7a45"
-  resolved-wash: "#e5f2e9"
-  dismissed: "#5e6a6b"
-  dismissed-wash: "#e7eae9"
-  danger: "#b3271e"
-  danger-wash: "#f9e4e2"
+  void: "#f4f6fb"
+  void-deep: "#e8ebf3"
+  panel-solid: "#ffffff"
+  t1: "#0b0e16"
+  t2: "#4b5468"
+  t3: "#697187"
+  pen: "#5b34e8"
+  pen-hover: "#4a26cf"
+  pen-ink: "#ffffff"
+  ring: "#6d4aff"
+  open: "#b04a09"
+  open-lit: "#ea8c3e"
+  review: "#0d6f80"
+  review-lit: "#22a6bd"
+  resolved: "#05704a"
+  resolved-lit: "#10a06b"
+  dismissed: "#58617a"
+  dismissed-lit: "#7d879d"
+  danger: "#b3231f"
+  danger-lit: "#e2564f"
+  aurora-calm: "#0f9e86"
+  aurora-cool: "#2563d8"
+  aurora-pen: "#5b34e8"
+  aurora-load: "#d97317"
+  dark-void: "#06070d"
+  dark-void-deep: "#030408"
+  dark-panel-solid: "#12141d"
+  dark-t1: "#eef1f8"
+  dark-t2: "#9aa4bb"
+  dark-t3: "#778096"
+  dark-pen: "#8b6cff"
+  dark-pen-ink: "#0b0716"
+  dark-open: "#ffab5c"
+  dark-review: "#5ad4e6"
+  dark-resolved: "#5fdc9d"
+  dark-dismissed: "#97a2b9"
+  dark-danger: "#ff8177"
 typography:
+  display:
+    fontFamily: "Bricolage Grotesque, Instrument Sans, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "3.5rem"
+    fontWeight: 600
+    lineHeight: 0.94
+    letterSpacing: "-0.03em"
   count:
-    fontFamily: "Archivo, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "2.5rem"
-    fontWeight: 700
-    lineHeight: 1
-    letterSpacing: "-0.02em"
+    fontFamily: "Bricolage Grotesque, Instrument Sans, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "2.75rem"
+    fontWeight: 600
+    lineHeight: 0.95
+    letterSpacing: "-0.035em"
   figure:
-    fontFamily: "Archivo, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "1.875rem"
-    fontWeight: 700
+    fontFamily: "Bricolage Grotesque, Instrument Sans, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "1.75rem"
+    fontWeight: 600
     lineHeight: 1
-    letterSpacing: "-0.02em"
-  h1:
-    fontFamily: "Archivo, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "1.5rem"
-    fontWeight: 700
-    lineHeight: 2rem
-    letterSpacing: "-0.02em"
+    letterSpacing: "-0.035em"
   h2:
-    fontFamily: "Archivo, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Instrument Sans, ui-sans-serif, system-ui, sans-serif"
     fontSize: "0.9375rem"
     fontWeight: 600
-    lineHeight: 1.5rem
-    letterSpacing: "-0.01em"
+    lineHeight: "1.45rem"
+    letterSpacing: "-0.015em"
   body:
-    fontFamily: "Archivo, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Instrument Sans, ui-sans-serif, system-ui, sans-serif"
     fontSize: "0.8125rem"
     fontWeight: 400
-    lineHeight: 1.25rem
+    lineHeight: "1.25rem"
     letterSpacing: "normal"
   note:
-    fontFamily: "Archivo, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "Instrument Sans, ui-sans-serif, system-ui, sans-serif"
     fontSize: "0.75rem"
     fontWeight: 400
-    lineHeight: 1.125rem
+    lineHeight: "1.125rem"
     letterSpacing: "normal"
-  board-label:
-    fontFamily: "Archivo, ui-sans-serif, system-ui, sans-serif"
+  label:
+    fontFamily: "Instrument Sans, ui-sans-serif, system-ui, sans-serif"
     fontSize: "0.75rem"
-    fontWeight: 600
-    lineHeight: 1.125rem
-    letterSpacing: "0.055em"
+    fontWeight: 500
+    lineHeight: "1.125rem"
+    letterSpacing: "0.06em"
+    textTransform: "uppercase"
   machine:
-    fontFamily: "Azeret Mono, ui-monospace, SFMono-Regular, Menlo, monospace"
+    fontFamily: "JetBrains Mono, ui-monospace, SFMono-Regular, Menlo, monospace"
     fontSize: "0.75rem"
     fontWeight: 400
-    lineHeight: 1.5
+    lineHeight: 1.55
     letterSpacing: "normal"
   testimony:
-    fontFamily: "Petrona, ui-serif, Georgia, serif"
+    fontFamily: "Newsreader, ui-serif, Georgia, serif"
     fontSize: "1.1875rem"
     fontWeight: 400
-    lineHeight: 1.6
-    letterSpacing: "0.002em"
+    lineHeight: 1.65
+    letterSpacing: "normal"
 rounded:
-  sm: "2px"
-  md: "3px"
-  lg: "4px"
-  xl: "6px"
+  xs: "6px"
+  sm: "9px"
+  md: "13px"
+  lg: "18px"
+  xl: "24px"
+  pill: "99px"
 spacing:
   xs: "4px"
   sm: "8px"
   md: "12px"
   lg: "16px"
   xl: "20px"
+  "2xl": "24px"
 components:
-  button-solid:
-    backgroundColor: "{colors.violet}"
-    textColor: "{colors.violet-ink}"
+  panel:
+    backgroundColor: "rgb(255 255 255 / 0.74)"
+    textColor: "{colors.t1}"
+    rounded: "{rounded.lg}"
+    backdropFilter: "blur(20px) saturate(150%)"
+  panel-raised:
+    backgroundColor: "rgb(255 255 255 / 0.92)"
+    textColor: "{colors.t1}"
+    rounded: "{rounded.lg}"
+    backdropFilter: "blur(28px) saturate(160%)"
+  panel-well:
+    backgroundColor: "rgb(14 18 32 / 0.035)"
+    textColor: "{colors.t1}"
     rounded: "{rounded.md}"
-    padding: "0 14px"
-    height: "36px"
+  plate-daylight:
+    backgroundColor: "#ffffff"
+    textColor: "#0b0e16"
+    rounded: "{rounded.md}"
+  button-primary:
+    backgroundColor: "{colors.pen}"
+    textColor: "{colors.pen-ink}"
+    rounded: "{rounded.md}"
+    padding: "0 16px"
+    height: "38px"
     typography: "{typography.body}"
-  button-solid-hover:
-    backgroundColor: "{colors.violet-hover}"
-    textColor: "{colors.violet-ink}"
-  button-outline:
-    backgroundColor: "{colors.tile}"
-    textColor: "{colors.ink}"
+  button-primary-hover:
+    backgroundColor: "{colors.pen-hover}"
+    textColor: "{colors.pen-ink}"
+  button-glass:
+    backgroundColor: "rgb(255 255 255 / 0.74)"
+    textColor: "{colors.t1}"
     rounded: "{rounded.md}"
-    padding: "0 14px"
-    height: "36px"
-  button-outline-hover:
-    backgroundColor: "{colors.wash}"
-    textColor: "{colors.ink}"
+    padding: "0 16px"
+    height: "38px"
   button-danger:
-    backgroundColor: "{colors.tile}"
+    backgroundColor: "rgb(255 255 255 / 0.74)"
     textColor: "{colors.danger}"
     rounded: "{rounded.md}"
-    height: "36px"
+    height: "38px"
   input:
-    backgroundColor: "{colors.tile}"
-    textColor: "{colors.ink}"
+    backgroundColor: "rgb(14 18 32 / 0.035)"
+    textColor: "{colors.t1}"
     rounded: "{rounded.md}"
-    padding: "0 10px"
-    height: "36px"
+    padding: "0 12px"
+    height: "38px"
     typography: "{typography.body}"
-  tile:
-    backgroundColor: "{colors.tile}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.md}"
   chip-open:
-    backgroundColor: "{colors.open-wash}"
+    backgroundColor: "rgb(176 74 9 / 0.10)"
     textColor: "{colors.open}"
-    rounded: "{rounded.sm}"
-    padding: "4px 8px"
+    rounded: "{rounded.xs}"
+    padding: "4px 10px"
   chip-review:
-    backgroundColor: "{colors.review-wash}"
+    backgroundColor: "rgb(13 111 128 / 0.10)"
     textColor: "{colors.review}"
-    rounded: "{rounded.sm}"
-    padding: "4px 8px"
+    rounded: "{rounded.xs}"
+    padding: "4px 10px"
   chip-resolved:
-    backgroundColor: "{colors.resolved-wash}"
+    backgroundColor: "rgb(5 112 74 / 0.10)"
     textColor: "{colors.resolved}"
-    rounded: "{rounded.sm}"
-    padding: "4px 8px"
+    rounded: "{rounded.xs}"
+    padding: "4px 10px"
   chip-dismissed:
-    backgroundColor: "{colors.dismissed-wash}"
+    backgroundColor: "rgb(88 97 122 / 0.10)"
     textColor: "{colors.dismissed}"
-    rounded: "{rounded.sm}"
-    padding: "4px 8px"
+    rounded: "{rounded.xs}"
+    padding: "4px 10px"
   nav-tab-active:
-    backgroundColor: "{colors.board}"
-    textColor: "{colors.ink}"
+    backgroundColor: "rgb(255 255 255 / 0.92)"
+    textColor: "{colors.t1}"
     rounded: "{rounded.sm}"
-    height: "32px"
+    height: "36px"
 ---
 
 # Design System: Dwelve Operations
 
 ## Overview
 
-The model is the enamel handover board on a hospital ward wall at shift change:
-ruled into columns, one magnetic tile per case, acuity colour doing the triage
-before a word is read. An operator should be able to answer "how much is
-waiting, and who needs a person now" from across the room. That is this
-console's first question, so the board answers it the same way.
+An operations room, not a document. The ground is a deep field with a slow
+aurora behind it; the interface is a set of glass instrument panels floating a
+few millimetres above that field, and the data on them is emissive — lit from
+behind rather than printed.
 
-Light-first, which is unusual for an operator tool and follows from the content:
-the evidence on screen is screenshots of a light product, and a near-black
-chrome makes every one of them glare. Dark is a genuine second character for
-evening triage — the enamel goes to slate, surfaces still step *up* toward the
-tile, and every acuity colour brightens rather than desaturating.
+This is deliberately the inverse of the product frontend. That app is a light,
+warm, document-shaped surface a student reads for an hour, set in IBM Plex with
+soft-depth cards. This is an instrument an operator watches. Two different jobs,
+two different rooms — and an operator moving between the two windows should
+never have to check which one they are looking at.
+
+**Dark-first**, with light as a genuine second character for daytime work rather
+than an inversion: at noon the field goes to a cool off-white and glass becomes
+frosted rather than lit, but the aurora, the panel vocabulary and every semantic
+colour keep their meaning.
+
+## The signature — the aurora is the queue
+
+The field behind the glass is not decoration and it is not random. `--pulse`
+(0 → 1) is computed in `Aurora.tsx` from the live open-report count: at rest the
+field sits cool — green-cyan, wide, slow — and as work stacks up it warms toward
+amber and the drift period shortens from 64s to 42s. The console's first
+question is *how much is waiting*, and the room answers it before a word is read.
+
+Saturation point is 24 open reports, chosen from what this queue actually looks
+like: past a couple of dozen standing reports a hotter wall says nothing new,
+and below it the gradient genuinely distinguishes five from twenty.
+
+**It is never the only channel.** Every count the field encodes is also stated in
+text on the same screen, and the drift carries the same reading as the hue for
+anyone who reads movement more easily than colour. Nothing is load-bearing for
+someone who cannot see it.
+
+## The second signature — the sealed credential
+
+A password cannot be shown, because `User.passwordHash` is a bcrypt hash and the
+plaintext was never stored. What the console can do is issue a new one, and that
+card (`CredentialPanel`) is the loudest object in the application — a lit violet
+panel where everything around it is glass — because it is the only state here
+that cannot be returned to. It is masked until revealed, copyable as a
+login/password pair, and it says on its face that reloading will not bring it
+back.
 
 ## Colors
 
-Strategy: **restrained in deployment, semantic in vocabulary.** The board is
-enamel, graphite and rule. Colour appears only where it carries meaning, and
-every colour on screen has a legend somewhere.
+Strategy: **restrained in deployment, semantic in vocabulary.** The room is
+field, glass and text. Colour appears only where it carries meaning, and every
+colour on screen has a legend somewhere.
 
 ### Primary
 
-`violet` `#4c25e5` is the operator's pen: primary actions, the current
-selection, the drag-selection band on a chart. Never decoration. It is the
-product's own action colour and keeps that meaning across both apps.
+`pen` is the operator's pen: primary actions, the current selection, the
+drag-selection band on a chart. Never decoration. It is the product's own action
+colour and keeps that meaning across both apps.
 
 ### Secondary — acuity
 
-The four dispositions, carrying the product's semantics unchanged: `open`
-`#b04713` (work not started), `review` `#0b6d79` (work in hand), `resolved`
-`#2c7a45` (a fix), `dismissed` `#5e6a6b` (a conclusion, deliberately
-colourless — a dismissal is not an achievement and a colour would let it read
-as one down the column).
+The four dispositions, carrying the product's semantics unchanged: `open` (work
+not started), `review` (work in hand), `resolved` (a fix), `dismissed` (a
+conclusion, deliberately colourless — a dismissal is not an achievement and a
+colour would let it read as one down the column).
 
-Each pairs with a `-wash` for chip grounds. Every value clears 4.5:1 on both
-the tile and the enamel, in both characters.
+Each has a `-lit` sibling for a glow and a `-wash` for chip grounds.
 
 ### Neutral
 
-`room` → `board` → `tile` is wall → vitreous enamel → magnetic tile. The enamel
-is cool and very slightly green, which is what stops it reading as paper. `rail`
-`#1d2321` is the board's steel frame. Text ramps `ink` → `ink-soft` →
-`ink-faint`; `rule` and `rule-soft` are the ruled lines, `wash` the hover ground.
+`void` is the field, `panel` the glass over it, `panel-raised` glass lifted, and
+`panel-sunk` a recess. Text ramps `t1` → `t2` → `t3`.
 
 ### Named Rules
 
-- **No state is carried by colour alone.** Every disposition owns a drawn mark
-  as well as a hue. See Signature Component below.
-- **Chart series take the plate's own pen set**, declared in that plate's
-  legend: graphite for the raw count, plus the acuity colour whose meaning
-  actually matches the series (green for a completed attempt, amber for a filed
-  report). Roles are not dispositions, so the membership ring uses graphite,
-  teal and green with its own legend.
-- **Violet never tints a surface** except `violet-wash` for a current selection.
-- **A delta is graphite with a drawn caret**, never green-up/red-down; that
-  would borrow a disposition's meaning to say "went up".
+- **No state is carried by colour alone.** Every disposition owns a drawn mark as
+  well as a hue. See Signature Component below.
+- **Every text token clears 4.5:1** against the lightest ground it lands on, in
+  both characters — including `t3`, which is the quietest step but still carries
+  functional text (column heads, metadata, pager counts). These were solved for,
+  not eyeballed: the value that *looked* like a correct third step came out at
+  3.6:1.
+- **Chart series take the plate's own pen set**, declared in that plate's legend.
+  Roles are not dispositions, so the membership ring uses pen, review and
+  resolved with its own legend rather than borrowing disposition meanings.
+- **`pen` never tints a surface** except `pen-wash` for a current selection.
+- **A delta is text ink with a drawn caret**, never green-up/red-down; that would
+  borrow a disposition's meaning to say "went up".
 
 ## Typography
 
-Three faces, one per kind of text, because three kinds share a case file and
-telling them apart is a reading aid rather than decoration.
+Four faces, one per genuinely different kind of text, because a case file puts
+three of them on one screen at once and separating them typographically means no
+labels are needed to say which is which.
 
-- **Archivo** — the board speaking. One family carrying two widths: the `wdth`
-  axis at 84% supplies the condensed setting a ruled board uses for column heads
-  and field names, so there is no second sans to keep in sync.
-- **Azeret Mono** — the machine reporting: idents, UUIDs, user agents, viewports,
-  locales, builds. Read character by character.
-- **Petrona** — the reporter's own words, and nothing else.
+- **Bricolage Grotesque** — the console announcing. A display grotesque with real
+  character in its joins, which is exactly wrong for a 13px table cell and
+  exactly right for a count read across a room. **Display only**: page titles and
+  figures, a handful of elements per page.
+- **Instrument Sans** — the console speaking. Every other interface surface.
+- **JetBrains Mono** — the machine reporting: idents, UUIDs, user agents,
+  viewports, builds, and the issued credential. Chosen because it disambiguates
+  0/O and 1/l/I harder than the alternatives, and a mistyped credential is a
+  support ticket.
+- **Newsreader** — a person's own words, and nothing else. Route-scoped to the
+  case file (`preload: false`), the only place testimony appears.
+
+None of these is the frontend's face.
 
 ### Hierarchy
 
-Fixed rem scale at roughly a 1.2 ratio, never fluid: an operator reads this at a
-consistent DPI all day and a heading that shrinks inside a narrow pane looks
-worse rather than better.
+A fixed rem scale, never fluid: an operator reads this at a steady DPI all day,
+and a heading that shrinks inside a narrow pane reads as broken rather than
+responsive. The overview's opening line is the single exception — it is the
+page's thesis and clamps between 2rem and 3.5rem.
 
-`count` 40px → `figure` 30px → `h1` 24px → `h2` 15px → `body` 13px → `note` 12px.
+`display` 56px → `count` 44px → `figure` 28px → `h2` 15px → `body` 13px →
+`note`/`label` 12px.
 
 ### Named Rules
 
 - **12px is the floor.** Nothing functional is set smaller.
-- **No eyebrows.** A heading carries its own weight; `.board-label` labels a
-  column, a table head or a `<dt>`, never a heading.
-- **Figures are tabular** board-wide, so counts do not jitter down a column.
-- **Prose measure is capped** (`.testimony` at 68ch, page intros at ~62ch);
+- **No eyebrows.** A heading carries its own weight; `.label` labels a column, a
+  field or a `<dt>`, never a heading.
+- **Figures are tabular** console-wide, so counts do not jitter down a column.
+- **Prose measure is capped** (`.testimony` at 68ch, page intros at ~64ch);
   tables and machine data run denser.
 
 ## Layout
 
-Fixed-height app shell: `h-dvh` with a steel rail on top and internal scroll
-regions below, so the docket and the tables both keep the full viewport. Content
-is capped at 1440px. Responsive behaviour is structural — the docket becomes the
-whole page under `lg` and the case file becomes its own route; the totals band
-goes 4-up → 2-up; nav labels drop to icons under `md`.
+The page scrolls; the field behind it does not. The command rail floats over the
+field as a sticky sheet of glass rather than sitting on it as a bar, so the room
+stays one continuous thing however far down you are. Content caps at 1520px.
+
+The docket is the one two-pane surface: a sticky column beside a scrolling case
+file above `lg`, and the whole page below it, where the case file becomes its own
+route.
 
 ## Elevation & Depth
 
-A tile is a physical object resting on a board, so depth is a real shadow with
-an offset and a soft blur, never a flat halo.
+**Depth is light, not shadow.** A panel is a sheet of glass: a translucent
+ground, a lit top edge where the light catches it, and a hairline everywhere
+else. Raising something makes it brighter and its edge sharper — it never
+darkens the surface underneath.
 
 ### Shadow Vocabulary
 
-- `lift-1` — a tile resting on the enamel: `0 1px 1px rgb(26 29 31 / .06), 0 2px 5px -2px rgb(26 29 31 / .10)`
-- `lift-2` — a tile picked up: a chart readout, a popover, the login sheet.
+- `lift-1` — a panel resting over the field: an inset top-edge highlight plus a
+  soft ambient pool.
+- `lift-2` — a panel lifted: the command rail, the palette, a chart readout, the
+  login sheet.
+- `lift-pen` — a violet glow, for the primary action and the credential card.
 
 ### Named Rules
 
-- **Rules do the dividing, not shadows.** Hard 1px `rule` lines separate cells
-  in a band, rows in a table, and a plate's header from its body.
-- **Pressed controls move.** `active:translate-y-px` with the shadow removed.
+- **Rules divide within a panel, never between panels.** Panels are separated by
+  the field showing between them.
+- **Pressed controls move.** `active:translate-y-px` with the glow removed.
+- **Glass may hold a well, never another panel.** A recess is a different
+  material gesture; a second sheet of glass doubles the blur cost and flattens
+  both.
 
 ## Shapes
 
-3px corners throughout (`rounded.md`), 2px for chips and small controls. These
-are magnetic tiles, not stickers; a 12px radius would break the material.
+9–18px corners. These are instrument panels, not paper cards and not stickers.
+The 99px pill is reserved for the scrollbar thumb, which is not part of the panel
+scale.
+
+## Motion
+
+- **160ms** on controls, with a `cubic-bezier(0.2, 0.8, 0.2, 1)` curve: fast
+  enough that an operator in flow never waits for choreography, shaped enough
+  that a control feels like an object.
+- **Figures count up once** on first paint, ease-out cubic over 900ms — a number
+  that lands reads as just measured, which is what a live instrument should look
+  like. The final value is what the server renders, so no state ever shows
+  something untrue.
+- **The aurora drifts** over 42–64s depending on the pulse.
+- **`prefers-reduced-motion` is honoured throughout**, in CSS and in the two
+  JavaScript effects that CSS cannot reach (`useCountUp`, `useSpotlight`). The
+  aurora keeps its *colour* when motion is reduced — that is the reading — and
+  only the drift stops.
 
 ## Components
 
 ### Buttons
 
-`solid` (violet pen), `outline` (a tile with a rule), `ghost`, `danger`. One
-shape and one height across the whole board — the search button on `/schools`
-and the save button on a case file are the same object.
+`primary` (the pen, with a real glow), `glass`, `ghost`, `danger`. One shape and
+one height across the whole console.
 
-### Chips
+### Panels
 
-Disposition chips pair a wash ground with its ink and always carry the mark.
-
-### Cards / Containers
-
-`.tile` is the only container: white, 1px `rule`, 3px radius, `lift-1`. Plates
-add a ruled header strip and an optional ruled footer. **Never nest tiles.**
+`Panel` is the only container, with an optional ruled head and footer.
+`PanelWell` is the recess inside it.
 
 ### Inputs / Fields
 
-36px tall, `rule` border, violet border plus a `ring/35` halo on focus. The
-shared control is `w-full`; constrain it at the call site inside a flex row.
+38px tall, recessed ground — a field is the one place you put something *into*,
+and the ground going darker than its surroundings says so before any border
+does. Focus lights the recess: a violet edge plus a 3px glow ring.
 
 ### Navigation
 
-The rail is the frame. The current section is an **enamel tab** — the same
-material as the board below it — so the tab reads as the surface you are
-standing on rather than as a highlighted link. Material, not colour, does this.
+The rail is a floating glass sheet. The current section is a lit pill: the ground
+changes material *and* the label goes to full ink, so the state survives being
+unable to see the violet.
+
+### Command palette (⌘K)
+
+Not a search index — every entry is a route the console could already reach. It
+recognises a pasted UUID (opens the case directly) and a case ident (goes to the
+docket search that can resolve it), and otherwise offers all three directory
+searches, because it cannot know whether a term is a school or a person but it
+can offer both.
 
 ### Signature Component — the acuity mark
 
 Four silhouettes, not four colours: a solid block for work not started, a
 half-filled block for work in hand, a check for a fix, a strike for a dismissal.
 Drawn SVG at 12px, because no icon library has a glyph meaning "half done" that
-does not also mean something else. This is what makes the board readable in
+does not also mean something else. This is what makes the console readable in
 greyscale, on a projector, and to an operator who cannot separate amber from
-green.
+green. It survived the redesign because it was never a stylistic choice.
 
-### Signature Component — the case tile
+### Signature Component — the case row carrier
 
-A carrier strip of acuity colour down the leading edge, as a real element rather
-than a coloured border, because that is what it is: part of the object. Three
-lines in triage order — ident and age, what the person said, who said it.
+A strip of acuity colour down the leading edge that *glows*, because in this room
+an acuity colour is a light source and light spills. `dismissed` carries no glow
+by design.
 
 ## Do's and Don'ts
 
 ### Do:
 
 - Give every colour a legend and every state a shape.
-- Set counts to be read from across the room.
-- Use `cn()` from `src/lib/utils.ts` — it is tailwind-merge taught this board's
-  font-size names.
-- Read chart colours through `useBoardPalette`; `var()` does not resolve in SVG
+- Keep the evidence on a daylight plate. A screenshot of a light product matted
+  on a dark ground is a lightbox.
+- Use `cn()` from `src/lib/utils.ts` — it is tailwind-merge taught this console's
+  font-size names. Every `--text-*` added to `globals.css` must be added there.
+- Read chart colours through `useChartPalette`; `var()` does not resolve in SVG
   presentation attributes.
 - Confirm a destructive action inline, in the console's own words.
 
 ### Don't:
 
 - Put an eyebrow above a heading.
-- Ship functional text below 12px.
-- Nest a tile inside a tile, or reach for a soft rounded card.
-- Raise `window.confirm` — it is the one surface here nobody designed.
-- Let violet mean anything but "action" or "selected".
+- Ship functional text below 12px, or a text colour under 4.5:1.
+- Nest a panel inside a panel.
+- Raise `window.confirm` — it is the one surface here nobody designed, and it
+  cannot state what an action does.
+- Let the pen mean anything but "action" or "selected".
 - Write `var(--font-sans|mono|serif)` in hand-authored CSS; use `var(--stack-*)`.
+- Let the aurora become the only channel for anything.

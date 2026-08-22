@@ -2,16 +2,22 @@ import "server-only";
 
 import { authedBackendJson } from "@/lib/auth/backend";
 import {
+  passwordResetResponseSchema,
   platformOverviewSchema,
+  platformSchoolDetailSchema,
   platformSchoolListSchema,
   platformSchoolResponseSchema,
-  platformStudentListSchema,
-  platformStudentResponseSchema,
+  platformUserListSchema,
+  platformUserResponseSchema,
+  schoolMemberListSchema,
+  type DirectoryRole,
+  type SchoolRole,
 } from "./schemas";
 
-export type PlatformStudentQuery = {
+export type PlatformUserQuery = {
   search?: string;
   status?: "ACTIVE" | "BLOCKED";
+  role?: DirectoryRole;
   page?: number;
   limit?: number;
 };
@@ -23,6 +29,14 @@ export type PlatformSchoolQuery = {
   limit?: number;
 };
 
+export type SchoolMemberQuery = {
+  search?: string;
+  role?: SchoolRole;
+  status?: "ACTIVE" | "INACTIVE";
+  page?: number;
+  limit?: number;
+};
+
 export function getPlatformOverviewRequest(days = 30) {
   return authedBackendJson("/platform/overview", {
     query: { days },
@@ -30,18 +44,39 @@ export function getPlatformOverviewRequest(days = 30) {
   });
 }
 
-export function listPlatformStudentsRequest(query: PlatformStudentQuery) {
-  return authedBackendJson("/platform/students", {
+/** `GET /platform/users` — every account, filterable across both role systems. */
+export function listPlatformUsersRequest(query: PlatformUserQuery) {
+  return authedBackendJson("/platform/users", {
     query,
-    responseSchema: platformStudentListSchema,
+    responseSchema: platformUserListSchema,
   });
 }
 
-export function updatePlatformStudentAccessRequest(userId: string, blocked: boolean) {
-  return authedBackendJson(`/platform/students/${userId}/access`, {
+export function getPlatformUserRequest(userId: string) {
+  return authedBackendJson(`/platform/users/${userId}`, {
+    responseSchema: platformUserResponseSchema,
+  });
+}
+
+export function updatePlatformUserAccessRequest(userId: string, blocked: boolean) {
+  return authedBackendJson(`/platform/users/${userId}/access`, {
     method: "PATCH",
     body: { blocked },
-    responseSchema: platformStudentResponseSchema,
+    responseSchema: platformUserResponseSchema,
+  });
+}
+
+/**
+ * `POST /platform/users/:id/password` — issue a credential and return it once.
+ *
+ * POST rather than GET because it *creates* something. A GET would put a live
+ * password in the browser's history, the server's access log, and any
+ * intermediary that caches by method.
+ */
+export function resetPlatformUserPasswordRequest(userId: string) {
+  return authedBackendJson(`/platform/users/${userId}/password`, {
+    method: "POST",
+    responseSchema: passwordResetResponseSchema,
   });
 }
 
@@ -49,6 +84,19 @@ export function listPlatformSchoolsRequest(query: PlatformSchoolQuery) {
   return authedBackendJson("/platform/schools", {
     query,
     responseSchema: platformSchoolListSchema,
+  });
+}
+
+export function getPlatformSchoolRequest(schoolId: string) {
+  return authedBackendJson(`/platform/schools/${schoolId}`, {
+    responseSchema: platformSchoolDetailSchema,
+  });
+}
+
+export function listSchoolMembersRequest(schoolId: string, query: SchoolMemberQuery) {
+  return authedBackendJson(`/platform/schools/${schoolId}/members`, {
+    query,
+    responseSchema: schoolMemberListSchema,
   });
 }
 

@@ -13,3 +13,22 @@
 export function caseIdent(id: string) {
   return `R-${id.replace(/-/g, "").slice(0, 6).toUpperCase()}`;
 }
+
+/**
+ * A full report id, as pasted from a log line or a URL.
+ *
+ * The palette uses this to decide whether a term can be routed straight to a
+ * case rather than through a search — a UUID identifies exactly one report, so
+ * making the operator pick it out of a result list would be ceremony.
+ */
+export const UUID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/**
+ * An ident as typed — `R-8F3A21`, or the six hex characters on their own,
+ * because an operator quoting one to themselves usually drops the prefix.
+ *
+ * Deliberately loose about length: a half-typed `R-8F3` should still offer the
+ * docket search, since that search will happily match a prefix.
+ */
+export const identPattern = /^(r-)?[0-9a-f]{2,6}$/i;

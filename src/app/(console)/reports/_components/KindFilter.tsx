@@ -26,10 +26,10 @@ export function KindFilter({ params }: { params: DocketParams }) {
             href={docketHref(params, { kind: active ? undefined : kind, reportId: null })}
             aria-pressed={active}
             className={cn(
-              "rounded-md border px-2 py-1 text-note font-medium transition-colors duration-150",
+              "rounded-md border px-2 py-1 text-note font-medium transition-colors duration-160",
               active
-                ? "border-violet bg-violet-wash text-violet"
-                : "border-rule bg-tile text-ink-soft hover:bg-wash hover:text-ink",
+                ? "border-pen bg-pen-wash text-pen"
+                : "border-edge bg-panel-solid text-t2 hover:bg-panel-sunk hover:text-t1",
             )}
           >
             {KIND_LABEL[kind]}
