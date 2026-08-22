@@ -57,7 +57,7 @@ export function SearchField({ params }: { params: DocketParams }) {
       <Search
         className={cn(
           "pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 transition-colors",
-          pending ? "text-violet" : "text-ink-faint",
+          pending ? "text-pen" : "text-t3",
         )}
         aria-hidden
       />
@@ -69,9 +69,10 @@ export function SearchField({ params }: { params: DocketParams }) {
         placeholder="Search reports"
         aria-label="Search reports by message, page, or reporter"
         className={cn(
-          "h-9 w-full rounded-md border border-rule bg-tile pl-8 pr-8 text-13 text-ink",
-          "placeholder:text-ink-faint transition-[border-color,box-shadow] duration-150",
-          "hover:border-ink-faint focus:border-violet focus:outline-none focus:ring-2 focus:ring-ring/35",
+          "h-9.5 w-full rounded-md border border-edge bg-panel-sunk pl-9 pr-9 text-13 text-t1",
+          "placeholder:text-t3 transition-[border-color,box-shadow] duration-160",
+          "hover:border-edge-lit focus:border-pen focus:outline-none",
+          "focus:shadow-[0_0_0_3px_var(--pen-glow)]",
           // Safari draws its own clear affordance, which would sit under ours.
           "[&::-webkit-search-cancel-button]:appearance-none",
         )}
@@ -84,7 +85,7 @@ export function SearchField({ params }: { params: DocketParams }) {
             setDraft("");
             inputRef.current?.focus();
           }}
-          className="absolute right-1.5 top-1/2 inline-flex size-6 -translate-y-1/2 cursor-pointer items-center justify-center rounded-sm text-ink-faint transition-colors duration-150 hover:bg-wash hover:text-ink"
+          className="absolute right-1.5 top-1/2 inline-flex size-6 -translate-y-1/2 cursor-pointer items-center justify-center rounded-sm text-t3 transition-colors duration-160 hover:bg-panel-sunk hover:text-t1"
         >
           <X className="size-3.5" aria-hidden />
         </button>

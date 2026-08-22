@@ -48,3 +48,15 @@ export function updateReportRequest(
     responseSchema: reportResponseSchema,
   });
 }
+
+/**
+ * How many reports are standing open, for the field behind the console.
+ *
+ * `GET /reports` already returns unscoped per-status counts in its meta, so
+ * this asks for a single row and reads the count off the envelope rather than
+ * paying for a page of records the shell will never render.
+ */
+export async function countOpenReports() {
+  const list = await listReportsRequest({ limit: 1 });
+  return list.meta.counts.OPEN ?? 0;
+}

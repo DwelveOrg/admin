@@ -19,14 +19,14 @@ import {
 
 import { cn } from "@/lib/utils";
 import type { PlatformOverview } from "@/lib/platform/schemas";
-import { Plate } from "./Plate";
+import { Panel } from "@/components/ui/Panel";
 import {
   axisProps,
   formatDay,
   formatFullDay,
-  PlateLegend,
+  PanelLegend,
   Readout,
-  useBoardPalette,
+  useChartPalette,
   type Series,
 } from "./chart-kit";
 
@@ -41,7 +41,7 @@ import {
  * be fighting the component rather than using it, and a four-segment ring is
  * thirty lines of SVG.
  *
- * Nothing here holds a colour of its own: `useBoardPalette` reads the board's
+ * Nothing here holds a colour of its own: `useChartPalette` reads the board's
  * tokens off the document, so both characters and any future retint arrive here
  * without a second copy of the palette.
  */
@@ -91,7 +91,7 @@ function payloadValue(payload: readonly PayloadRow[] | undefined, key: string) {
    ======================================================================== */
 
 export function GrowthChart({ data }: { data: PlatformOverview["growth"] }) {
-  const palette = useBoardPalette();
+  const palette = useChartPalette();
   const [hidden, setHidden] = useState<Set<string>>(new Set());
 
   // Drag-to-select. `from`/`to` are the day labels under the pointer while the
@@ -102,7 +102,7 @@ export function GrowthChart({ data }: { data: PlatformOverview["growth"] }) {
 
   const series: Series[] = useMemo(
     () => [
-      { key: "usersJoined", label: "Accounts", color: palette.ink },
+      { key: "usersJoined", label: "Accounts", color: palette.t1 },
       { key: "schoolsJoined", label: "Schools", color: palette.review },
     ],
     [palette],
@@ -155,13 +155,13 @@ export function GrowthChart({ data }: { data: PlatformOverview["growth"] }) {
     });
 
   return (
-    <Plate
+    <Panel
       title="Joining rate"
       description="New accounts and new schools created each day."
-      aside={<PlateLegend series={series} hidden={hidden} onToggle={toggle} />}
+      aside={<PanelLegend series={series} hidden={hidden} onToggle={toggle} />}
       footer={
         <div className="flex flex-wrap items-center justify-between gap-2 text-note">
-          <span id="growth-plate-hint" className="text-ink-faint">
+          <span id="growth-plate-hint" className="text-t3">
             {range
               ? `Reading ${formatDay(visible[0].date)} – ${formatDay(visible[visible.length - 1].date)}`
               : "Drag to select · ← → to step · Esc to reset"}
@@ -170,7 +170,7 @@ export function GrowthChart({ data }: { data: PlatformOverview["growth"] }) {
             <button
               type="button"
               onClick={clear}
-              className="cursor-pointer rounded-sm px-1.5 py-0.5 font-medium text-violet transition-colors hover:bg-violet-wash"
+              className="cursor-pointer rounded-sm px-1.5 py-0.5 font-medium text-pen transition-colors hover:bg-pen-wash"
             >
               Show all {data.length} days
             </button>
@@ -228,7 +228,7 @@ export function GrowthChart({ data }: { data: PlatformOverview["growth"] }) {
               ))}
             </defs>
 
-            <CartesianGrid stroke={palette["rule-soft"]} vertical={false} />
+            <CartesianGrid stroke={palette.edge} vertical={false} />
             <XAxis
               dataKey="date"
               tickFormatter={formatDay}
@@ -238,7 +238,7 @@ export function GrowthChart({ data }: { data: PlatformOverview["growth"] }) {
             <YAxis width={52} allowDecimals={false} {...axisProps(palette)} />
 
             <Tooltip
-              cursor={{ stroke: palette.ink, strokeWidth: 1, strokeDasharray: "3 3" }}
+              cursor={{ stroke: palette.t1, strokeWidth: 1, strokeDasharray: "3 3" }}
               content={(props: { active?: boolean; label?: unknown; payload?: readonly PayloadRow[] }) => {
                 if (!props.active || typeof props.label !== "string") return null;
                 return (
@@ -267,7 +267,7 @@ export function GrowthChart({ data }: { data: PlatformOverview["growth"] }) {
                 fill={`url(#growth-${item.key})`}
                 // The focus commits: the day under the crosshair grows a real
                 // marker rather than tinting the plate four percent.
-                activeDot={{ r: 4, stroke: palette.tile, strokeWidth: 2, fill: item.color }}
+                activeDot={{ r: 4, stroke: palette["panel-solid"], strokeWidth: 2, fill: item.color }}
                 dot={false}
                 isAnimationActive={false}
               />
@@ -277,16 +277,16 @@ export function GrowthChart({ data }: { data: PlatformOverview["growth"] }) {
               <ReferenceArea
                 x1={dragFrom}
                 x2={dragTo}
-                fill={palette.violet}
+                fill={palette.pen}
                 fillOpacity={0.1}
-                stroke={palette.violet}
+                stroke={palette.pen}
                 strokeOpacity={0.5}
               />
             ) : null}
           </AreaChart>
         </ResponsiveContainer>
       </div>
-    </Plate>
+    </Panel>
   );
 }
 
@@ -303,13 +303,13 @@ export function ActivityChart({
   totals: PlatformOverview["summary"]["activity"];
   days: number;
 }) {
-  const palette = useBoardPalette();
+  const palette = useChartPalette();
   const [hidden, setHidden] = useState<Set<string>>(new Set());
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   const series: Series[] = useMemo(
     () => [
-      { key: "attemptsStarted", label: "Started", color: palette.ink },
+      { key: "attemptsStarted", label: "Started", color: palette.t1 },
       { key: "attemptsSubmitted", label: "Submitted", color: palette.resolved },
       { key: "reportsFiled", label: "Reports", color: palette.open },
     ],
@@ -327,10 +327,10 @@ export function ActivityChart({
   const shown = series.filter((item) => !hidden.has(item.key));
 
   return (
-    <Plate
+    <Panel
       title="Platform activity"
       description="Tests started, tests submitted, and reports filed each day."
-      aside={<PlateLegend series={series} hidden={hidden} onToggle={toggle} />}
+      aside={<PanelLegend series={series} hidden={hidden} onToggle={toggle} />}
       footer={
         <dl className="flex flex-wrap items-baseline gap-x-5 gap-y-1 text-note">
           {[
@@ -339,11 +339,11 @@ export function ActivityChart({
             { label: "Reports", value: totals.reportsFiled },
           ].map((entry) => (
             <div key={entry.label} className="flex items-baseline gap-1.5">
-              <dt className="text-ink-faint">{entry.label}</dt>
-              <dd className="font-semibold text-ink">{entry.value.toLocaleString()}</dd>
+              <dt className="text-t3">{entry.label}</dt>
+              <dd className="font-semibold text-t1">{entry.value.toLocaleString()}</dd>
             </div>
           ))}
-          <span className="ml-auto text-ink-faint">over {days} days</span>
+          <span className="ml-auto text-t3">over {days} days</span>
         </dl>
       }
     >
@@ -360,7 +360,7 @@ export function ActivityChart({
             onMouseMove={(state: unknown) => setActiveIndex(activeIndexOf(state))}
             onMouseLeave={() => setActiveIndex(null)}
           >
-            <CartesianGrid stroke={palette["rule-soft"]} vertical={false} />
+            <CartesianGrid stroke={palette.edge} vertical={false} />
             <XAxis
               dataKey="date"
               tickFormatter={formatDay}
@@ -370,7 +370,7 @@ export function ActivityChart({
             <YAxis width={52} allowDecimals={false} {...axisProps(palette)} />
 
             <Tooltip
-              cursor={{ fill: palette.wash, fillOpacity: 0.55 }}
+              cursor={{ fill: palette["panel-sunk"], fillOpacity: 0.55 }}
               content={(props: { active?: boolean; label?: unknown; payload?: readonly PayloadRow[] }) => {
                 if (!props.active || typeof props.label !== "string") return null;
                 const rows = shown.map((item) => ({
@@ -416,7 +416,7 @@ export function ActivityChart({
           </BarChart>
         </ResponsiveContainer>
       </div>
-    </Plate>
+    </Panel>
   );
 }
 
@@ -466,7 +466,7 @@ export function DistributionChart({
   const shown = items.find((item) => item.label === active);
 
   return (
-    <Plate title={title} description={description}>
+    <Panel title={title} description={description}>
       <div className="flex flex-col items-center gap-5 sm:flex-row sm:gap-6">
         <div
           className="relative shrink-0"
@@ -484,7 +484,7 @@ export function DistributionChart({
               cy={RING_SIZE / 2}
               r={RING_RADIUS}
               fill="none"
-              style={{ stroke: "var(--wash)" }}
+              style={{ stroke: "var(--panel-sunk)" }}
               strokeWidth={RING_STROKE}
             />
             {segments.map((item) => {
@@ -505,7 +505,7 @@ export function DistributionChart({
                   strokeDashoffset={-item.offset}
                   transform={`rotate(-90 ${RING_SIZE / 2} ${RING_SIZE / 2})`}
                   className={cn(
-                    "transition-[stroke-width,stroke-opacity] duration-150",
+                    "transition-[stroke-width,stroke-opacity] duration-160",
                     item.href && "cursor-pointer",
                   )}
                   style={{ stroke: item.color, pointerEvents: "stroke" }}
@@ -517,16 +517,16 @@ export function DistributionChart({
           </svg>
 
           <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-4 text-center">
-            <strong className="board-count text-figure">
+            <strong className="figure text-figure">
               {(shown ? shown.value : total).toLocaleString()}
             </strong>
-            <span className="board-label mt-1 max-w-full truncate">
+            <span className="label mt-1 max-w-full truncate">
               {shown ? shown.label : totalLabel}
             </span>
           </div>
         </div>
 
-        <ul className="w-full min-w-0 flex-1 divide-y divide-rule-soft">
+        <ul className="w-full min-w-0 flex-1 divide-y divide-edge">
           {items.map((item) => {
             const share = total > 0 ? Math.round((item.value / total) * 100) : 0;
             const isActive = active === item.label;
@@ -539,21 +539,21 @@ export function DistributionChart({
                 {item.mark ?? (
                   <span
                     aria-hidden
-                    className="size-2.5 shrink-0 rounded-[1px]"
+                    className="size-2.5 shrink-0 rounded-[2px]"
                     style={{ background: item.color }}
                   />
                 )}
-                <span className="min-w-0 flex-1 truncate text-13 text-ink-soft">{item.label}</span>
-                <span className="text-note tabular-nums text-ink-faint">{share}%</span>
-                <span className="w-14 text-right text-13 font-semibold tabular-nums text-ink">
+                <span className="min-w-0 flex-1 truncate text-13 text-t2">{item.label}</span>
+                <span className="text-note tabular-nums text-t3">{share}%</span>
+                <span className="w-14 text-right text-13 font-semibold tabular-nums text-t1">
                   {item.value.toLocaleString()}
                 </span>
               </>
             );
 
             const rowClasses = cn(
-              "flex items-center gap-2 rounded-sm px-1.5 py-2 transition-colors duration-150",
-              isActive && "bg-wash",
+              "flex items-center gap-2 rounded-sm px-1.5 py-2 transition-colors duration-160",
+              isActive && "bg-panel-sunk",
             );
 
             return (
@@ -561,7 +561,7 @@ export function DistributionChart({
                 {item.href ? (
                   <Link
                     href={item.href}
-                    className={cn(rowClasses, "hover:bg-wash")}
+                    className={cn(rowClasses, "hover:bg-panel-sunk")}
                     onMouseEnter={() => setActive(item.label)}
                     onMouseLeave={() => setActive(null)}
                     onFocus={() => setActive(item.label)}
@@ -583,6 +583,6 @@ export function DistributionChart({
           })}
         </ul>
       </div>
-    </Plate>
+    </Panel>
   );
 }

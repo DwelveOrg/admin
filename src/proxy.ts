@@ -10,6 +10,59 @@ import {
 } from "./lib/auth/token-refresh";
 import type { SessionPayload } from "./lib/auth/types";
 
+function mediaSources() {
+  const sources = new Set(["'self'", "blob:", "data:"]);
+  const mediaHost =
+    process.env.NEXT_PUBLIC_MEDIA_HOST ??
+    "dwelvespaces.sgp1.cdn.digitaloceanspaces.com";
+
+  sources.add(`https://${mediaHost}`);
+
+  try {
+    if (process.env.DWELVE_API_BASE_URL) {
+      sources.add(new URL(process.env.DWELVE_API_BASE_URL).origin);
+    }
+  } catch {
+    // Configuration validation reports an invalid API URL separately.
+  }
+
+  return [...sources].join(" ");
+}
+
+function contentSecurityPolicy(nonce: string) {
+  const isDevelopment = process.env.NODE_ENV === "development";
+
+  return [
+    "default-src 'self'",
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDevelopment ? " 'unsafe-eval'" : ""}`,
+    "style-src 'self' 'unsafe-inline'",
+    `img-src ${mediaSources()}`,
+    "font-src 'self' data:",
+    `connect-src 'self'${isDevelopment ? " ws: http:" : ""}`,
+    "worker-src 'none'",
+    "frame-src 'none'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+    ...(isDevelopment ? [] : ["upgrade-insecure-requests"]),
+  ].join("; ");
+}
+
+function withSecurityHeaders(response: NextResponse, policy: string) {
+  response.headers.set("Content-Security-Policy", policy);
+  response.headers.set("Cache-Control", "private, no-store, max-age=0");
+  response.headers.set("Pragma", "no-cache");
+  return response;
+}
+
+function requestHeaders(req: NextRequest, nonce: string, policy: string) {
+  const headers = new Headers(req.headers);
+  headers.set("x-nonce", nonce);
+  headers.set("Content-Security-Policy", policy);
+  return headers;
+}
+
 /**
  * The route guard.
  *
@@ -26,6 +79,9 @@ import type { SessionPayload } from "./lib/auth/types";
  * This check exists so they meet a login screen rather than a wall of errors.
  */
 export default async function proxy(req: NextRequest) {
+  const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
+  const policy = contentSecurityPolicy(nonce);
+
   const path = req.nextUrl.pathname;
   const isLogin = path === "/login";
 
@@ -33,14 +89,22 @@ export default async function proxy(req: NextRequest) {
   // how an operator whose role was revoked gets rid of a cookie that still says
   // otherwise. Guarding it would strand exactly the person it exists for.
   if (path === "/session/end") {
-    return NextResponse.next();
+    return withSecurityHeaders(
+      NextResponse.next({
+        request: { headers: requestHeaders(req, nonce, policy) },
+      }),
+      policy,
+    );
   }
 
   const session = await decryptSession(req.cookies.get(SESSION_COOKIE_NAME)?.value);
   const isOperator = Boolean(session?.userId) && session?.globalRole === REQUIRED_GLOBAL_ROLE;
 
   if (!isOperator && !isLogin) {
-    return NextResponse.redirect(new URL("/login", req.url));
+    return withSecurityHeaders(
+      NextResponse.redirect(new URL("/login", req.url)),
+      policy,
+    );
   }
 
   // An operator who lands on the login screen is sent back to work — unless they
@@ -49,10 +113,14 @@ export default async function proxy(req: NextRequest) {
   // bouncing them to /reports would 403, redirect back here, and loop forever.
   // Honouring the reason costs nothing and makes that loop unreachable.
   if (isOperator && isLogin && !req.nextUrl.searchParams.has("reason")) {
-    return NextResponse.redirect(new URL("/reports", req.url));
+    return withSecurityHeaders(
+      NextResponse.redirect(new URL("/reports", req.url)),
+      policy,
+    );
   }
 
-  return withRefreshedSession(req, session);
+  const response = await withRefreshedSession(req, session, nonce, policy);
+  return withSecurityHeaders(response, policy);
 }
 
 /**
@@ -65,9 +133,16 @@ export default async function proxy(req: NextRequest) {
  * while the session cookie lives as long as the refresh token, so this is the
  * ordinary path for any session more than a few minutes old.
  */
-async function withRefreshedSession(req: NextRequest, session: SessionPayload | null) {
+async function withRefreshedSession(
+  req: NextRequest,
+  session: SessionPayload | null,
+  nonce: string,
+  policy: string,
+) {
   if (!session?.refreshToken || !isAccessTokenExpiring(session.accessToken)) {
-    return NextResponse.next();
+    return NextResponse.next({
+      request: { headers: requestHeaders(req, nonce, policy) },
+    });
   }
 
   let cookie;
@@ -79,14 +154,18 @@ async function withRefreshedSession(req: NextRequest, session: SessionPayload | 
     // Leave the existing cookie alone. A revoked or expired refresh token
     // surfaces as SessionExpiredError from the read that follows, and a
     // transient failure costs one unrefreshed navigation.
-    return NextResponse.next();
+    return NextResponse.next({
+      request: { headers: requestHeaders(req, nonce, policy) },
+    });
   }
 
   // Written onto the request as well as the response: the response cookie is
   // what the browser sends next time, while this render reads the request.
   req.cookies.set(cookie.name, cookie.value);
 
-  const response = NextResponse.next({ request: { headers: req.headers } });
+  const response = NextResponse.next({
+    request: { headers: requestHeaders(req, nonce, policy) },
+  });
   response.cookies.set(cookie.name, cookie.value, cookie.options);
 
   return response;

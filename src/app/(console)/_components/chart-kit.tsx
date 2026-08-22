@@ -11,22 +11,23 @@ import { cn } from "@/lib/utils";
    presentation attribute does not resolve `var()`. Passing `var(--open)` there
    silently paints nothing. So the tokens are read off the document once on
    mount and re-read whenever the theme class flips, which keeps every stroke on
-   the board's own palette in both characters without duplicating hex anywhere
-   but here.
+   the console's own palette in both characters without duplicating a hex
+   anywhere but here.
 
-   The initial values match `:root` in globals.css exactly, so the server render
-   and the first client render agree and hydration stays quiet.
+   The initial values match `.dark` in globals.css exactly, because dark is the
+   default character — so the server render and the first client render agree
+   and hydration stays quiet.
    ------------------------------------------------------------------------ */
 
 const TOKENS = [
-  "ink",
-  "ink-soft",
-  "ink-faint",
-  "rule",
-  "rule-soft",
-  "tile",
-  "wash",
-  "violet",
+  "t1",
+  "t2",
+  "t3",
+  "edge",
+  "edge-lit",
+  "panel-solid",
+  "panel-sunk",
+  "pen",
   "open",
   "review",
   "resolved",
@@ -34,34 +35,34 @@ const TOKENS = [
 ] as const;
 
 type Token = (typeof TOKENS)[number];
-export type BoardPalette = Record<Token, string>;
+export type ChartPalette = Record<Token, string>;
 
-const LIGHT: BoardPalette = {
-  ink: "#1a1d1f",
-  "ink-soft": "#4c5457",
-  "ink-faint": "#646c6f",
-  rule: "#c6ccca",
-  "rule-soft": "#dde2e0",
-  tile: "#ffffff",
-  wash: "#e7eae9",
-  violet: "#4c25e5",
-  open: "#b04713",
-  review: "#0b6d79",
-  resolved: "#2c7a45",
-  dismissed: "#5e6a6b",
+const DARK: ChartPalette = {
+  t1: "#eef1f8",
+  t2: "#9aa4bb",
+  t3: "#778096",
+  edge: "rgb(255 255 255 / 0.085)",
+  "edge-lit": "rgb(255 255 255 / 0.18)",
+  "panel-solid": "#12141d",
+  "panel-sunk": "rgb(0 0 0 / 0.28)",
+  pen: "#8b6cff",
+  open: "#ffab5c",
+  review: "#5ad4e6",
+  resolved: "#5fdc9d",
+  dismissed: "#97a2b9",
 };
 
-export function useBoardPalette(): BoardPalette {
-  const [palette, setPalette] = useState<BoardPalette>(LIGHT);
+export function useChartPalette(): ChartPalette {
+  const [palette, setPalette] = useState<ChartPalette>(DARK);
 
   useEffect(() => {
     const root = document.documentElement;
 
     const read = () => {
       const styles = getComputedStyle(root);
-      const next = {} as BoardPalette;
+      const next = {} as ChartPalette;
       for (const token of TOKENS) {
-        next[token] = styles.getPropertyValue(`--${token}`).trim() || LIGHT[token];
+        next[token] = styles.getPropertyValue(`--${token}`).trim() || DARK[token];
       }
       setPalette(next);
     };
@@ -109,13 +110,12 @@ export function formatFullDay(value: string) {
 /* ---------------------------------------------------------------------------
    The legend
 
-   A real control, not a colour key. Clicking a series mutes it; the board's
-   rule that nothing carries its state in colour alone applies here too, so a
-   muted series is struck through and drops its swatch to an outline rather
-   than only fading.
+   A real control, not a colour key. Clicking a series mutes it; the rule that
+   nothing carries its state in colour alone applies here too, so a muted series
+   is struck through and drops its swatch to an outline rather than only fading.
    ------------------------------------------------------------------------ */
 
-export function PlateLegend({
+export function PanelLegend({
   series,
   hidden,
   onToggle,
@@ -139,14 +139,14 @@ export function PlateLegend({
             aria-pressed={!muted}
             title={muted ? `Show ${item.label}` : `Hide ${item.label}`}
             className={cn(
-              "inline-flex cursor-pointer items-center gap-1.5 rounded-sm px-1.5 py-1 text-note font-medium",
-              "transition-colors duration-150 hover:bg-wash",
-              muted ? "text-ink-faint line-through decoration-1" : "text-ink-soft",
+              "inline-flex cursor-pointer items-center gap-1.5 rounded-sm px-2 py-1 text-note font-medium",
+              "transition-colors duration-160 hover:bg-panel-sunk",
+              muted ? "text-t3 line-through decoration-1" : "text-t2",
             )}
           >
             <span
               aria-hidden
-              className="size-2.5 shrink-0 rounded-[1px] border"
+              className="size-2.5 shrink-0 rounded-[2px] border"
               style={{
                 borderColor: item.color,
                 background: muted ? "transparent" : item.color,
@@ -163,10 +163,9 @@ export function PlateLegend({
 /* ---------------------------------------------------------------------------
    The readout
 
-   A tile picked up off the board. It reads every series at the day under the
+   A panel lifted off the field. It reads every series at the day under the
    crosshair, including the ones sitting at zero — an absent row reads as "no
-   data" when the truth is "none that day", and on this board those are
-   different answers.
+   data" when the truth is "none that day", and those are different answers.
    ------------------------------------------------------------------------ */
 
 export function Readout({
@@ -179,25 +178,25 @@ export function Readout({
   total?: { label: string; value: number };
 }) {
   return (
-    <div className="min-w-[184px] rounded-md border border-rule bg-tile p-2.5 shadow-lift-2">
-      <p className="board-label text-ink-soft">{label}</p>
-      <ul className="mt-1.5 space-y-1">
+    <div className="glass-raised min-w-[196px] rounded-md p-3">
+      <p className="label text-t2">{label}</p>
+      <ul className="mt-2 space-y-1.5">
         {rows.map((row) => (
-          <li key={row.key} className="flex items-center gap-2 text-13">
+          <li key={row.key} className="flex items-center gap-2.5 text-13">
             <span
               aria-hidden
-              className="size-2.5 shrink-0 rounded-[1px]"
+              className="size-2.5 shrink-0 rounded-[2px]"
               style={{ background: row.color }}
             />
-            <span className="min-w-0 flex-1 truncate text-ink-soft">{row.label}</span>
-            <span className="font-semibold text-ink">{row.value.toLocaleString()}</span>
+            <span className="min-w-0 flex-1 truncate text-t2">{row.label}</span>
+            <span className="font-semibold text-t1">{row.value.toLocaleString()}</span>
           </li>
         ))}
       </ul>
       {total ? (
-        <div className="mt-1.5 flex items-center gap-2 border-t border-rule-soft pt-1.5 text-13">
-          <span className="min-w-0 flex-1 truncate text-ink-faint">{total.label}</span>
-          <span className="font-semibold text-ink">{total.value.toLocaleString()}</span>
+        <div className="mt-2 flex items-center gap-2.5 border-t border-edge pt-2 text-13">
+          <span className="min-w-0 flex-1 truncate text-t3">{total.label}</span>
+          <span className="font-semibold text-t1">{total.value.toLocaleString()}</span>
         </div>
       ) : null}
     </div>
@@ -205,10 +204,10 @@ export function Readout({
 }
 
 /** Shared Recharts axis dressing, so both trend plates are set the same way. */
-export function axisProps(palette: BoardPalette) {
+export function axisProps(palette: ChartPalette) {
   return {
-    tick: { fill: palette["ink-faint"], fontSize: 12 },
+    tick: { fill: palette.t3, fontSize: 12 },
     tickLine: false,
-    axisLine: { stroke: palette.rule },
+    axisLine: { stroke: palette.edge },
   } as const;
 }

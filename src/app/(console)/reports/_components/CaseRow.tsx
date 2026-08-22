@@ -38,29 +38,30 @@ export function CaseRow({
       href={docketHref(params, { reportId: report.id, page: params.page })}
       aria-current={active ? "true" : undefined}
       className={cn(
-        "relative block py-2.5 pl-4 pr-3 transition-colors duration-150",
+        "relative block py-2.5 pl-4 pr-3 transition-colors duration-160",
         "focus-visible:outline-offset-[-2px]",
-        active ? "bg-violet-wash" : "hover:bg-wash",
+        active ? "bg-pen-wash" : "hover:bg-panel-sunk",
       )}
     >
       <span
         aria-hidden
         className={cn(
-          "absolute inset-y-0 left-0 w-1",
+          "absolute inset-y-0 left-0 w-[3px]",
           DISPOSITION_TONE[report.status].carrier,
+          DISPOSITION_TONE[report.status].glow,
         )}
       />
 
       <div className="flex items-center gap-2">
         <DispositionMark status={report.status} />
-        <span className={cn("ident text-13 text-ink", active && "font-bold")}>
+        <span className={cn("ident text-13 text-t1", active && "font-bold")}>
           {caseIdent(report.id)}
         </span>
-        <span className="text-note text-ink-faint">{KIND_LABEL[report.kind]}</span>
+        <span className="text-note text-t3">{KIND_LABEL[report.kind]}</span>
         <time
           dateTime={new Date(report.createdAt).toISOString()}
           title={fullTimestamp(report.createdAt)}
-          className="ml-auto shrink-0 text-note tabular-nums text-ink-faint"
+          className="ml-auto shrink-0 text-note tabular-nums text-t3"
         >
           {shortAgo(report.createdAt)}
         </time>
@@ -69,13 +70,13 @@ export function CaseRow({
       {/* The reporter's words, clamped. Set in the board's own sans rather than
           the serif: at two lines in a scanning column this is a label, and the
           serif is reserved for the case file where the words are actually read. */}
-      <p className="mt-1 line-clamp-2 text-13 leading-snug text-ink-soft">{report.message}</p>
+      <p className="mt-1 line-clamp-2 text-13 leading-snug text-t2">{report.message}</p>
 
       {reporter ? (
-        <p className="mt-1.5 flex items-center gap-1.5 truncate text-note text-ink-faint">
+        <p className="mt-1.5 flex items-center gap-1.5 truncate text-note text-t3">
           <span className="truncate">{reporter.fullName}</span>
           {report.schoolRole ? (
-            <span className="board-label shrink-0 rounded-sm bg-wash px-1 text-ink-faint">
+            <span className="label shrink-0 rounded-sm bg-panel-sunk px-1 text-t3">
               {report.schoolRole}
             </span>
           ) : null}
@@ -83,7 +84,7 @@ export function CaseRow({
       ) : (
         // The tile survives its reporter: IssueReport.userId is nullable so a
         // deleted account does not take its bug reports with it.
-        <p className="mt-1.5 text-note italic text-ink-faint">Account deleted</p>
+        <p className="mt-1.5 text-note italic text-t3">Account deleted</p>
       )}
     </Link>
   );

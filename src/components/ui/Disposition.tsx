@@ -3,36 +3,44 @@ import { STATUS_LABEL, type ReportStatus } from "@/lib/reports/schemas";
 
 /**
  * The colour each disposition is known by, used identically in the rail, the
- * tile and the case file. One map so a status cannot mean amber in one place
- * and teal in another.
+ * case row and the case file. One map, so a status cannot mean amber in one
+ * place and cyan in another.
+ *
+ * `carrier` is the lit edge on a case row — a real element rather than a
+ * border, because in this room an acuity colour is a light source and light
+ * spills.
  */
 export const DISPOSITION_TONE: Record<
   ReportStatus,
-  { ink: string; wash: string; carrier: string; chip: string }
+  { ink: string; wash: string; carrier: string; chip: string; glow: string }
 > = {
   OPEN: {
     ink: "text-open",
     wash: "bg-open-wash",
     carrier: "bg-open",
     chip: "bg-open-wash text-open",
+    glow: "shadow-[0_0_16px_-2px_var(--open)]",
   },
   IN_REVIEW: {
     ink: "text-review",
     wash: "bg-review-wash",
     carrier: "bg-review",
     chip: "bg-review-wash text-review",
+    glow: "shadow-[0_0_16px_-2px_var(--review)]",
   },
   RESOLVED: {
     ink: "text-resolved",
     wash: "bg-resolved-wash",
     carrier: "bg-resolved",
     chip: "bg-resolved-wash text-resolved",
+    glow: "shadow-[0_0_16px_-2px_var(--resolved)]",
   },
   DISMISSED: {
     ink: "text-dismissed",
     wash: "bg-dismissed-wash",
     carrier: "bg-dismissed",
     chip: "bg-dismissed-wash text-dismissed",
+    glow: "shadow-none",
   },
 };
 
@@ -41,13 +49,13 @@ export const DISPOSITION_TONE: Record<
  *
  * Four silhouettes, not four colours: a solid block for work not started, a
  * half-filled block for work in hand, a check for a fix, a strike for a
- * dismissal. Colour says the same thing a second time, which is the point —
- * the board still reads correctly in greyscale, on a projector, and to an
- * operator who cannot separate amber from green. Nothing on this screen carries
- * its state in hue alone.
+ * dismissal. Colour says the same thing a second time, which is the point — the
+ * console still reads correctly in greyscale, on a projector, and to an operator
+ * who cannot separate amber from green. Nothing here carries its state in hue
+ * alone, and that survived the redesign because it was never a stylistic choice.
  *
- * Drawn rather than borrowed: at 12px a library icon set has no glyph that
- * means "half done" without also meaning something else.
+ * Drawn rather than borrowed: at 12px no icon set has a glyph meaning "half
+ * done" that does not also mean something else.
  */
 export function DispositionMark({
   status,
@@ -64,7 +72,7 @@ export function DispositionMark({
       focusable="false"
     >
       {status === "OPEN" ? (
-        <rect x="1.5" y="1.5" width="9" height="9" rx="1" fill="currentColor" />
+        <rect x="1.5" y="1.5" width="9" height="9" rx="2" fill="currentColor" />
       ) : null}
 
       {status === "IN_REVIEW" ? (
@@ -74,12 +82,12 @@ export function DispositionMark({
             y="2"
             width="8"
             height="8"
-            rx="0.75"
+            rx="1.75"
             fill="none"
             stroke="currentColor"
             strokeWidth="1.6"
           />
-          <path d="M6 2.8h3.2v6.4H6z" fill="currentColor" />
+          <path d="M6 2.8h2.1a1.1 1.1 0 0 1 1.1 1.1v4.2a1.1 1.1 0 0 1-1.1 1.1H6z" fill="currentColor" />
         </>
       ) : null}
 
@@ -107,7 +115,7 @@ export function DispositionMark({
   );
 }
 
-/** The named badge, for the case file header where there is room to say it. */
+/** The named badge, for a header where there is room to say it. */
 export function DispositionChip({
   status,
   className,
@@ -118,7 +126,7 @@ export function DispositionChip({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-sm px-2 py-1 text-note font-semibold",
+        "inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-note font-medium",
         DISPOSITION_TONE[status].chip,
         className,
       )}

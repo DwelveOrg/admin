@@ -29,15 +29,15 @@ export default function ConsoleError({
       <div className="max-w-[44ch]">
         <span
           aria-hidden
-          className="mx-auto flex size-10 items-center justify-center rounded-md border border-rule bg-tile text-danger shadow-lift-1"
+          className="mx-auto flex size-10 items-center justify-center rounded-md border border-edge bg-panel-solid text-danger shadow-lift-1"
         >
           <TriangleAlert className="size-4" />
         </span>
 
-        <h1 className="mt-3 text-lg font-bold tracking-[-0.015em] text-ink">
+        <h1 className="mt-3 text-lg font-bold tracking-[-0.015em] text-t1">
           The board could not load that
         </h1>
-        <p className="mt-1.5 text-13 leading-relaxed text-ink-soft">
+        <p className="mt-1.5 text-13 leading-relaxed text-t2">
           Usually the Dwelve API is unreachable, or this account no longer holds
           platform admin. Retrying answers the first; signing out and back in
           answers the second.
@@ -48,7 +48,7 @@ export default function ConsoleError({
         ) : null}
 
         <div className="mt-5 flex items-center justify-center gap-2">
-          <Button type="button" variant="solid" onClick={reset}>
+          <Button type="button" variant="primary" onClick={reset}>
             Try again
           </Button>
           <a href="/login" className={buttonClasses()}>
