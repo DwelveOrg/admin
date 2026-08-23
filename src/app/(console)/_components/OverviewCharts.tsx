@@ -22,6 +22,7 @@ import type { PlatformOverview } from "@/lib/platform/schemas";
 import { Panel } from "@/components/ui/Panel";
 import {
   axisProps,
+  ChartSwatch,
   formatDay,
   formatFullDay,
   PanelLegend,
@@ -108,9 +109,32 @@ export function GrowthChart({ data }: { data: PlatformOverview["growth"] }) {
     [palette],
   );
 
+  // The committed window is client state and outlives a query-string
+  // navigation (`/?days=90` → `/?days=7` keeps this component mounted), so a
+  // held range can exceed a shorter dataset. Clamp it during render — the
+  // adjustment-from-state pattern React prescribes — instead of crashing on
+  // an empty slice.
+  const last = data.length - 1;
+  let effective: { from: number; to: number } | null = null;
+  if (range && last >= 0) {
+    const from = Math.min(Math.max(range.from, 0), last);
+    const to = Math.min(Math.max(range.to, from), last);
+    effective = { from, to };
+  }
+  if (
+    range &&
+    (effective === null || effective.from !== range.from || effective.to !== range.to)
+  ) {
+    setRange(effective);
+  }
+
+  // Keyed on the clamped bounds, not on `effective` — that object is rebuilt
+  // every render, so an identity dependency would never let the memo hit.
+  const from = effective?.from ?? null;
+  const to = effective?.to ?? null;
   const visible = useMemo(
-    () => (range ? data.slice(range.from, range.to + 1) : data),
-    [data, range],
+    () => (from === null || to === null ? data : data.slice(from, to + 1)),
+    [data, from, to],
   );
 
   const clear = useCallback(() => {
@@ -162,7 +186,7 @@ export function GrowthChart({ data }: { data: PlatformOverview["growth"] }) {
       footer={
         <div className="flex flex-wrap items-center justify-between gap-2 text-note">
           <span id="growth-plate-hint" className="text-t3">
-            {range
+            {range && visible.length > 0
               ? `Reading ${formatDay(visible[0].date)} – ${formatDay(visible[visible.length - 1].date)}`
               : "Drag to select · ← → to step · Esc to reset"}
           </span>
@@ -536,13 +560,7 @@ export function DistributionChart({
                 {/* The disposition mark already carries this row's colour, so a
                     swatch beside it would say the same thing twice in the same
                     hue. Rows without a mark get the swatch instead. */}
-                {item.mark ?? (
-                  <span
-                    aria-hidden
-                    className="size-2.5 shrink-0 rounded-[2px]"
-                    style={{ background: item.color }}
-                  />
-                )}
+                {item.mark ?? <ChartSwatch color={item.color} />}
                 <span className="min-w-0 flex-1 truncate text-13 text-t2">{item.label}</span>
                 <span className="text-note tabular-nums text-t3">{share}%</span>
                 <span className="w-14 text-right text-13 font-semibold tabular-nums text-t1">

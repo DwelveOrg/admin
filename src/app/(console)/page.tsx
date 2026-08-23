@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { PageShell } from "@/components/console/page-furniture";
-import { DispositionMark } from "@/components/ui/Disposition";
+import { DISPOSITION_COLOR, DispositionMark } from "@/components/ui/Disposition";
 import { Signal } from "@/components/ui/Signal";
 import { getPlatformOverviewRequest } from "@/lib/platform/api";
 import { withConsoleAccess } from "@/lib/reports/guard";
+import { STATUS_LABEL } from "@/lib/reports/schemas";
 import { cn } from "@/lib/utils";
 import { ActivityChart, DistributionChart, GrowthChart } from "./_components/OverviewCharts";
 
@@ -142,7 +143,7 @@ export default async function ConsoleIndex({
           items={overview.reportDistribution.map((item) => ({
             label: STATUS_LABEL[item.status],
             value: item.count,
-            color: `var(--${STATUS_TOKEN[item.status]})`,
+            color: DISPOSITION_COLOR[item.status],
             href: `/reports?status=${item.status}`,
             mark: <DispositionMark status={item.status} />,
           }))}
@@ -190,20 +191,6 @@ function RangeControl({ days }: { days: number }) {
     </div>
   );
 }
-
-const STATUS_LABEL = {
-  OPEN: "Open",
-  IN_REVIEW: "In review",
-  RESOLVED: "Resolved",
-  DISMISSED: "Dismissed",
-} as const;
-
-const STATUS_TOKEN = {
-  OPEN: "open",
-  IN_REVIEW: "review",
-  RESOLVED: "resolved",
-  DISMISSED: "dismissed",
-} as const;
 
 const ROLE_LABEL = {
   ADMIN: "Admins",

@@ -115,6 +115,25 @@ export function formatFullDay(value: string) {
    is struck through and drops its swatch to an outline rather than only fading.
    ------------------------------------------------------------------------ */
 
+/**
+ * The series swatch, shared by the legend, the readout and any distribution
+ * list so they can never drift. The corner is deliberate: at 10px the radius
+ * floor (`--r-xs`, 6px) rounds it into a dot, and a chart key needs to read as
+ * a square of colour — hence the one sanctioned `--radius-swatch` token.
+ */
+export function ChartSwatch({ color, outlined = false }: { color: string; outlined?: boolean }) {
+  return (
+    <span
+      aria-hidden
+      className="size-2.5 shrink-0 rounded-swatch border"
+      style={{
+        borderColor: color,
+        background: outlined ? "transparent" : color,
+      }}
+    />
+  );
+}
+
 export function PanelLegend({
   series,
   hidden,
@@ -144,14 +163,7 @@ export function PanelLegend({
               muted ? "text-t3 line-through decoration-1" : "text-t2",
             )}
           >
-            <span
-              aria-hidden
-              className="size-2.5 shrink-0 rounded-[2px] border"
-              style={{
-                borderColor: item.color,
-                background: muted ? "transparent" : item.color,
-              }}
-            />
+            <ChartSwatch color={item.color} outlined={muted} />
             {item.label}
           </button>
         );
@@ -183,11 +195,7 @@ export function Readout({
       <ul className="mt-2 space-y-1.5">
         {rows.map((row) => (
           <li key={row.key} className="flex items-center gap-2.5 text-13">
-            <span
-              aria-hidden
-              className="size-2.5 shrink-0 rounded-[2px]"
-              style={{ background: row.color }}
-            />
+            <ChartSwatch color={row.color} />
             <span className="min-w-0 flex-1 truncate text-t2">{row.label}</span>
             <span className="font-semibold text-t1">{row.value.toLocaleString()}</span>
           </li>

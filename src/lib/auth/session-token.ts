@@ -1,9 +1,24 @@
 import { EncryptJWT, jwtDecrypt } from "jose";
+import { z } from "zod";
 
 import { SESSION_DURATION_MS } from "./constants";
 import type { SessionPayload } from "./types";
 
 const SESSION_DURATION_SECONDS = Math.floor(SESSION_DURATION_MS / 1000);
+
+// The cookie is encrypted with a key only this app holds, so a payload that
+// fails this shape means corruption or a key rotation mid-flight — not an
+// attacker. Either way the right answer is "no session", not an object whose
+// fields read as `undefined` further downstream.
+const sessionPayloadSchema = z.object({
+  userId: z.string(),
+  email: z.string(),
+  fullName: z.string(),
+  globalRole: z.enum(["SUPER_ADMIN", "USER"]),
+  accessToken: z.string(),
+  refreshToken: z.string().optional(),
+  expiresAt: z.string(),
+});
 
 /**
  * The session cookie is encrypted, not merely signed: it carries the backend
@@ -49,7 +64,8 @@ export async function decryptSession(session: string | undefined = "") {
 
   try {
     const { payload } = await jwtDecrypt(session, await getSessionKey());
-    return payload as unknown as SessionPayload;
+    const parsed = sessionPayloadSchema.safeParse(payload);
+    return parsed.success ? parsed.data : null;
   } catch {
     return null;
   }

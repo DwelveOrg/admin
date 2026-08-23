@@ -3,8 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
-import { BackendApiError, BackendResponseValidationError } from "@/lib/api/backend";
-import { SessionExpiredError } from "@/lib/auth/backend";
+import { mapActionError } from "@/lib/api/action-error";
 import {
   removePlatformSchoolRequest,
   resetPlatformUserPasswordRequest,
@@ -107,25 +106,14 @@ export async function deleteSchoolAction(
   return { savedAt: Date.now() };
 }
 
+const PLATFORM_ACTION_ERRORS = {
+  scope: "Platform action",
+  byStatus: {
+    403: "Your platform admin access has been removed.",
+    404: "This record is no longer available.",
+  },
+} as const;
+
 function platformActionError(error: unknown, fallback: string) {
-  if (error instanceof SessionExpiredError) return error.message;
-
-  if (error instanceof BackendApiError) {
-    if (error.status === 403) return "Your platform admin access has been removed.";
-    if (error.status === 404) return "This record is no longer available.";
-    if (error.status === 400) return error.message || fallback;
-    return fallback;
-  }
-
-  if (error instanceof TypeError || (error as Error)?.name === "TimeoutError") {
-    return "Cannot reach the Dwelve API.";
-  }
-
-  if (error instanceof BackendResponseValidationError) {
-    console.error("Platform action response validation failed:", error.issues);
-    return fallback;
-  }
-
-  console.error("Platform action failed:", error);
-  return fallback;
+  return mapActionError(error, { ...PLATFORM_ACTION_ERRORS, fallback });
 }

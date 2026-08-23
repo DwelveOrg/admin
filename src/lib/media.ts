@@ -14,7 +14,10 @@ import { getApiBaseUrl } from "@/lib/api/backend";
 export function resolveMediaUrl(url: string | null | undefined): string | null {
   if (!url) return null;
   if (/^https?:\/\//i.test(url)) return url;
-  if (!url.startsWith("/")) return url;
+  // Only re-base genuine relative paths. Anything else — an exotic scheme, a
+  // protocol-relative host — is not something this console asked to serve, and
+  // passing it through would hand report-controlled strings to `href`/`src`.
+  if (!url.startsWith("/")) return null;
 
   try {
     // `getApiBaseUrl()` is e.g. http://localhost:5001/api/v1, and the stored

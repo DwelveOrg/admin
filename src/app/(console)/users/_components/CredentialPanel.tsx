@@ -191,7 +191,7 @@ function IssuedCredential({
     <div
       className={cn(
         "rounded-md border border-pen/40 bg-pen-wash p-4",
-        "shadow-[0_0_0_1px_var(--pen-glow),0_16px_40px_-16px_var(--pen-glow)]",
+        "shadow-lift-pen-raised",
       )}
       role="status"
     >

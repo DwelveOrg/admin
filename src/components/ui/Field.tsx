@@ -48,7 +48,7 @@ const CONTROL = cn(
   "transition-[border-color,box-shadow,background-color] duration-160",
   "hover:border-edge-lit",
   "focus:border-pen focus:bg-panel-sunk focus:outline-none",
-  "focus:shadow-[0_0_0_3px_var(--pen-glow)]",
+  "focus:shadow-focus-ring",
   "disabled:cursor-not-allowed disabled:opacity-50",
   "aria-[invalid=true]:border-danger aria-[invalid=true]:shadow-[0_0_0_3px_var(--danger-wash)]",
 );
