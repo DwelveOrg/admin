@@ -165,6 +165,7 @@ function PagerLink({
     return (
       <span
         aria-disabled="true"
+        aria-label={label}
         className="inline-flex size-7 items-center justify-center rounded-sm text-t3 opacity-40"
       >
         {children}

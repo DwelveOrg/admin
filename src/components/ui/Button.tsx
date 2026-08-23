@@ -16,7 +16,7 @@ type Size = "sm" | "md" | "lg" | "icon";
 const VARIANTS: Record<Variant, string> = {
   primary: cn(
     "bg-pen text-pen-ink shadow-lift-pen",
-    "hover:bg-pen-hover hover:shadow-[0_0_0_1px_var(--pen-glow),0_10px_34px_-8px_var(--pen-glow)]",
+    "hover:bg-pen-hover hover:shadow-lift-pen-hover",
   ),
   glass: cn(
     "border border-edge bg-panel text-t1 backdrop-blur-xl",

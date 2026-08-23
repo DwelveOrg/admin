@@ -2,6 +2,11 @@ const MINUTE = 60_000;
 const HOUR = 60 * MINUTE;
 const DAY = 24 * HOUR;
 
+// Pinned, not ambient: these run inside Server Components, so an unpinned
+// locale would let *the server's* environment decide what a case file header
+// says. Every other formatter in this app already reads "en-GB".
+const LOCALE = "en-GB";
+
 /**
  * How long ago, at triage resolution.
  *
@@ -19,7 +24,7 @@ export function shortAgo(value: string | Date): string {
   if (elapsed < DAY) return `${Math.floor(elapsed / HOUR)}h`;
   if (elapsed < 30 * DAY) return `${Math.floor(elapsed / DAY)}d`;
 
-  return then.toLocaleDateString(undefined, { day: "numeric", month: "short" });
+  return then.toLocaleDateString(LOCALE, { day: "numeric", month: "short" });
 }
 
 /** The full timestamp, for a title attribute and the case file header. */
@@ -28,7 +33,7 @@ export function fullTimestamp(value: string | Date): string {
 
   if (Number.isNaN(date.getTime())) return "—";
 
-  return date.toLocaleString(undefined, {
+  return date.toLocaleString(LOCALE, {
     day: "numeric",
     month: "short",
     year: "numeric",

@@ -2,8 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { BackendApiError, BackendResponseValidationError } from "@/lib/api/backend";
-import { SessionExpiredError } from "@/lib/auth/backend";
+import { mapActionError } from "@/lib/api/action-error";
 import { updateReportRequest } from "./api";
 import { RESOLUTION_NOTE_MAX, reportStatusSchema } from "./schemas";
 
@@ -62,26 +61,16 @@ export async function saveDecisionAction(
 }
 
 function decisionError(error: unknown) {
-  if (error instanceof SessionExpiredError) return error.message;
-
-  if (error instanceof BackendApiError) {
-    // 403 here means the account lost SUPER_ADMIN while the page was open. Say
-    // that plainly rather than presenting it as a transient failure to retry.
-    if (error.status === 403) return NO_LONGER_OPERATOR;
-    if (error.status === 404) return "This report no longer exists.";
-    if (error.status === 400) return error.message || GENERIC;
-    return GENERIC;
-  }
-
-  if (error instanceof TypeError || (error as Error)?.name === "TimeoutError") {
-    return UNREACHABLE;
-  }
-
-  if (error instanceof BackendResponseValidationError) {
-    console.error("Report update response validation failed:", error.issues);
-    return GENERIC;
-  }
-
-  console.error("Report update failed:", error);
-  return GENERIC;
+  return mapActionError(error, {
+    scope: "Report update",
+    fallback: GENERIC,
+    unreachable: UNREACHABLE,
+    byStatus: {
+      // 403 here means the account lost SUPER_ADMIN while the page was open.
+      // Say that plainly rather than presenting it as a transient failure to
+      // retry.
+      403: NO_LONGER_OPERATOR,
+      404: "This report no longer exists.",
+    },
+  });
 }

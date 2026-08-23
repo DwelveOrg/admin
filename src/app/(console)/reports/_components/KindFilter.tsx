@@ -24,7 +24,11 @@ export function KindFilter({ params }: { params: DocketParams }) {
             // Clicking the active chip clears it — a filter you cannot turn off
             // from where you turned it on is a trap.
             href={docketHref(params, { kind: active ? undefined : kind, reportId: null })}
-            aria-pressed={active}
+            // `aria-current` rather than `aria-pressed`: this is a link
+            // carrying a "this is the one in effect" state, not a toggle
+            // button — pressed-state semantics on a role="link" read
+            // unpredictably.
+            aria-current={active ? "true" : undefined}
             className={cn(
               "rounded-md border px-2 py-1 text-note font-medium transition-colors duration-160",
               active
