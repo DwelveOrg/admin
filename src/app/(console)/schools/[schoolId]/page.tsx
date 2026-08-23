@@ -69,7 +69,13 @@ export default async function SchoolDetailPage({
       listSchoolMembersRequest(schoolId, { search, role, page, limit: PAGE_SIZE }),
     ]),
   ).catch((error: unknown) => {
-    if (error instanceof BackendApiError && error.status === 404) notFound();
+    // 404 is a stale link; 400 is the same journey with a mistyped id
+    // (`ParseUUIDPipe` rejects non-UUIDs). Both deserve the not-found page.
+    if (
+      error instanceof BackendApiError &&
+      (error.status === 404 || error.status === 400)
+    )
+      notFound();
     throw error;
   });
 

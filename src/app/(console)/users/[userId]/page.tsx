@@ -46,8 +46,14 @@ export default async function UserDetailPage({
     (error: unknown) => {
       // A 404 here is an operator following a stale link, which is a normal
       // thing to do and deserves the not-found page rather than an error
-      // boundary that reads like an outage.
-      if (error instanceof BackendApiError && error.status === 404) notFound();
+      // boundary that reads like an outage. A 400 is the same journey with a
+      // mistyped id — `ParseUUIDPipe` rejects anything that is not a UUID —
+      // so it meets the same page (see loadReport in reports/[reportId]).
+      if (
+        error instanceof BackendApiError &&
+        (error.status === 404 || error.status === 400)
+      )
+        notFound();
       throw error;
     },
   );

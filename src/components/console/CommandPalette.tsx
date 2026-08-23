@@ -50,6 +50,7 @@ export function CommandPalette({ onClose }: { onClose: () => void }) {
   const listId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
 
   const go = useCallback(
     (href: string) => {
@@ -178,6 +179,52 @@ export function CommandPalette({ onClose }: { onClose: () => void }) {
     return () => cancelAnimationFrame(frame);
   }, []);
 
+  // An aria-modal dialog that lets Tab walk into the page behind it is a
+  // trap with the sign flipped: keyboard users get lost in inert chrome and
+  // the dialog's own Escape handler dies the moment focus leaves. Hold
+  // focus inside the sheet, and give it back to whoever opened it.
+  useEffect(() => {
+    const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "Tab") return;
+      const dialog = dialogRef.current;
+      if (!dialog) return;
+
+      const focusables = Array.from(
+        dialog.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])',
+        ),
+      );
+      if (focusables.length === 0) {
+        event.preventDefault();
+        inputRef.current?.focus();
+        return;
+      }
+
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const active = document.activeElement;
+      const inside = active instanceof HTMLElement && dialog.contains(active);
+
+      if (event.shiftKey) {
+        if (!inside || active === first) {
+          event.preventDefault();
+          last.focus();
+        }
+      } else if (!inside || active === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      opener?.focus();
+    };
+  }, []);
+
   // The page behind a modal must not scroll under it.
   useEffect(() => {
     const previous = document.body.style.overflow;
@@ -231,6 +278,7 @@ export function CommandPalette({ onClose }: { onClose: () => void }) {
       <div className="absolute inset-0 bg-void-deep/70 backdrop-blur-sm" aria-hidden />
 
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-label="Command palette"
@@ -280,7 +328,7 @@ export function CommandPalette({ onClose }: { onClose: () => void }) {
                   onClick={command.run}
                   className={cn(
                     "flex w-full cursor-pointer items-center gap-3 rounded-sm px-3 py-2.5 text-left",
-                    "transition-colors duration-100",
+                    "transition-colors duration-160",
                     active ? "bg-pen-wash text-t1" : "text-t2 hover:bg-panel-sunk",
                   )}
                 >

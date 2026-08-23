@@ -61,7 +61,7 @@ export function CommandBar({ operator }: { operator: string }) {
                   "inline-flex h-9 items-center gap-2 rounded-sm px-2.5 text-13 transition-all duration-160",
                   "focus-visible:outline-offset-1",
                   active
-                    ? "bg-panel-raised font-semibold text-t1 shadow-[0_1px_0_0_var(--edge-top)_inset]"
+                    ? "bg-panel-raised font-semibold text-t1 shadow-lit-top"
                     : "font-medium text-t2 hover:bg-panel-sunk hover:text-t1",
                 )}
               >

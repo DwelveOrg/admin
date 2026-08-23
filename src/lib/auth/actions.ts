@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 
-import { BackendApiError, BackendResponseValidationError } from "@/lib/api/backend";
+import { mapActionError } from "@/lib/api/action-error";
 import { loginRequest, logoutRequest } from "./api";
 import { REQUIRED_GLOBAL_ROLE } from "./constants";
 import { createSession, deleteSession, getSession } from "./session";
@@ -75,21 +75,18 @@ export async function logoutAction() {
 }
 
 function loginError(error: unknown) {
-  if (error instanceof BackendApiError) {
-    if (error.status === 429) return RATE_LIMITED;
-    if (error.status === 401 || error.status === 400) return INVALID_CREDENTIALS;
-    return GENERIC;
-  }
-
-  if (error instanceof TypeError || (error as Error)?.name === "TimeoutError") {
-    return UNREACHABLE;
-  }
-
-  if (error instanceof BackendResponseValidationError) {
-    console.error("Login response validation failed:", error.issues);
-    return GENERIC;
-  }
-
-  console.error("Login failed:", error);
-  return GENERIC;
+  return mapActionError(error, {
+    scope: "Login",
+    fallback: GENERIC,
+    unreachable: UNREACHABLE,
+    // No session exists yet, so session-expiry wording cannot apply.
+    ignoreSessionExpiry: true,
+    byStatus: {
+      429: RATE_LIMITED,
+      // A rejected 400 body would carry backend validation text; at the
+      // door every refusal reads the same way.
+      400: INVALID_CREDENTIALS,
+      401: INVALID_CREDENTIALS,
+    },
+  });
 }

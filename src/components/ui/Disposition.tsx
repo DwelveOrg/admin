@@ -19,21 +19,21 @@ export const DISPOSITION_TONE: Record<
     wash: "bg-open-wash",
     carrier: "bg-open",
     chip: "bg-open-wash text-open",
-    glow: "shadow-[0_0_16px_-2px_var(--open)]",
+    glow: "shadow-glow-open",
   },
   IN_REVIEW: {
     ink: "text-review",
     wash: "bg-review-wash",
     carrier: "bg-review",
     chip: "bg-review-wash text-review",
-    glow: "shadow-[0_0_16px_-2px_var(--review)]",
+    glow: "shadow-glow-review",
   },
   RESOLVED: {
     ink: "text-resolved",
     wash: "bg-resolved-wash",
     carrier: "bg-resolved",
     chip: "bg-resolved-wash text-resolved",
-    glow: "shadow-[0_0_16px_-2px_var(--resolved)]",
+    glow: "shadow-glow-resolved",
   },
   DISMISSED: {
     ink: "text-dismissed",
@@ -42,6 +42,19 @@ export const DISPOSITION_TONE: Record<
     chip: "bg-dismissed-wash text-dismissed",
     glow: "shadow-none",
   },
+};
+
+/**
+ * The CSS colour each disposition resolves to, for contexts a utility class
+ * cannot reach — SVG fills and Recharts palettes. Derived from the same
+ * `--open/--review/--resolved/--dismissed` tokens the tone map styles with,
+ * so a chart and its legend row cannot disagree.
+ */
+export const DISPOSITION_COLOR: Record<ReportStatus, string> = {
+  OPEN: "var(--open)",
+  IN_REVIEW: "var(--review)",
+  RESOLVED: "var(--resolved)",
+  DISMISSED: "var(--dismissed)",
 };
 
 /**

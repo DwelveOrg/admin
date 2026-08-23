@@ -72,7 +72,7 @@ export function SearchField({ params }: { params: DocketParams }) {
           "h-9.5 w-full rounded-md border border-edge bg-panel-sunk pl-9 pr-9 text-13 text-t1",
           "placeholder:text-t3 transition-[border-color,box-shadow] duration-160",
           "hover:border-edge-lit focus:border-pen focus:outline-none",
-          "focus:shadow-[0_0_0_3px_var(--pen-glow)]",
+          "focus:shadow-focus-ring",
           // Safari draws its own clear affordance, which would sit under ours.
           "[&::-webkit-search-cancel-button]:appearance-none",
         )}

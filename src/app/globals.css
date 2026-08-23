@@ -295,6 +295,33 @@
   --shadow-lift-1: var(--lift-1);
   --shadow-lift-2: var(--lift-2);
   --shadow-lift-pen: var(--lift-pen);
+
+  /* The pen's hover lift — `lift-pen` stretched one step further, for the
+     moment a pressed control answers. */
+  --shadow-lift-pen-hover:
+    0 0 0 1px var(--pen-glow), 0 10px 34px -8px var(--pen-glow);
+
+  /* The credential handover card — the loudest moment in the console, one
+     step beyond the hover lift. */
+  --shadow-lift-pen-raised:
+    0 0 0 1px var(--pen-glow), 0 16px 40px -16px var(--pen-glow);
+
+  /* The focus ring, so keyboard focus is the same light everywhere. */
+  --shadow-focus-ring: 0 0 0 3px var(--pen-glow);
+
+  /* A lit top edge — the highlight along the top of an active tab or a raised
+     glass panel, not a lift. */
+  --shadow-lit-top: inset 0 1px 0 0 var(--edge-top);
+
+  /* Disposition glows — an acuity colour is a light source and light spills.
+     DISMISSED has none: it is off. */
+  --shadow-glow-open: 0 0 16px -2px var(--open);
+  --shadow-glow-review: 0 0 16px -2px var(--review);
+  --shadow-glow-resolved: 0 0 16px -2px var(--resolved);
+
+  /* The chart swatch corner — the one sanctioned small radius, owned by
+     ChartSwatch in chart-kit.tsx so it cannot be copy-pasted onto panels. */
+  --radius-swatch: 2px;
 }
 
 @layer base {
