@@ -9,6 +9,14 @@ Not a route inside the product frontend, on purpose: a report carries another
 user's words, page URL, and screenshot, so none of this should be shipped in the
 bundle a student loads.
 
+Start with:
+
+- [`AGENTS.md`](./AGENTS.md) — engineering and security rules
+- [`docs/README.md`](./docs/README.md) — task-oriented context router
+- [`PRODUCT.md`](./PRODUCT.md) — product roles, capabilities, and language
+- [`DESIGN.md`](./DESIGN.md) — canonical visual/interaction system
+- [`.agent-memory/README.md`](./.agent-memory/README.md) — durable decisions and gotchas
+
 ## Who can open it
 
 Only an account whose `User.globalRole` is `SUPER_ADMIN`. A school `ADMIN` is
@@ -40,10 +48,10 @@ npm run dev                    # http://localhost:3001
 
 `.env.local` needs two values:
 
-| Variable               | Notes                                                          |
-| ---------------------- | -------------------------------------------------------------- |
-| `DWELVE_API_BASE_URL`  | The same NestJS API the product uses. Server-side only.         |
-| `SESSION_SECRET`       | **Must differ from the frontend's.** 32 random bytes.           |
+| Variable              | Notes                                                   |
+| --------------------- | ------------------------------------------------------- |
+| `DWELVE_API_BASE_URL` | The same NestJS API the product uses. Server-side only. |
+| `SESSION_SECRET`      | **Must differ from the frontend's.** 32 random bytes.   |
 
 ```bash
 node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"
@@ -65,7 +73,7 @@ admin (Vercel)  ──►  NestJS API (DigitalOcean)  ──►  Neon Postgres
 
 Screenshots are the one thing the browser fetches directly, from the same CDN
 the product uses. In local development the backend stores them on disk and
-returns a *relative* URL; `resolveMediaUrl` re-bases those onto the API origin so
+returns a _relative_ URL; `resolveMediaUrl` re-bases those onto the API origin so
 they still load.
 
 The backend's CORS allowlist does not need this app's origin: every API call is
@@ -151,7 +159,7 @@ Esc to reset. The distribution rings link into the matching part of the docket.
 ## Handing over a login
 
 An operator can read any account's login and issue it a new password from
-`/users/<uuid>`. There is no way to *read* an existing password and there cannot
+`/users/<uuid>`. There is no way to _read_ an existing password and there cannot
 be one — `User.passwordHash` is a bcrypt hash, so the plaintext was never stored
 by anyone. Issuing a new one returns it exactly once, in that response: nothing
 persists it, a reload will not bring it back, and every live session for that
