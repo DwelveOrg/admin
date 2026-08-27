@@ -10,6 +10,7 @@ import {
   PageShell,
   Pager,
   SchoolCrest,
+  ViewSwitch,
   firstParam,
   formatDate,
   pageParam,
@@ -92,7 +93,7 @@ export default async function SchoolDetailPage({
         ← All schools
       </Link>
 
-      <header className="glass flex flex-col gap-5 p-5 sm:flex-row sm:items-center sm:gap-6">
+      <header className="surface flex flex-col gap-5 p-5 sm:flex-row sm:items-center sm:gap-6">
         <SchoolCrest name={school.name} url={school.logoUrl} size={64} />
 
         <div className="min-w-0 flex-1">
@@ -142,7 +143,7 @@ export default async function SchoolDetailPage({
           cards would invite comparing them to each other. */}
       <section
         aria-label="Footprint"
-        className="glass mt-3 grid grid-cols-2 divide-x divide-y divide-edge sm:grid-cols-3 sm:divide-y-0 xl:grid-cols-6"
+        className="surface mt-3 grid grid-cols-2 divide-x divide-y divide-edge sm:grid-cols-3 sm:divide-y-0 xl:grid-cols-6"
       >
         <Stat label="Members" value={counts.members} />
         {membershipDistribution.map((entry) => (
@@ -161,6 +162,23 @@ export default async function SchoolDetailPage({
         <Panel
           title="Members"
           description={`${members.meta.total.toLocaleString()} ${members.meta.total === 1 ? "person" : "people"} in this school.`}
+          aside={
+            <ViewSwitch
+              label="Filter members by role"
+              items={[
+                {
+                  label: "All",
+                  href: schoolMembersHref(school.id, search),
+                  active: !role,
+                },
+                ...MEMBER_ROLES.map((value) => ({
+                  label: `${SCHOOL_ROLE_LABEL[value]}s`,
+                  href: schoolMembersHref(school.id, search, value),
+                  active: role === value,
+                })),
+              ]}
+            />
+          }
           bodyClassName="p-0"
         >
           <div className="border-b border-edge p-4">
@@ -168,18 +186,7 @@ export default async function SchoolDetailPage({
               pathname={`/schools/${school.id}`}
               search={search}
               searchPlaceholder="Search a name or an email address"
-              selects={[
-                {
-                  name: "role",
-                  value: role,
-                  label: "Filter by role",
-                  anyLabel: "Every role",
-                  options: MEMBER_ROLES.map((value) => ({
-                    value,
-                    label: `${SCHOOL_ROLE_LABEL[value]}s`,
-                  })),
-                },
-              ]}
+              preserve={{ role }}
             />
           </div>
 
@@ -218,6 +225,14 @@ export default async function SchoolDetailPage({
       </div>
     </PageShell>
   );
+}
+
+function schoolMembersHref(schoolId: string, search?: string, role?: SchoolRole) {
+  const params = new URLSearchParams();
+  if (search) params.set("search", search);
+  if (role) params.set("role", role);
+  const query = params.toString();
+  return query ? `/schools/${schoolId}?${query}` : `/schools/${schoolId}`;
 }
 
 function Stat({

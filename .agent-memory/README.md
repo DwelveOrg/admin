@@ -15,6 +15,7 @@ why constraints exist. Temporary progress and routine commands do not belong her
 - [[CSP nonce and theme bootstrap]] — the nonce/header/font placement chain that fails silently
 - [[One time credential handoff]] — why a reset credential is response-only and not recoverable
 - [[Operator refresh write boundary]] — why render-time refresh must not spend rotating tokens
+- [[UUID domain ambiguity]] — why a pasted UUID cannot be assumed to identify a report
 
 ## Maintenance
 

@@ -9,6 +9,7 @@ import {
   PageHeader,
   PageShell,
   Pager,
+  ViewSwitch,
   firstParam,
   formatDate,
   pageParam,
@@ -72,9 +73,27 @@ export default async function UsersPage({
         title="Users"
         count={`${list.meta.total.toLocaleString()} matching`}
         description="Every account on the platform — students, teachers, school admins and operators. Open one to read its memberships, hand over a login, or block it everywhere at once."
+        aside={
+          <ViewSwitch
+            label="Filter users by access"
+            items={[
+              { label: "All", href: userDirectoryHref({ search, role }), active: !status },
+              {
+                label: "Active",
+                href: userDirectoryHref({ search, role, status: "ACTIVE" }),
+                active: status === "ACTIVE",
+              },
+              {
+                label: "Blocked",
+                href: userDirectoryHref({ search, role, status: "BLOCKED" }),
+                active: status === "BLOCKED",
+              },
+            ]}
+          />
+        }
       />
 
-      <div className="glass mt-6 overflow-hidden">
+      <div className="surface mt-6 overflow-hidden">
         <div className="border-b border-edge p-4">
           <FilterBar
             pathname="/users"
@@ -145,6 +164,23 @@ export default async function UsersPage({
       </div>
     </PageShell>
   );
+}
+
+function userDirectoryHref({
+  search,
+  role,
+  status,
+}: {
+  search?: string;
+  role?: DirectoryRole;
+  status?: "ACTIVE" | "BLOCKED";
+}) {
+  const params = new URLSearchParams();
+  if (search) params.set("search", search);
+  if (role) params.set("role", role);
+  if (status) params.set("status", status);
+  const query = params.toString();
+  return query ? `/users?${query}` : "/users";
 }
 
 function UserRow({ user }: { user: PlatformUser }) {

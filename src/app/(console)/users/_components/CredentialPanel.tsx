@@ -51,7 +51,7 @@ export function CredentialPanel({
   const showConfirm = confirming && !state.issued;
 
   return (
-    <section className="glass overflow-hidden" aria-labelledby="credentials-heading">
+    <section className="surface overflow-hidden" aria-labelledby="credentials-heading">
       <div className="flex items-center gap-2.5 border-b border-edge px-5 py-4">
         <KeyRound className="size-4 shrink-0 text-t3" aria-hidden />
         <h2 id="credentials-heading" className="text-15 font-semibold text-t1">
@@ -138,7 +138,7 @@ export function CredentialPanel({
             </PanelWell>
           </form>
         ) : (
-          <Button type="button" variant="glass" size="sm" onClick={() => setConfirming(true)}>
+          <Button type="button" variant="secondary" size="sm" onClick={() => setConfirming(true)}>
             <KeyRound className="size-3.5" aria-hidden />
             Issue new password
           </Button>
@@ -157,9 +157,8 @@ export function CredentialPanel({
 /**
  * The one thing on this screen that exists for a single moment.
  *
- * It is deliberately the loudest object in the console — a lit violet card
- * where everything around it is glass — because it is the only state in the
- * whole application that cannot be returned to. Everything else here can be
+ * It is deliberately the strongest violet surface in the console because it
+ * is the only state in the whole application that cannot be returned to. Everything else here can be
  * re-read by reloading; this cannot, and the design has to say so before the
  * operator navigates away and finds out.
  *

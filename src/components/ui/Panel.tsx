@@ -1,13 +1,9 @@
 import { cn } from "@/lib/utils";
 
 /**
- * A sheet of glass over the field.
- *
- * This is the console's only container. It replaces the old board's rule that
- * containers never nest: glass over glass is a real material and reads
- * correctly, so a panel may hold a sunk well (`PanelWell`) — what it may not do
- * is hold a second full panel, which would double the blur cost and flatten
- * both.
+ * The console's primary solid container. A panel may hold a recessed well but
+ * never another full panel; hierarchy comes from structure and contrast, not
+ * repeated cards.
  *
  * `head` is a strip with a hairline under it, used when a panel needs to say
  * what it is and what its units are before it shows a reading.
@@ -36,7 +32,7 @@ export function Panel({
   const hasHead = Boolean(title || head);
 
   return (
-    <Tag className={cn("glass flex min-w-0 flex-col overflow-hidden", className)}>
+    <Tag className={cn("surface flex min-w-0 flex-col overflow-hidden", className)}>
       {hasHead ? (
         <div className="flex flex-col gap-3 border-b border-edge px-5 py-4 sm:flex-row sm:items-start sm:justify-between sm:gap-5">
           {title ? (
@@ -65,13 +61,7 @@ export function Panel({
 }
 
 /**
- * A recess in a panel — the inverse of raising something.
- *
- * Where a panel catches light on its top edge, a well loses it: the ground goes
- * darker than its surroundings in both characters. Used for machine data, a
- * quoted value, an inset list. This is the one nesting that is allowed inside a
- * panel, because a recess is a different material gesture from another sheet of
- * glass rather than the same one repeated.
+ * A recess for machine data, testimony, confirmation, or a compact inset list.
  */
 export function PanelWell({
   children,

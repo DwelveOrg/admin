@@ -75,8 +75,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f4f6fb" },
-    { media: "(prefers-color-scheme: dark)", color: "#06070d" },
+    { media: "(prefers-color-scheme: light)", color: "#f3f5f8" },
+    { media: "(prefers-color-scheme: dark)", color: "#0d1016" },
   ],
 };
 
@@ -89,25 +89,22 @@ export const viewport: Viewport = {
  * re-opens. Grep the production output for the seed key to confirm it survived.
  */
 const DIRECTION_CONTRACT = `<!--
-THESIS: The room at night — an instrument an operator watches, not a document
-they read. Refuses the ruled-board look it replaces and the generic dark
-analytics dashboard equally.
-OWN-WORLD: A deep field with a live aurora behind it; glass instrument panels
-lit from within; emissive data. Depth is light, never drop shadow. Bricolage
-Grotesque (display) / Instrument Sans (UI) / JetBrains Mono (machine) /
-Newsreader (a person's words).
-SIGNATURE: The aurora IS the queue — the field's hue and drift are driven by
-the live open-report count, so "how much is waiting" is answered before a word
-is read. Second: the sealed credential, torn open once.
-STORY: An operator opens the console, reads the room's temperature from the
-door, opens the case that needs a person, and answers them.
-FIRST VIEWPORT: A floating command rail; the room's state named in one line of
-display type; the standing totals as lit panels with their own trend; then the
-instruments.
+THESIS: A quiet platform topology — solid records connected by a precise route
+map, with light reserved for the one live signal that deserves it.
+OWN-WORLD: Operations routing diagrams and network maps translated into a
+persistent labeled sidebar, aligned data nodes, hairline connections, and calm
+solid surfaces. Bricolage Grotesque (display) / Instrument Sans (UI) /
+JetBrains Mono (machine) / Newsreader (a person's words).
+SIGNATURE: The platform map orders membership, schools, activity, and support
+as connected operational surfaces. The open-report count also changes a narrow
+ambient queue trace, never the only channel and never a room-filling glow.
+STORY: An operator reads what needs attention, takes the shortest labeled route
+to the record, acts with full consequences visible, and returns by the same path.
+FIRST VIEWPORT: A persistent route map; a plain-language queue brief; the four
+connected platform surfaces; then exact trends and distributions.
 CONSTRAINT: Evidence never goes dark. A screenshot of a light product is pinned
 to a daylight plate in both characters.
-FORM: Aurora control room; direction chosen by the operator over three
-candidates; seed a1f4c290.
+FORM: Platform topology desk; operate mode; seed 4b6b1c77.
 -->`;
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

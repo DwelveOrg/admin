@@ -40,7 +40,7 @@ export function Signal({
       ref={ref}
       onPointerMove={onPointerMove}
       className={cn(
-        "spotlight glass relative flex h-full flex-col overflow-hidden p-5",
+        "spotlight surface relative flex h-full flex-col overflow-hidden p-5",
         "transition-[border-color,transform] duration-160 ease-[cubic-bezier(0.2,0.8,0.2,1)]",
         href && "hover:-translate-y-0.5 hover:border-edge-lit",
       )}

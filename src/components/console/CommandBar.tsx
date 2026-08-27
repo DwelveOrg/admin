@@ -1,6 +1,13 @@
 "use client";
 
-import { LayoutGrid, LogOut, School, Ticket, Users } from "lucide-react";
+import {
+  CircleDot,
+  LayoutDashboard,
+  LogOut,
+  School,
+  Ticket,
+  Users,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -8,9 +15,10 @@ import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { logoutAction } from "@/lib/auth/actions";
 import { cn } from "@/lib/utils";
 import { CommandTrigger } from "./CommandPalette";
+import { Sigil } from "./Sigil";
 
 export const SECTIONS = [
-  { href: "/", label: "Overview", icon: LayoutGrid },
+  { href: "/", label: "Overview", icon: LayoutDashboard },
   { href: "/users", label: "Users", icon: Users },
   { href: "/schools", label: "Schools", icon: School },
   { href: "/reports", label: "Reports", icon: Ticket },
@@ -21,105 +29,208 @@ export function isSectionActive(href: string, pathname: string) {
 }
 
 /**
- * The rail the console hangs from.
- *
- * It floats over the field rather than sitting on it — a sheet of glass with
- * the aurora visible through it, pinned to the top of the viewport. That is the
- * whole reason it is not a solid bar: a solid bar would cut the room in two and
- * the field would stop being one continuous thing behind the interface.
- *
- * The current section is marked by a lit pill rather than by colour alone: the
- * ground changes material *and* the label goes to full ink, so the state
- * survives being unable to see the violet.
+ * A labeled route map on desktop and a compact destination dock on mobile.
+ * These are links rather than tabs: each destination is a full, shareable
+ * route, so browser history, keyboard navigation, and prefetching all work.
  */
-export function CommandBar({ operator }: { operator: string }) {
+export function CommandBar({
+  operator,
+  openReports,
+}: {
+  operator: string;
+  openReports: number | null;
+}) {
   const pathname = usePathname();
+  const queueAvailable = openReports !== null;
+  const hasOpenReports = queueAvailable && openReports > 0;
 
   return (
-    <header className="sticky top-0 z-40 px-3 pt-3 md:px-5 md:pt-4">
-      <div className="glass-raised mx-auto flex h-14 w-full max-w-[1520px] items-center gap-2 rounded-lg px-2.5 md:gap-4 md:px-4">
+    <>
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-[15.5rem] flex-col border-r border-edge bg-panel lg:flex">
         <Link
           href="/"
-          className="flex shrink-0 items-center gap-2.5 rounded-sm pr-1 focus-visible:outline-offset-4"
+          className="flex h-[4.75rem] items-center gap-3 border-b border-edge px-5 focus-visible:outline-offset-[-3px]"
         >
           <Sigil />
-          <span className="hidden text-13 font-semibold tracking-[-0.01em] text-t1 sm:inline">
-            Operations
+          <span className="min-w-0">
+            <span className="block text-15 font-semibold tracking-[-0.02em] text-t1">
+              Dwelve
+            </span>
+            <span className="block text-note text-t3">Operations console</span>
           </span>
         </Link>
 
-        <nav aria-label="Sections" className="flex min-w-0 items-center gap-0.5">
-          {SECTIONS.map(({ href, label, icon: Icon }) => {
-            const active = isSectionActive(href, pathname);
+        <div className="px-3 pt-4">
+          <CommandTrigger wide enableShortcut />
+        </div>
 
-            return (
-              <Link
-                key={href}
-                href={href}
-                aria-current={active ? "page" : undefined}
-                className={cn(
-                  "inline-flex h-9 items-center gap-2 rounded-sm px-2.5 text-13 transition-all duration-160",
-                  "focus-visible:outline-offset-1",
-                  active
-                    ? "bg-panel-raised font-semibold text-t1 shadow-lit-top"
-                    : "font-medium text-t2 hover:bg-panel-sunk hover:text-t1",
-                )}
-              >
-                <Icon className="size-4 shrink-0" aria-hidden />
-                <span className="hidden md:inline">{label}</span>
-                <span className="sr-only md:hidden">{label}</span>
-              </Link>
-            );
-          })}
+        <nav aria-label="Primary navigation" className="mt-5 px-3">
+          <p className="label px-3 pb-2">Workspace</p>
+          <div className="space-y-1">
+            {SECTIONS.map((section) => (
+              <SectionLink
+                key={section.href}
+                {...section}
+                active={isSectionActive(section.href, pathname)}
+                count={section.href === "/reports" ? openReports : undefined}
+              />
+            ))}
+          </div>
         </nav>
 
-        <div className="ml-auto flex items-center gap-1.5">
-          <CommandTrigger />
-          <span className="mx-0.5 hidden h-5 w-px bg-edge lg:block" aria-hidden />
-          <span
-            className="hidden max-w-[200px] truncate text-note text-t3 xl:block"
-            title={`Signed in as ${operator}`}
+        <div className="mt-auto p-3">
+          <Link
+            href="/reports?status=OPEN"
+            className="topology-line block rounded-md border border-edge bg-panel-sunk p-3 transition-colors hover:border-edge-lit hover:bg-panel-raised"
           >
-            {operator}
-          </span>
-          <ThemeToggle />
-          <form action={logoutAction}>
-            <button
-              type="submit"
-              aria-label="Sign out"
-              title="Sign out"
-              className="inline-flex size-9 cursor-pointer items-center justify-center rounded-sm text-t2 transition-colors duration-160 hover:bg-panel-sunk hover:text-t1 focus-visible:outline-offset-1"
-            >
-              <LogOut className="size-4" aria-hidden />
-            </button>
-          </form>
+            <span className="flex items-center justify-between gap-3">
+              <span className="flex items-center gap-2 text-13 font-semibold text-t1">
+                <CircleDot
+                  className={cn(
+                    "size-3.5",
+                    !queueAvailable
+                      ? "text-t3"
+                      : hasOpenReports
+                        ? "text-open"
+                        : "text-resolved",
+                  )}
+                />
+                Report queue
+              </span>
+              <strong
+                className={cn(
+                  "figure text-17",
+                  !queueAvailable
+                    ? "text-t3"
+                    : hasOpenReports
+                      ? "text-open"
+                      : "text-resolved",
+                )}
+              >
+                {queueAvailable ? openReports.toLocaleString() : "—"}
+              </strong>
+            </span>
+            <span className="mt-1.5 block text-note text-t3">
+              {!queueAvailable
+                ? "Count unavailable"
+                : openReports === 0
+                  ? "Nothing needs triage"
+                  : `${openReports === 1 ? "One case needs" : "Cases need"} attention`}
+            </span>
+          </Link>
+
+          <div className="mt-3 flex items-center gap-1 border-t border-edge pt-3">
+            <span className="min-w-0 flex-1 truncate px-2 text-note text-t3" title={operator}>
+              {operator}
+            </span>
+            <ThemeToggle />
+            <SignOutButton />
+          </div>
         </div>
-      </div>
-    </header>
+      </aside>
+
+      <header className="sticky top-0 z-40 flex h-14 items-center gap-2 border-b border-edge bg-panel px-3 lg:hidden">
+        <Link href="/" className="flex min-w-0 items-center gap-2.5 rounded-sm pr-1">
+          <Sigil compact />
+          <span className="truncate text-13 font-semibold text-t1">Dwelve Operations</span>
+        </Link>
+        <div className="ml-auto flex items-center gap-1">
+          <CommandTrigger enableShortcut={false} />
+          <ThemeToggle />
+          <SignOutButton />
+        </div>
+      </header>
+
+      <nav
+        aria-label="Primary navigation"
+        className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-edge bg-panel px-1 pb-[env(safe-area-inset-bottom)] lg:hidden"
+      >
+        {SECTIONS.map(({ href, label, icon: Icon }) => {
+          const active = isSectionActive(href, pathname);
+          return (
+            <Link
+              key={href}
+              href={href}
+              aria-current={active ? "page" : undefined}
+              className={cn(
+                "relative flex min-h-14 flex-col items-center justify-center gap-1 rounded-sm px-1 text-note",
+                active ? "font-semibold text-pen" : "font-medium text-t3",
+              )}
+            >
+              {active ? <span className="absolute inset-x-5 top-0 h-0.5 bg-pen" /> : null}
+              <span className="relative">
+                <Icon className="size-4" aria-hidden />
+                {href === "/reports" && hasOpenReports ? (
+                  <span className="absolute -right-3 -top-2 min-w-5 rounded-full bg-open px-1 text-center text-note leading-5 text-white">
+                    {openReports > 99 ? "99+" : openReports}
+                  </span>
+                ) : null}
+              </span>
+              {label}
+            </Link>
+          );
+        })}
+      </nav>
+    </>
   );
 }
 
-/**
- * The mark.
- *
- * Four bars at the four acuity heights — not started, in hand, fixed, closed —
- * which is the same reading the aurora carries and the same one the docket
- * columns carry. The console has one idea and this is it, at 20px.
- */
-function Sigil() {
+function SectionLink({
+  href,
+  label,
+  icon: Icon,
+  active,
+  count,
+}: {
+  href: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  active: boolean;
+  count?: number | null;
+}) {
   return (
-    <span
-      aria-hidden
-      className="flex size-8 shrink-0 items-center justify-center rounded-sm bg-pen shadow-lift-pen"
+    <Link
+      href={href}
+      aria-current={active ? "page" : undefined}
+      className={cn(
+        "group relative flex h-10 items-center gap-3 rounded-md px-3 text-13 transition-colors",
+        active
+          ? "bg-pen-wash font-semibold text-t1"
+          : "font-medium text-t2 hover:bg-panel-sunk hover:text-t1",
+      )}
     >
-      <svg viewBox="0 0 20 20" className="size-4 text-pen-ink" focusable="false">
-        <g fill="currentColor">
-          <rect x="2" y="12" width="3" height="6" rx="1.2" />
-          <rect x="7" y="8" width="3" height="10" rx="1.2" />
-          <rect x="12" y="5" width="3" height="13" rx="1.2" />
-          <rect x="17" y="2" width="1.6" height="16" rx="0.8" opacity="0.55" />
-        </g>
-      </svg>
-    </span>
+      {active ? <span className="absolute inset-y-2 left-0 w-0.5 rounded-full bg-pen" /> : null}
+      <Icon className={cn("size-4 shrink-0", active ? "text-pen" : "text-t3 group-hover:text-t2")} />
+      <span className="min-w-0 flex-1 truncate">{label}</span>
+      {count !== undefined ? (
+        <span
+          className={cn(
+            "min-w-6 rounded-full px-1.5 py-0.5 text-center text-note font-semibold",
+            count === null
+              ? "bg-panel-sunk text-t3"
+              : count > 0
+                ? "bg-open-wash text-open"
+                : "bg-resolved-wash text-resolved",
+          )}
+        >
+          {count === null ? "—" : count.toLocaleString()}
+        </span>
+      ) : null}
+    </Link>
+  );
+}
+
+function SignOutButton() {
+  return (
+    <form action={logoutAction}>
+      <button
+        type="submit"
+        aria-label="Sign out"
+        title="Sign out"
+        className="inline-flex size-9 cursor-pointer items-center justify-center rounded-sm text-t2 transition-colors hover:bg-panel-sunk hover:text-t1"
+      >
+        <LogOut className="size-4" aria-hidden />
+      </button>
+    </form>
   );
 }

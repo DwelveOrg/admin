@@ -30,16 +30,21 @@ export function FilterBar({
   search,
   searchPlaceholder,
   selects = [],
+  preserve = {},
 }: {
   pathname: string;
   search?: string;
   searchPlaceholder: string;
   selects?: FilterSelect[];
+  preserve?: Record<string, string | undefined>;
 }) {
   const filtered = Boolean(search || selects.some((select) => select.value));
 
   return (
     <form action={pathname} className="flex flex-col gap-2.5 lg:flex-row">
+      {Object.entries(preserve).map(([name, value]) =>
+        value ? <input key={name} type="hidden" name={name} value={value} /> : null,
+      )}
       <label className="relative min-w-0 flex-1">
         <span className="sr-only">{searchPlaceholder}</span>
         <Search

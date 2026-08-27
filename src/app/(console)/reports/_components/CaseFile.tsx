@@ -22,10 +22,9 @@ import { Evidence } from "./Evidence";
  * sentence someone wrote is what decides whether the screenshot is even
  * relevant — so it comes first, in the one serif on the screen.
  *
- * The sections are recesses rather than panels. This whole article already sits
- * on a sheet of glass, and a panel inside a panel doubles the blur cost and
- * flattens both; a well is the opposite gesture and reads as part of the same
- * object.
+ * The sections are recesses rather than panels. This article already sits on a
+ * solid surface, so a second panel would fragment one continuous case file; a
+ * well reads as part of the same object.
  */
 export function CaseFile({ report, params }: { report: Report; params: DocketParams }) {
   return (
@@ -35,7 +34,7 @@ export function CaseFile({ report, params }: { report: Report; params: DocketPar
         className="mb-4 inline-flex items-center gap-1.5 text-13 font-medium text-t2 transition-colors hover:text-t1 lg:hidden"
       >
         <ArrowLeft className="size-3.5" aria-hidden />
-        Docket
+        All reports
       </Link>
 
       <header className="mb-6 border-b border-edge pb-5">

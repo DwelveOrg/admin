@@ -71,7 +71,7 @@ export default async function UserDetailPage({
         ← All users
       </Link>
 
-      <header className="glass flex flex-col gap-5 p-5 sm:flex-row sm:items-center sm:gap-6">
+      <header className="surface flex flex-col gap-5 p-5 sm:flex-row sm:items-center sm:gap-6">
         <Avatar name={user.fullName} url={user.avatarUrl} size={64} className="rounded-md" />
 
         <div className="min-w-0 flex-1">

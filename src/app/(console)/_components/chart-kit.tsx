@@ -190,7 +190,7 @@ export function Readout({
   total?: { label: string; value: number };
 }) {
   return (
-    <div className="glass-raised min-w-[196px] rounded-md p-3">
+    <div className="surface-raised min-w-[196px] rounded-md p-3">
       <p className="label text-t2">{label}</p>
       <ul className="mt-2 space-y-1.5">
         {rows.map((row) => (

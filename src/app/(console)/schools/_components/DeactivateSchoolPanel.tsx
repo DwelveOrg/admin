@@ -41,7 +41,7 @@ export function DeactivateSchoolPanel({
 
   if (!isActive) {
     return (
-      <section className="glass p-5" aria-labelledby="deactivate-heading">
+      <section className="surface p-5" aria-labelledby="deactivate-heading">
         <h2 id="deactivate-heading" className="text-15 font-semibold text-t1">
           Already deactivated
         </h2>
@@ -54,7 +54,7 @@ export function DeactivateSchoolPanel({
   }
 
   return (
-    <section className="glass overflow-hidden" aria-labelledby="deactivate-heading">
+    <section className="surface overflow-hidden" aria-labelledby="deactivate-heading">
       <div className="flex items-center gap-2.5 border-b border-edge px-5 py-4">
         <AlertTriangle className="size-4 shrink-0 text-danger" aria-hidden />
         <h2 id="deactivate-heading" className="text-15 font-semibold text-t1">

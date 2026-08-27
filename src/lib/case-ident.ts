@@ -15,11 +15,11 @@ export function caseIdent(id: string) {
 }
 
 /**
- * A full report id, as pasted from a log line or a URL.
+ * A full record id, as pasted from a log line or a URL.
  *
- * The palette uses this to decide whether a term can be routed straight to a
- * case rather than through a search — a UUID identifies exactly one report, so
- * making the operator pick it out of a result list would be ceremony.
+ * UUID shape is shared by reports, users, and schools. The palette uses this to
+ * offer direct routes for all three domains; it never guesses the record type
+ * from the value alone.
  */
 export const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;

@@ -1,16 +1,15 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 
+import { resolveMediaUrl } from "@/lib/media";
 import { cn, initials } from "@/lib/utils";
 
 /**
  * The page's own frame: a container width, and a heading that says what this
  * screen is before anything on it moves.
  *
- * 1520px rather than the old 1440: the directory tables carry more columns now,
- * and a wider measure is what stops the membership column from truncating on a
- * laptop. Prose inside is still capped separately — a wide page is not a licence
- * for a 200-character line.
+ * 1520px leaves room for the directory tables beside the persistent route map.
+ * Prose inside remains capped independently.
  */
 export function PageShell({
   children,
@@ -20,7 +19,7 @@ export function PageShell({
   className?: string;
 }) {
   return (
-    <div className={cn("mx-auto w-full max-w-[1520px] px-3 py-6 md:px-5 md:py-8", className)}>
+    <div className={cn("mx-auto w-full max-w-[1520px] px-3 py-6 md:px-6 md:py-8 xl:px-8 xl:py-9", className)}>
       {children}
     </div>
   );
@@ -40,7 +39,7 @@ export function PageHeader({
   back?: { href: string; label: string };
 }) {
   return (
-    <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
       <div className="min-w-0">
         {back ? (
           <Link
@@ -54,7 +53,11 @@ export function PageHeader({
 
         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
           <h1 className="display text-figure text-t1">{title}</h1>
-          {count ? <span className="text-13 text-t3">{count}</span> : null}
+          {count ? (
+            <span className="rounded-sm bg-panel-sunk px-2 py-1 text-note font-medium text-t2">
+              {count}
+            </span>
+          ) : null}
         </div>
 
         {description ? (
@@ -62,8 +65,37 @@ export function PageHeader({
         ) : null}
       </div>
 
-      {aside ? <div className="shrink-0">{aside}</div> : null}
+      {aside ? <div className="shrink-0 sm:pt-0.5">{aside}</div> : null}
     </header>
+  );
+}
+
+/** Common route filters rendered as links, not inert visual tabs. */
+export function ViewSwitch({
+  label,
+  items,
+}: {
+  label: string;
+  items: Array<{ label: string; href: string; active: boolean }>;
+}) {
+  return (
+    <nav aria-label={label} className="inline-flex max-w-full gap-1 overflow-x-auto rounded-md border border-edge bg-panel p-1">
+      {items.map((item) => (
+        <Link
+          key={item.href}
+          href={item.href}
+          aria-current={item.active ? "page" : undefined}
+          className={cn(
+            "shrink-0 rounded-sm px-3 py-1.5 text-13 transition-colors",
+            item.active
+              ? "bg-pen font-semibold text-pen-ink shadow-lift-pen"
+              : "font-medium text-t2 hover:bg-panel-sunk hover:text-t1",
+          )}
+        >
+          {item.label}
+        </Link>
+      ))}
+    </nav>
   );
 }
 
@@ -73,6 +105,14 @@ export function PageHeader({
  * Falls back to initials rather than to a generic silhouette: in a directory
  * where most accounts have no avatar, a column of identical grey heads is
  * noise, while a column of initials is scannable.
+ *
+ * `resolveMediaUrl` is applied here rather than by the caller. The stored value
+ * is only absolute when the backend runs on object storage; with the default
+ * `PUBLIC_UPLOAD_BASE_URL` it is `/api/v1/uploads/…`, which resolves against
+ * *this* app's origin and 404s. Leaving that to five call sites meant five
+ * chances to forget, and the failure is silent — the image errors and the
+ * initials fallback covers for it, so the directory looks fine while showing
+ * nobody's face.
  */
 export function Avatar({
   name,
@@ -85,6 +125,8 @@ export function Avatar({
   size?: number;
   className?: string;
 }) {
+  const src = resolveMediaUrl(url);
+
   return (
     <span
       className={cn(
@@ -95,12 +137,12 @@ export function Avatar({
       style={{ width: size, height: size }}
       aria-hidden
     >
-      {url ? (
+      {src ? (
         // Avatars come from the product's CDN at unknown dimensions, and
         // next/image would add an optimizer round trip per row for a 36px
         // square that is already the right size.
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={url} alt="" className="size-full object-cover" loading="lazy" />
+        <img src={src} alt="" className="size-full object-cover" loading="lazy" />
       ) : (
         initials(name)
       )}
@@ -114,7 +156,8 @@ export function Avatar({
  * Falls back to two letters rather than to a generic building glyph: in a
  * directory where most schools have no logo, a column of identical icons is
  * noise while a column of initials is scannable. Same reasoning as `Avatar`,
- * and deliberately the same shape so the two directories feel like one system.
+ * and — including the `resolveMediaUrl` call — deliberately the same shape, so
+ * the two directories feel like one system and neither can drift.
  */
 export function SchoolCrest({
   name,
@@ -125,18 +168,20 @@ export function SchoolCrest({
   url?: string | null;
   size?: number;
 }) {
+  const src = resolveMediaUrl(url);
+
   return (
     <span
       className="flex shrink-0 items-center justify-center overflow-hidden rounded-sm border border-edge bg-panel-sunk text-note font-semibold text-t2"
       style={{ width: size, height: size }}
       aria-hidden
     >
-      {url ? (
+      {src ? (
         // Logos come from the product's CDN at unknown dimensions, and
         // next/image would add an optimizer round trip per row for a 36px
         // square that is already the right size.
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={url} alt="" className="size-full object-cover" loading="lazy" />
+        <img src={src} alt="" className="size-full object-cover" loading="lazy" />
       ) : (
         name.slice(0, 2).toUpperCase()
       )}

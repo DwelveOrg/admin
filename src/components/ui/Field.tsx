@@ -37,10 +37,9 @@ export function Field({
  * One control vocabulary across the whole console.
  *
  * A field is a recess, not a raised surface — it is the one place on the screen
- * you put something *into*, and the ground going darker than its surroundings
- * is what says so before any border does. Focus then lights the recess: a
- * violet edge plus a glow ring, never a colour swap alone, which would be
- * invisible to anyone who cannot see the difference.
+ * you put something *into*, and the darker ground says so before any border
+ * does. Focus adds a violet edge and an outside ring, so it is visible without
+ * relying on a color swap alone.
  */
 const CONTROL = cn(
   "w-full rounded-md border border-edge bg-panel-sunk px-3 text-13 text-t1",

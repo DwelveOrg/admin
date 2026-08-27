@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   Area,
@@ -17,7 +16,6 @@ import {
   YAxis,
 } from "recharts";
 
-import { cn } from "@/lib/utils";
 import type { PlatformOverview } from "@/lib/platform/schemas";
 import { Panel } from "@/components/ui/Panel";
 import {
@@ -456,10 +454,6 @@ export type DistributionItem = {
   mark?: React.ReactNode;
 };
 
-const RING_SIZE = 148;
-const RING_RADIUS = 58;
-const RING_STROKE = 20;
-
 export function DistributionChart({
   title,
   description,
@@ -471,136 +465,57 @@ export function DistributionChart({
   items: DistributionItem[];
   totalLabel: string;
 }) {
-  const router = useRouter();
-  const [active, setActive] = useState<string | null>(null);
-
   const total = items.reduce((sum, item) => sum + item.value, 0);
-  const circumference = 2 * Math.PI * RING_RADIUS;
-
-  const segments = items.map((item, index) => ({
-    ...item,
-    length: total > 0 ? (item.value / total) * circumference : 0,
-    offset:
-      total > 0
-        ? (items.slice(0, index).reduce((sum, previous) => sum + previous.value, 0) / total) *
-          circumference
-        : 0,
-  }));
-
-  const shown = items.find((item) => item.label === active);
 
   return (
-    <Panel title={title} description={description}>
-      <div className="flex flex-col items-center gap-5 sm:flex-row sm:gap-6">
-        <div
-          className="relative shrink-0"
-          style={{ width: RING_SIZE, height: RING_SIZE }}
-          onMouseLeave={() => setActive(null)}
-        >
-          {/* The list beside this ring states every value and is the keyboard
-              and screen-reader path, so the ring itself is decoration of the
-              data rather than the only way to reach it. */}
-          <svg viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`} className="size-full" aria-hidden>
-            {/* `stroke` is a presentation attribute and does not resolve
-                `var()`, so every colour on this ring is set through `style`. */}
-            <circle
-              cx={RING_SIZE / 2}
-              cy={RING_SIZE / 2}
-              r={RING_RADIUS}
-              fill="none"
-              style={{ stroke: "var(--panel-sunk)" }}
-              strokeWidth={RING_STROKE}
-            />
-            {segments.map((item) => {
-              const isActive = active === item.label;
-              const dimmed = active !== null && !isActive;
-
-              return (
-                <circle
-                  key={item.label}
-                  cx={RING_SIZE / 2}
-                  cy={RING_SIZE / 2}
-                  r={RING_RADIUS}
-                  fill="none"
-                  // The hovered segment lifts off the ring; the rest recede.
-                  strokeWidth={isActive ? RING_STROKE + 6 : RING_STROKE}
-                  strokeOpacity={dimmed ? 0.3 : 1}
-                  strokeDasharray={`${item.length} ${circumference - item.length}`}
-                  strokeDashoffset={-item.offset}
-                  transform={`rotate(-90 ${RING_SIZE / 2} ${RING_SIZE / 2})`}
-                  className={cn(
-                    "transition-[stroke-width,stroke-opacity] duration-160",
-                    item.href && "cursor-pointer",
-                  )}
-                  style={{ stroke: item.color, pointerEvents: "stroke" }}
-                  onMouseEnter={() => setActive(item.label)}
-                  onClick={() => item.href && router.push(item.href)}
-                />
-              );
-            })}
-          </svg>
-
-          <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-4 text-center">
-            <strong className="figure text-figure">
-              {(shown ? shown.value : total).toLocaleString()}
-            </strong>
-            <span className="label mt-1 max-w-full truncate">
-              {shown ? shown.label : totalLabel}
-            </span>
-          </div>
+    <Panel
+      title={title}
+      description={description}
+      aside={
+        <div className="text-right">
+          <strong className="figure text-figure">{total.toLocaleString()}</strong>
+          <span className="mt-1 block text-note text-t3">{totalLabel}</span>
         </div>
-
-        <ul className="w-full min-w-0 flex-1 divide-y divide-edge">
-          {items.map((item) => {
-            const share = total > 0 ? Math.round((item.value / total) * 100) : 0;
-            const isActive = active === item.label;
-
-            const body = (
-              <>
-                {/* The disposition mark already carries this row's colour, so a
-                    swatch beside it would say the same thing twice in the same
-                    hue. Rows without a mark get the swatch instead. */}
+      }
+      bodyClassName="p-0"
+    >
+      <ul className="divide-y divide-edge">
+        {items.map((item) => {
+          const share = total > 0 ? Math.round((item.value / total) * 100) : 0;
+          const body = (
+            <>
+              <span className="col-start-1 row-start-1 flex min-w-0 items-center gap-2">
                 {item.mark ?? <ChartSwatch color={item.color} />}
-                <span className="min-w-0 flex-1 truncate text-13 text-t2">{item.label}</span>
-                <span className="text-note tabular-nums text-t3">{share}%</span>
-                <span className="w-14 text-right text-13 font-semibold tabular-nums text-t1">
-                  {item.value.toLocaleString()}
-                </span>
-              </>
-            );
+                <span className="truncate text-13 font-medium text-t2">{item.label}</span>
+              </span>
+              <span className="relative col-span-3 col-start-1 row-start-2 h-1.5 overflow-hidden rounded-full bg-panel-sunk sm:col-span-1 sm:col-start-2 sm:row-start-1">
+                <span
+                  className="absolute inset-y-0 left-0 rounded-full"
+                  style={{ width: `${share}%`, backgroundColor: item.color }}
+                />
+              </span>
+              <span className="col-start-2 row-start-1 text-right text-note tabular-nums text-t3 sm:col-start-3">{share}%</span>
+              <strong className="col-start-3 row-start-1 text-right text-13 tabular-nums text-t1 sm:col-start-4">
+                {item.value.toLocaleString()}
+              </strong>
+            </>
+          );
+          const classes =
+            "grid grid-cols-[minmax(0,1fr)_2.5rem_3.5rem] items-center gap-3 px-5 py-3 transition-colors hover:bg-panel-sunk sm:grid-cols-[minmax(7.5rem,1fr)_minmax(5rem,1.3fr)_2.5rem_3.5rem]";
 
-            const rowClasses = cn(
-              "flex items-center gap-2 rounded-sm px-1.5 py-2 transition-colors duration-160",
-              isActive && "bg-panel-sunk",
-            );
-
-            return (
-              <li key={item.label}>
-                {item.href ? (
-                  <Link
-                    href={item.href}
-                    className={cn(rowClasses, "hover:bg-panel-sunk")}
-                    onMouseEnter={() => setActive(item.label)}
-                    onMouseLeave={() => setActive(null)}
-                    onFocus={() => setActive(item.label)}
-                    onBlur={() => setActive(null)}
-                  >
-                    {body}
-                  </Link>
-                ) : (
-                  <div
-                    className={rowClasses}
-                    onMouseEnter={() => setActive(item.label)}
-                    onMouseLeave={() => setActive(null)}
-                  >
-                    {body}
-                  </div>
-                )}
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+          return (
+            <li key={item.label}>
+              {item.href ? (
+                <Link href={item.href} className={classes}>
+                  {body}
+                </Link>
+              ) : (
+                <div className={classes}>{body}</div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
     </Panel>
   );
 }
