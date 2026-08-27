@@ -6,41 +6,36 @@ import { STATUS_LABEL, type ReportStatus } from "@/lib/reports/schemas";
  * case row and the case file. One map, so a status cannot mean amber in one
  * place and cyan in another.
  *
- * `carrier` is the lit edge on a case row — a real element rather than a
- * border, because in this room an acuity colour is a light source and light
- * spills.
+ * `carrier` is the one-pixel status trace on a case row. The mark and text name
+ * the same state, so color is never the only channel.
  */
 export const DISPOSITION_TONE: Record<
   ReportStatus,
-  { ink: string; wash: string; carrier: string; chip: string; glow: string }
+  { ink: string; wash: string; carrier: string; chip: string }
 > = {
   OPEN: {
     ink: "text-open",
     wash: "bg-open-wash",
     carrier: "bg-open",
     chip: "bg-open-wash text-open",
-    glow: "shadow-glow-open",
   },
   IN_REVIEW: {
     ink: "text-review",
     wash: "bg-review-wash",
     carrier: "bg-review",
     chip: "bg-review-wash text-review",
-    glow: "shadow-glow-review",
   },
   RESOLVED: {
     ink: "text-resolved",
     wash: "bg-resolved-wash",
     carrier: "bg-resolved",
     chip: "bg-resolved-wash text-resolved",
-    glow: "shadow-glow-resolved",
   },
   DISMISSED: {
     ink: "text-dismissed",
     wash: "bg-dismissed-wash",
     carrier: "bg-dismissed",
     chip: "bg-dismissed-wash text-dismissed",
-    glow: "shadow-none",
   },
 };
 

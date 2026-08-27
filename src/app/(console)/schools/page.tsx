@@ -9,6 +9,7 @@ import {
   PageShell,
   Pager,
   SchoolCrest,
+  ViewSwitch,
   firstParam,
   formatDate,
   pageParam,
@@ -46,9 +47,27 @@ export default async function SchoolsPage({
         title="Schools"
         count={`${list.meta.total.toLocaleString()} matching`}
         description="Every school on the platform. Open one to read its membership, or deactivate it with the full cleanup."
+        aside={
+          <ViewSwitch
+            label="Filter schools by status"
+            items={[
+              { label: "All", href: schoolDirectoryHref({ search }), active: !status },
+              {
+                label: "Active",
+                href: schoolDirectoryHref({ search, status: "ACTIVE" }),
+                active: status === "ACTIVE",
+              },
+              {
+                label: "Deactivated",
+                href: schoolDirectoryHref({ search, status: "DEACTIVATED" }),
+                active: status === "DEACTIVATED",
+              },
+            ]}
+          />
+        }
       />
 
-      <div className="glass mt-6 overflow-hidden">
+      <div className="surface mt-6 overflow-hidden">
         <div className="border-b border-edge p-4">
           <FilterBar
             pathname="/schools"
@@ -105,6 +124,20 @@ export default async function SchoolsPage({
       </div>
     </PageShell>
   );
+}
+
+function schoolDirectoryHref({
+  search,
+  status,
+}: {
+  search?: string;
+  status?: "ACTIVE" | "DEACTIVATED";
+}) {
+  const params = new URLSearchParams();
+  if (search) params.set("search", search);
+  if (status) params.set("status", status);
+  const query = params.toString();
+  return query ? `/schools?${query}` : "/schools";
 }
 
 function SchoolRow({ school }: { school: PlatformSchool }) {

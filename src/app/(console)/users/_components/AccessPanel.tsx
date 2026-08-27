@@ -35,7 +35,7 @@ export function AccessPanel({
   const [confirming, setConfirming] = useState(false);
 
   return (
-    <section className="glass overflow-hidden" aria-labelledby="access-heading">
+    <section className="surface overflow-hidden" aria-labelledby="access-heading">
       <div className="flex items-center gap-2.5 border-b border-edge px-5 py-4">
         {isActive ? (
           <ShieldCheck className="size-4 shrink-0 text-resolved" aria-hidden />

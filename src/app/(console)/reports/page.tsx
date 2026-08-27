@@ -10,7 +10,7 @@ import { withConsoleAccess } from "@/lib/reports/guard";
 import { Docket } from "./_components/Docket";
 import { readDocketParams, type RawSearchParams } from "./_lib/query";
 
-export const metadata: Metadata = { title: "Docket · Dwelve Operations" };
+export const metadata: Metadata = { title: "Reports · Dwelve Operations" };
 
 const PAGE_SIZE = 25;
 
@@ -35,15 +35,15 @@ export default async function DocketPage({
   return (
     <PageShell>
       <PageHeader
-        title="Docket"
+        title="Reports"
         count={`${list.meta.total.toLocaleString()} matching`}
-        description="Problem reports filed from inside Dwelve. Closing one writes a notification to the person who filed it, carrying your note."
+        description="The report docket from inside Dwelve. Closing a case writes a notification to the person who filed it, carrying your note."
       />
 
       <div className="mt-6 flex flex-col gap-3 lg:flex-row lg:items-start">
         <Docket params={params} list={list} />
 
-        <div className="glass hidden flex-1 items-center justify-center self-stretch p-10 lg:flex lg:min-h-[28rem]">
+        <div className="surface hidden flex-1 items-center justify-center self-stretch p-10 lg:flex lg:min-h-[28rem]">
           <div className="max-w-[34ch] text-center">
             <span
               aria-hidden

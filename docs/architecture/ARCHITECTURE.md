@@ -63,7 +63,8 @@ Server Component or Server Action
 ```
 
 The query string owns overview range, filters, search, and pagination, allowing operator links to be
-shared. The encrypted `dwelve_ops` cookie owns identity and API tokens. There is no client data cache
+shared. Common access, school-status, and school-role switches are real links rather than local tab
+state. The encrypted `dwelve_ops` cookie owns identity and API tokens. There is no client data cache
 or global state library. Theme lives in `localStorage["dwelve-ops-theme"]` and is applied before paint
 by the nonce-bearing inline script.
 
@@ -80,7 +81,13 @@ by the nonce-bearing inline script.
 
 ## UI boundary
 
-The complete design contract is [`../../DESIGN.md`](../../DESIGN.md). Content caps at 1520px; pages
-scroll normally over a fixed aurora. The console is desktop-oriented but must remain usable at narrow
-widths. Dark is the default character; light is a maintained second character. Evidence stays on
-`.plate-daylight` in both themes.
+The complete design contract is [`../../DESIGN.md`](../../DESIGN.md). At desktop widths a fixed 248px
+sidebar owns global routes, queue state, search, theme, and sign-out; at narrow widths it becomes a
+top utility bar and four-destination bottom dock. Content caps at 1520px and pages scroll normally.
+The fixed background carries only a faint topology grid and a restrained open-report trace; route
+content sits on opaque surfaces rather than translucent glass. Dark is the default character and
+light is a maintained second character. Evidence stays on `.plate-daylight` in both themes.
+
+The command palette performs no browser-side record lookup. A pasted UUID offers report, user, and
+school routes because UUID shape does not identify its domain; the selected server route and backend
+authorization decide whether that record exists and may be read.

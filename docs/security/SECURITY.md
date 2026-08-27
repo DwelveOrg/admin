@@ -42,6 +42,17 @@ would collapse separate trust domains. Tokens must never reach browser storage o
   relative path and rejects other schemes. CSP and Next image hosts must match the configured media
   host.
 
+## Navigation and search boundary
+
+- Global search is a client-side route launcher, not a client API or cross-domain index. Text searches
+  navigate to server-rendered user, school, or report directories.
+- UUID format does not reveal whether a key belongs to a report, user, or school. The palette offers
+  all three protected routes and never treats a guessed resource type as authorization or existence.
+- Common view switches write only documented role/status/search values to the query string. Do not put
+  credentials, tokens, report testimony, or other sensitive values in these shareable URLs.
+- Sidebar queue counts are a convenience channel. The protected route read and backend authorization
+  remain authoritative; a failed shell count degrades to zero without weakening either boundary.
+
 ## Credential and lifecycle invariants
 
 - Existing password plaintext does not exist and cannot be revealed from a bcrypt hash.

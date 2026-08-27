@@ -35,7 +35,7 @@ export function StatusRail({
             : "border-edge bg-panel-sunk text-t2 hover:border-edge-lit hover:text-t1",
         )}
       >
-        <span className="flex-1 truncate">Everything</span>
+        <span className="flex-1 truncate">All reports</span>
         <span className="tabular-nums font-semibold text-t1">{total}</span>
       </Link>
 

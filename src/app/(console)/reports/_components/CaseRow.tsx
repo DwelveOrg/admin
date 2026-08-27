@@ -10,12 +10,8 @@ import { docketHref, type DocketParams } from "../_lib/query";
 /**
  * One case, as a tile on the board.
  *
- * The carrier strip down the leading edge is the acuity colour — the piece of
- * the physical tile that tells you across the room which column this belongs
- * to. It is a real element rather than a coloured border, because that is what
- * it is: part of the object, not a rule around it. The mark beside the ident
- * says the same thing again in a shape, so the column still reads with no
- * colour at all.
+ * A one-pixel status trace and the mark beside the ident carry the same state,
+ * so the row stays quick to scan without turning status color into decoration.
  *
  * Three lines, in the order an operator triages by: what it is and how old,
  * what the person said, and who said it. The ident leads because it is the
@@ -46,9 +42,8 @@ export function CaseRow({
       <span
         aria-hidden
         className={cn(
-          "absolute inset-y-0 left-0 w-[3px]",
+          "absolute inset-y-0 left-0 w-px",
           DISPOSITION_TONE[report.status].carrier,
-          DISPOSITION_TONE[report.status].glow,
         )}
       />
 

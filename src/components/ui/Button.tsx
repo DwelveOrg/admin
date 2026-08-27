@@ -2,29 +2,26 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-type Variant = "primary" | "glass" | "ghost" | "danger";
+type Variant = "primary" | "secondary" | "ghost" | "danger";
 type Size = "sm" | "md" | "lg" | "icon";
 
 /**
- * Violet is the operator's pen: the primary action and the current selection,
- * and nothing else on the screen. Everything else is glass.
- *
- * `primary` carries a real glow rather than a drop shadow, because in this room
- * depth is light — a raised control is brighter and throws a pool, it does not
- * darken the surface under it.
+ * Violet is the operator's pen: the primary action and current selection.
+ * Other controls stay on solid neutral surfaces so action hierarchy remains
+ * obvious in dense operational screens.
  */
 const VARIANTS: Record<Variant, string> = {
   primary: cn(
     "bg-pen text-pen-ink shadow-lift-pen",
     "hover:bg-pen-hover hover:shadow-lift-pen-hover",
   ),
-  glass: cn(
-    "border border-edge bg-panel text-t1 backdrop-blur-xl",
+  secondary: cn(
+    "border border-edge bg-panel text-t1",
     "hover:border-edge-lit hover:bg-panel-raised",
   ),
   ghost: "text-t2 hover:bg-panel-sunk hover:text-t1",
   danger: cn(
-    "border border-edge bg-panel text-danger backdrop-blur-xl",
+    "border border-edge bg-panel text-danger",
     "hover:border-danger/40 hover:bg-danger-wash",
   ),
 };
@@ -44,12 +41,12 @@ const SIZES: Record<Size, string> = {
  * that want a link spread these onto `<Link>` directly.
  */
 export function buttonClasses({
-  variant = "glass",
+  variant = "secondary",
   size = "md",
   className,
 }: { variant?: Variant; size?: Size; className?: string } = {}) {
   return cn(
-    "inline-flex cursor-pointer items-center justify-center rounded-md font-medium whitespace-nowrap",
+    "inline-flex cursor-pointer items-center justify-center rounded-sm font-medium whitespace-nowrap",
     // 160ms with a spring-ish curve: fast enough that an operator in flow never
     // waits for choreography, shaped enough that the control feels like an
     // object rather than a state swap.

@@ -65,15 +65,33 @@ export function CommandPalette({ onClose }: { onClose: () => void }) {
     const found: Command[] = [];
 
     if (term) {
-      // A pasted UUID is unambiguous — it is a case, and it opens directly.
+      // A UUID is a lookup key, but the value alone does not reveal its domain.
+      // Offer every valid destination instead of silently treating an account or
+      // school id as a report id and sending the operator to a false 404.
       if (UUID_PATTERN.test(term)) {
-        found.push({
-          id: "open-uuid",
-          label: `Open case ${term.slice(0, 8)}…`,
-          hint: "Report",
-          icon: Ticket,
-          run: () => go(`/reports/${term}`),
-        });
+        found.push(
+          {
+            id: "open-report-uuid",
+            label: `Open report ${term.slice(0, 8)}…`,
+            hint: "Report",
+            icon: Ticket,
+            run: () => go(`/reports/${term}`),
+          },
+          {
+            id: "open-user-uuid",
+            label: `Open user ${term.slice(0, 8)}…`,
+            hint: "Account",
+            icon: Users,
+            run: () => go(`/users/${term}`),
+          },
+          {
+            id: "open-school-uuid",
+            label: `Open school ${term.slice(0, 8)}…`,
+            hint: "School",
+            icon: School,
+            run: () => go(`/schools/${term}`),
+          },
+        );
       }
 
       // An ident is a label rather than a key, so it cannot be resolved to a
@@ -132,6 +150,22 @@ export function CommandPalette({ onClose }: { onClose: () => void }) {
         run: () => go("/users"),
       },
       {
+        id: "go-blocked-users",
+        label: "Blocked accounts",
+        hint: "Users",
+        icon: Users,
+        keywords: "access suspended restore",
+        run: () => go("/users?status=BLOCKED"),
+      },
+      {
+        id: "go-unassigned-users",
+        label: "Accounts without a school",
+        hint: "Users",
+        icon: Users,
+        keywords: "no school onboarding membership",
+        run: () => go("/users?role=NO_SCHOOL"),
+      },
+      {
         id: "go-schools",
         label: "Schools",
         hint: "Go to",
@@ -140,12 +174,28 @@ export function CommandPalette({ onClose }: { onClose: () => void }) {
         run: () => go("/schools"),
       },
       {
+        id: "go-active-schools",
+        label: "Active schools",
+        hint: "Schools",
+        icon: School,
+        keywords: "live tenants organisations",
+        run: () => go("/schools?status=ACTIVE"),
+      },
+      {
         id: "go-open",
         label: "Open reports",
         hint: "Go to",
         icon: Ticket,
         keywords: "docket queue waiting triage",
         run: () => go("/reports?status=OPEN"),
+      },
+      {
+        id: "go-review",
+        label: "Reports in review",
+        hint: "Reports",
+        icon: Ticket,
+        keywords: "docket queue triage working",
+        run: () => go("/reports?status=IN_REVIEW"),
       },
       {
         id: "toggle-theme",
@@ -275,7 +325,7 @@ export function CommandPalette({ onClose }: { onClose: () => void }) {
     >
       {/* The field is still visible through this — the room does not go away
           while you are choosing where in it to go. */}
-      <div className="absolute inset-0 bg-void-deep/70 backdrop-blur-sm" aria-hidden />
+      <div className="absolute inset-0 bg-void-deep/80" aria-hidden />
 
       <div
         ref={dialogRef}
@@ -283,7 +333,7 @@ export function CommandPalette({ onClose }: { onClose: () => void }) {
         aria-modal="true"
         aria-label="Command palette"
         onKeyDown={onKeyDown}
-        className="glass-raised relative w-full max-w-[560px] overflow-hidden rounded-lg"
+        className="surface-raised relative w-full max-w-[560px] overflow-hidden rounded-lg"
       >
         <div className="flex items-center gap-3 border-b border-edge px-4">
           <Search className="size-4 shrink-0 text-t3" aria-hidden />
@@ -378,10 +428,18 @@ function Legend({ keys, action }: { keys: string; action: string }) {
  * its key live in one place — a shortcut documented on a button that does not
  * open the same thing is worse than no shortcut.
  */
-export function CommandTrigger() {
+export function CommandTrigger({
+  wide = false,
+  enableShortcut = true,
+}: {
+  wide?: boolean;
+  enableShortcut?: boolean;
+}) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
+    if (!enableShortcut) return;
+
     const onKey = (event: KeyboardEvent) => {
       if (event.key.toLowerCase() === "k" && (event.metaKey || event.ctrlKey)) {
         event.preventDefault();
@@ -391,7 +449,7 @@ export function CommandTrigger() {
 
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  }, [enableShortcut]);
 
   return (
     <>
@@ -402,11 +460,12 @@ export function CommandTrigger() {
           "inline-flex h-9 cursor-pointer items-center gap-2 rounded-sm border border-edge px-2.5",
           "text-13 text-t3 transition-colors duration-160",
           "hover:border-edge-lit hover:bg-panel-sunk hover:text-t2 focus-visible:outline-offset-1",
+          wide && "w-full justify-start bg-panel-sunk text-t2",
         )}
       >
         <Search className="size-3.5 shrink-0" aria-hidden />
-        <span className="hidden lg:inline">Search</span>
-        <kbd className="hidden rounded-xs bg-panel-sunk px-1.5 py-0.5 text-note lg:block">⌘K</kbd>
+        <span className={cn("hidden lg:inline", wide && "block")}>Find anything</span>
+        <kbd className={cn("hidden rounded-xs border border-edge bg-panel px-1.5 py-0.5 text-note lg:block", wide && "ml-auto block")}>⌘K</kbd>
       </button>
 
       {open ? <CommandPalette onClose={() => setOpen(false)} /> : null}

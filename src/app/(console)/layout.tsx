@@ -8,12 +8,9 @@ import { countOpenReports } from "@/lib/reports/api";
 export const dynamic = "force-dynamic";
 
 /**
- * The room, and the rail it is read from.
- *
- * Three layers, back to front: the aurora field, which carries the queue
- * reading; the command rail floating over it; and the content, which scrolls
- * under the rail rather than beside it. The field is fixed and the page scrolls
- * over it, so the room stays one continuous thing however far down you are.
+ * The platform desk: a persistent route map, a quiet live queue trace, and the
+ * route content. The page owns the scroll so browser history and restoration
+ * stay predictable across long directories and case files.
  *
  * The shell scrolls as a whole rather than pinning the viewport height and
  * scrolling panes inside it. That is a change from the layout this replaced,
@@ -29,16 +26,15 @@ export default async function ConsoleLayout({ children }: { children: React.Reac
   // around an empty page.
   if (!operator) redirect("/login");
 
-  // What the room is lit by. A failure here costs the field its reading, not
-  // the page — an operator with a broken API still gets a console, and the
-  // counts on it will tell them what the wall could not.
-  const openReports = await countOpenReports().catch(() => 0);
+  // A shell-count failure costs the subtle field reading and sidebar badge, not
+  // the page. Route content still reports its own API failure normally.
+  const openReports = await countOpenReports().catch(() => null);
 
   return (
-    <div className="relative flex min-h-dvh flex-col">
-      <Aurora openReports={openReports} />
-      <CommandBar operator={operator.email} />
-      <main className="flex-1 pb-16">{children}</main>
+    <div className="relative min-h-dvh">
+      <Aurora openReports={openReports ?? 0} />
+      <CommandBar operator={operator.email} openReports={openReports} />
+      <main className="pb-20 lg:pl-[15.5rem] lg:pb-0">{children}</main>
     </div>
   );
 }

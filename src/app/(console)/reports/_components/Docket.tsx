@@ -39,11 +39,10 @@ export function Docket({
     <aside
       aria-label="Report docket"
       className={cn(
-        "glass flex w-full shrink-0 flex-col overflow-hidden",
-        // The page scrolls; this column stays put and scrolls its own list.
-        // 5.5rem clears the floating rail, and the max-height is what gives the
-        // inner list something to scroll against.
-        "lg:sticky lg:top-[5.5rem] lg:max-h-[calc(100dvh-7rem)] lg:w-[22rem]",
+        "surface flex w-full shrink-0 flex-col overflow-hidden",
+        // The page scrolls; this column stays put beside the case file and its
+        // own list gets the remaining viewport height.
+        "lg:sticky lg:top-6 lg:max-h-[calc(100dvh-3rem)] lg:w-[23rem]",
         className,
       )}
     >

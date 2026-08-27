@@ -55,7 +55,7 @@ export default async function CasePage({ params, searchParams }: PageProps) {
           className="hidden lg:flex"
         />
 
-        <div className="glass min-w-0 flex-1">
+        <div className="surface min-w-0 flex-1">
           <CaseFile report={report} params={docketParams} />
         </div>
       </div>
